@@ -1,7 +1,7 @@
 # Práctica 1: Uso de Git y de Github
 
-    Práctica creada: 2021.08.31
-	Entrega: 2020.09.07
+    Práctica creada: 2024.01.30
+	Entrega: 2024.02.06
 
 Esta práctica busca que tengas las herramientas básicas mínimas para
 utilizar tanto Git como GitHub, y sirve como base para todas las
