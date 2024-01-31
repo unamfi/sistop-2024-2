@@ -1,11 +1,11 @@
-# sistop-2022-1 • Sistemas Operativos #
+# sistop-2024-2 • Sistemas Operativos #
 
 ¡Bienvenido!
 
 Este repositorio es el espacio de entrega de proyectos para la clase
 impartida por Gunnar Wolf de *Sistemas Operativos* de la Facultad de
-Ingeniería de la UNAM, en el semestre *2022-1* (septiembre a diciembre
-de 2021). El sitio Web de la materia, donde encontrarán listas,
+Ingeniería de la UNAM, en el semestre *2024-2* (enero a mayo 
+de 2024). El sitio Web de la materia, donde encontrarán listas,
 calificaciones, presentaciones, temas y demás materiales es
 http://gwolf.sistop.org/ y el sitio desde donde pueden consultar y
 descargar el libro que emplearemos como referencia para el cursado es
@@ -81,7 +81,7 @@ por lo cual el peligro de censura no es mera fantasía.
       entre varios.
 4. Para todas las entregas, usa el esquema de nombre estandarizado que
    presentamos en la
-   [sección 4 de la práctica 1](https://github.com/unamfi/sistop-2022-1/tree/main/practicas/1/README.md):
+   [sección 4 de la práctica 1](https://github.com/unamfi/sistop-2024-2/tree/main/practicas/1/README.md):
    
        [tipo_entrega]/[numero]/[ApellidoNombre]/
 
