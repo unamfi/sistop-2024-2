@@ -195,7 +195,7 @@ instrucciones relevantes cuando haya nuevas prácticas, tareas o
 proyectos, te recomiendo indicarle que estarás siguiendo una *rama
 remota*. Por ejemplo, podrías llamarla de forma que me describa, `prof`:
 
-    $ git remote add --track main prof git://github.com/unamfi/sistop-2024-2
+    $ git remote add --track main prof https://github.com/unamfi/sistop-2024-2
 
 Esto significa, *agrega una fuente remota en la dirección mencionada,
 siguiendo la rama maestra, y dale localmente el nombre `prof`*. Puedes
