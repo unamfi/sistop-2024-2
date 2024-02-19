@@ -5,7 +5,7 @@ model		: 142
 model name	: Intel(R) Core(TM) i3-7020U CPU @ 2.30GHz
 stepping	: 10
 microcode	: 0xf4
-cpu MHz		: 2300.000
+cpu MHz		: 1293.304
 cache size	: 3072 KB
 physical id	: 0
 siblings	: 4
@@ -89,7 +89,7 @@ model		: 142
 model name	: Intel(R) Core(TM) i3-7020U CPU @ 2.30GHz
 stepping	: 10
 microcode	: 0xf4
-cpu MHz		: 800.028
+cpu MHz		: 2300.000
 cache size	: 3072 KB
 physical id	: 0
 siblings	: 4
