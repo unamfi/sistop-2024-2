@@ -1,1 +1,2 @@
-Agrego el archivo de Lopez Alam para la práctica 2B
+Caption                                DeviceID  MaxClockSpeed  Name                                       NumberOfCores  Status
+Intel64 Family 6 Model 126 Stepping 5  CPU0      1501           Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz  4              OK
