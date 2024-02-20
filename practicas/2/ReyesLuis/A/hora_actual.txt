@@ -1,0 +1,3 @@
+La fecha actual es: 18/02/2024 
+Escriba la nueva fecha: (dd-mm-aa) El sistema no puede aceptar la fecha que escribi¢.
+Escriba la nueva fecha: (dd-mm-aa) 
