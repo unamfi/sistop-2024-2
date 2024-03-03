@@ -1,0 +1,29 @@
+Fecha:19/02/2024
+Hora:9:26 p.m.
+
+Nombre del dispositivo	LAPTOP-ALEXA
+Procesador	11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz   2.40 GHz
+RAM instalada	8.00 GB (7.65 GB utilizable)
+Id. del dispositivo	B5F66EDD-9144-4F04-9759-328A8E2BFDBE
+Id. del producto	00342-43375-81257-AAOEM
+Tipo de sistema	Sistema operativo de 64 bits, procesador x64
+
+
+IdentifyingNumber  Name
+5CD3239LHZ         HP Laptop 14-dq2xxx
+
+Mainboard Model		87FD (0x000000F9 - 0x000026A0)
+
+DMI BIOS		
+	vendor			AMI
+	version			F.32
+	date			07/04/2023
+	ROM size		8192 KB
+
+DMI Processor		
+	manufacturer		Intel(R) Corporation
+	model			11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz
+	clock speed		2400.0 MHz
+	FSB speed		100.0 MHz
+	multiplier		24.0x
+

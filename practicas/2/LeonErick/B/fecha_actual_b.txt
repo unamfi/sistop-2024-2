@@ -1,0 +1,2 @@
+The current date is: Sun 02/18/2024 
+Enter the new date: (mm-dd-yy) 
