@@ -1,7 +1,10 @@
 #include <stdio.h>
 
 int main(){
-        printf("holaaaa\n");
-        return 0;
+        char name[20];
+    	printf("ingresa tu nombre: ");
+    	scanf("%s", name);
 
+    	printf("holaaaaa %s!", name);
+        return 0;
 }
