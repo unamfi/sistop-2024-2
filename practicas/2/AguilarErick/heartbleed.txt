@@ -1,0 +1,4 @@
+Heartbleed fue una vulnerabilidad de seguridad que afectó a la implementación de OpenSSL, un software de código abierto ampliamente utilizado
+para cifrar comunicaciones en la web a través del protocolo SSL/TLS. El problema permitía a un atacante acceder a la memoria de un servidor,
+revelando información sensible como claves privadas y datos de usuarios. Fue descubierto en 2014, y una vez revelado, se tomaron medidas para
+parchear las vulnerabilidades en los servidores afectados.
