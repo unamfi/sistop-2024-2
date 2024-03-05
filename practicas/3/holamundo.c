@@ -3,6 +3,9 @@
 #include <stdlib.h>
 int main ()
 {
-    printf("Hola mundo.\n");
+    char *nombre = (char *)malloc(10);
+    printf("¿Cuál es tu nombre?\t");
+    scanf("%s",nombre);
+    printf("Hola %s.\n",nombre);
     return 0;
 }
