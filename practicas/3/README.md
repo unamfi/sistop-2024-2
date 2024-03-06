@@ -175,33 +175,34 @@ estamos*. Puedo darle dos commits, o dos referencias relativas, y me indicará
 
 ## Ahora sí, ¡la práctica!
 
-¿Qué vamos a hacer para esta práctica? ¡Muy sencillo! Como dije, les dejo esta
-práctica *de la mano* del [proyecto
-#1](../../proyectos/1/README.md). Aprovechemos que el proyecto tiene dos partes
-(un artículo a elección de ustedes y el artículo central de la revista). Para
-realizar su entrega, hagan por lo menos dos *commits* presentando la historia
-del documento: desarrollen el resumen de uno de los artículos, hagan un
-*commit*, y posteriormente el del segundo.
+¿Qué vamos a hacer para esta práctica? ¡Muy sencillo! Al igual que en las
+entregas de prácticas anteriores, los datos en particular que envíen para
+realizar esta práctica no son importantes; lo que importa es realizar la
+práctica.
 
-Les pido que me entreguen un *pantallazo* mostrando, una vez que estén
-entregando el proyecto, el estado del desarrollo: La bitácora mostrando más de
-un *commit*, y las diferencias entre ① el repositorio antes de que inicien su
-trabajo, ② en el punto intermedio en que tienen uno de los artículos
-desarrollados, y ③ el estado final, con el resumen listo para entregar.
+Creen un programa sencillo, en su lenguaje favorito que imprima un saludo. Tan
+sencillo como un «hola mundo», si quieren. Hagan un _commit_.
 
-Puntos a pensar / considerar:
+Modifiquen ese programa, por ejemplo, para que obtenga el nombre de un usuario
+desde la línea de comando, y lo presente como parte del saludo. Hagan otro
+_commit_.
 
-- ¿En qué formato están entregando el resumen que les pedí para el proyecto?
-  Si las herramientas les acomodan, ¡intenten hacerlo en un formato basado en
-  texto! (HTML, Markdown, org-mode, etc.)
-  
-  Este punto es únicamente como *recomendación mía*. Si prefieren hacer su
-  entrega en un formato binario, presenten únicamente el pantalazo con el
-  resultado de `git diff`.
+Les pido que me entreguen un *pantallazo* mostrando, para ambos casos, el estado
+del desarrollo: La bitácora mostrando más de un *commit*, y las diferencias
+entre ① el repositorio antes de que inicien su trabajo, ② en el punto intermedio
+en que tienen el programa en su primer estado, y ③ el estado final, con el
+programa con el saludo personlizado.
 
-- El estado final de tu entrega del proyecto incluye dos *commits*, y dos
-  archivos que potencialmente podrían ser absolutamente distintos entre sí. Sin
-  embargo, *no dupliquen los archivos*. Que el archivo entregado tenga su
-  *historia de versiones*, pero que sea *un único archivo entregado*.
+Puntos fundamental a considerar:
+
+- El estado final de la entrega de tu programa incluye (por lo menos) a dos
+  *commits*, y dos archivos que potencialmente podrían ser absolutamente
+  distintos entre sí. Sin embargo, *no dupliques los archivos*. Que el archivo
+  entregado tenga su *historia de versiones*, pero que sea *un único archivo
+  entregado*.
+
+- Claro, vas a hacer un segundo *commit* documentando esta entrega
+
+- Pero como sea, entreguen todo esto como un único *pull request*.
 
 Y después de todo este texto... ¡Sí! Eso es todo 😉
