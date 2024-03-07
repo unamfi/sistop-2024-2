@@ -1,3 +1,4 @@
 print("Hola, como se llama?")
 nombre = input()
-print(f"Saludos, {nombre}")
+edad = input("Cuál es su edad?")
+print(f"Saludos, {nombre}, usted tiene", edad," años")
