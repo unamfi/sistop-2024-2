@@ -1,4 +1,5 @@
 import time
 ahora = time.strftime("%c")
 print(ahora)
-print("Hola Mundo")
+nombre = input("Ingresa tu nombre: ")
+print("Hola", nombre, "un gusto saludarte.")
