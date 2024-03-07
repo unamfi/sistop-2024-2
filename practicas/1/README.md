@@ -9,7 +9,7 @@ prácticas futuras.
 
 Te recuerdo que, para comprender el funcionamiento de Git y la forma
 de colaboración de GitHub, les dí una serie de ligas en la
-[página principal del repositorio](https://github.com/unamfi/sistop-2022-1).
+[página principal del repositorio](https://github.com/unamfi/sistop-2024-2).
 
 ## 1. Tu cuenta de usuario
 
@@ -19,13 +19,13 @@ una, puedes (y te recomiendo) utilizar la ya existente.
 ## 2. Un *fork* del repositorio principal
 
 El repositorio principal desde el que estaremos trabajando es
-<https://github.com/unamfi/sistop-2022-1>; lo primero que debes hacer
+<https://github.com/unamfi/sistop-2024-2>; lo primero que debes hacer
 es copiar el repositorio a tu espacio personal (hacer un "fork" — Una
 bifurcación, o una copia). Para esto, oprime el botón "Fork" en la
 parte superior derecha.
 
 Notarás que, en la parte superior izquierda, en vez de mostrar
-`unamfi/sistop-2022-1`, ahora lo mostrará con tu nombre de usuario.
+`unamfi/sistop-2024-2`, ahora lo mostrará con tu nombre de usuario.
 
 ## 3. *Clona* el repositorio
 
@@ -49,12 +49,12 @@ interfaz gráfica, queda para tí el convertir las instrucciones en
 
 Si tu nombre de usuario es `fulano`, tendrás que hacer algo como:
 
-    $ git clone git@github.com:fulano/sistop-2022-1.git
+    $ git clone git@github.com:fulano/sistop-2024-2.git
 
 Ojo, en caso de que tengas algún problema haciéndolo de esta manera,
 también puedes intentar de la siguiente manera:
 
-    $ git clone https://github.com/fulano/sistop-2022-1
+    $ git clone https://github.com/fulano/sistop-2024-2
 
 La ventaja del primero es un poco mayor velocidad al realizar las
 operaciones y que puedes manejar *autenticación por llave pública*; es
@@ -71,7 +71,7 @@ repositorio a lo largo del cursado de la materia.
 Ahora, vamos a estar trabajando desde *dentro* de tu directorio
 *clonado*:
 
-    $ cd sistop-2022-1
+    $ cd sistop-2024-2
 
 ## 4. ¿Dónde vas a hacer las entregas?
 
@@ -164,10 +164,10 @@ los *empujes* o *publiques* en el servidor:
 ¡Bien! Si vamos hasta aquí, lograste publicar tus cambios en
 GitHub. La práctica, sin embargo, no ha sido *entregada*: Yo aún no se
 nada al respecto. Si ves la página de tu repositorio en GitHub
-(https://github.com/fulano/sistop-2022-1/ substituyendo, claro,
+(https://github.com/fulano/sistop-2024-2/ substituyendo, claro,
 `fulano` por tu nombre de usuario), verás que GitHub te notifica en el
 área central que estás *adelantado* al repositorio central: *This
-branch is 1 commit ahead of unamfi/sistop-2022-1*.
+branch is 1 commit ahead of unamfi/sistop-2024-2*.
 
 Como comentamos en clase, el uso que quiero que den a GitHub es
 similar al que le darían si estuvieran corrigiendo un defecto en un
@@ -195,7 +195,7 @@ instrucciones relevantes cuando haya nuevas prácticas, tareas o
 proyectos, te recomiendo indicarle que estarás siguiendo una *rama
 remota*. Por ejemplo, podrías llamarla de forma que me describa, `prof`:
 
-    $ git remote add --track main prof git://github.com/unamfi/sistop-2022-1
+    $ git remote add --track main prof https://github.com/unamfi/sistop-2024-2
 
 Esto significa, *agrega una fuente remota en la dirección mencionada,
 siguiendo la rama maestra, y dale localmente el nombre `prof`*. Puedes
