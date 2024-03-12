@@ -1,22 +1,22 @@
-//L髉ez Tavera Alexa Fernanda_Tarea 1 de Sistemas operativos
-//Programa que simula la administraci髇 de memoria donde las O representan los espacios vacios (30 unidades) y se puede asignar o liberar la memoria
+//L贸pez Tavera Alexa Fernanda_Tarea 1 de Sistemas operativos
+//Programa que simula la administraci贸n de memoria donde los # representan los espacios vacios (30 unidades) y se puede asignar o liberar la memoria
 //Se resuelven las solicitudes por primer ajuste
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TAM_MEM 30//Constante que representa el tama駉 total de la memoria(30 unidades)
+#define TAM_MEM 30//Constante que representa el tama帽o total de la memoria(30 unidades)
 
 // Estructura que se declara para representar un bloque de memoria
 struct BloqueMemoria {
     char id;  // Caracter que representa el dentificador del proceso que se encuentra en el bloque de memoria
-    int tam; // Tama駉 del bloque de memoria
+    int tam; // Tama帽o del bloque de memoria
 };
 
 // Arreglo que representa la memoria
 struct BloqueMemoria memoria[TAM_MEM]; 
 int total_bloques = 0; // Contador de bloques de memoria que ya han sido asignados
 
-//Funci髇 para inicializar la memoria con bloques vac韔s
+//Funci贸n para inicializar la memoria con bloques vac铆os
 void inicializarMemoria() {
     int i = 0;
     while (i < TAM_MEM) {
@@ -25,7 +25,7 @@ void inicializarMemoria() {
     }
 }
 
-//Funci髇 que imprime el mapa de memoria
+//Funci贸n que imprime el mapa de memoria
 void imprimirMapaMemoria() {
     int i = 0;
     while (i < TAM_MEM) { //Inicia un ciclo que imprime los elementos en el bloque de memoria
@@ -35,8 +35,8 @@ void imprimirMapaMemoria() {
     printf("\n");
 }
 
-// Funci髇 que ayuda a asignar memoria a un proceso
-void asignarMemoria(char proceso, int unidades) {//Recibe la letra del proceso y el tama駉 del proceso que se asigna a memoria
+// Funci贸n que ayuda a asignar memoria a un proceso
+void asignarMemoria(char proceso, int unidades) {//Recibe la letra del proceso y el tama帽o del proceso que se asigna a memoria
     printf("Asignando %d unidades para el proceso %c:\n", unidades, proceso);
 
     int i, j;
@@ -64,7 +64,7 @@ void asignarMemoria(char proceso, int unidades) {//Recibe la letra del proceso y
     printf("No hay suficiente espacio para asignar %d unidades al proceso %c.\n", unidades, proceso);//Si no hay espacio consecutivo suficiente se imprime el mensaje
 }
 
-// Funci髇 para liberar memoria de un proceso
+// Funci贸n para liberar memoria de un proceso
 void liberarMemoria(char proceso) {//Recibe la letra que se quiere "liberar" de la memoria
     printf("Liberando memoria del proceso %c:\n", proceso);
 
@@ -96,7 +96,7 @@ void liberarMemoria(char proceso) {//Recibe la letra que se quiere "liberar" de 
 }
 
 int main() {
-    inicializarMemoria();  // Inicializa la memoria con bloques vac韔s
+    inicializarMemoria();  // Inicializa la memoria con bloques vac铆os
     int continuar_liberando = 1; // Variable que controla si se debe continuar liberando memoria
 	int continuar_asignando = 1; // Variable que controla si se debe continuar asignando memoria
 
@@ -120,23 +120,23 @@ int main() {
             continue;
         }
 
-        asignarMemoria(proceso, unidades);//Se llama a la funci髇 asignar memoria
+        asignarMemoria(proceso, unidades);//Se llama a la funci贸n asignar memoria
 
         printf("Desea asignar memoria a otro proceso? (1: Si / 0: No): ");
         scanf("%d", &continuar_asignando);
-    } while (continuar_asignando);//Mientras se quiera asignar y se pueda asignar se repite esta parte del c骴igo
+    } while (continuar_asignando);//Mientras se quiera asignar y se pueda asignar se repite esta parte del c贸digo
 
-    // Si ya no se quiere o puede asignar, continua la opci髇 de liberar la memoria
+    // Si ya no se quiere o puede asignar, continua la opci贸n de liberar la memoria
     printf("2do.Proceso_Liberar memoria:\n");
     do {
         printf("Proceso a liberar: (Ingrese la letra que se quiere liberar)");
         scanf(" %c", &proceso);//Se pide la letra a liberar al usuario
 
-        liberarMemoria(proceso);//Se llama a la funci髇 liberar memoria
+        liberarMemoria(proceso);//Se llama a la funci贸n liberar memoria
 
         printf("Desea liberar memoria de otro proceso? (1: Si/ 0: No): ");
         scanf("%d", &continuar_liberando);
-    } while (continuar_liberando);//Mientras se quiera y pueda seguir liberando continua la funci髇, si no, termina el programa
+    } while (continuar_liberando);//Mientras se quiera y pueda seguir liberando continua la funci贸n, si no, termina el programa
 
     return 0;
 }
