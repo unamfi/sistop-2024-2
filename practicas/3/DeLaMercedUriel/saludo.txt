@@ -1,0 +1,48 @@
+print(Hola mundo)
+def float_to_binary32(value):
+    # Bit de signo (1 bit)
+    sign_bit = 0 if value >= 0 else 1
+
+    # Exponente de 8 bits -  El sesgo de 127 para flotante de 32 bits
+    exponent = 127
+    if value != 0:
+        normalized_value = abs(value)
+        while normalized_value >= 2:
+            normalized_value /= 2
+            exponent += 1
+        while normalized_value < 1:
+            normalized_value *= 2
+            exponent -= 1
+        exponent = max(0, min(255, exponent))  # Validamos el rango de bits
+
+    # Mantissa (23 bits)
+    mantissa = int((normalized_value - 1) * (2 ** 23))
+
+    # Combinamos signo, exponente y mantissa
+    float32_bits = (sign_bit << 31) | (exponent << 23) | mantissa
+
+    # Convertir a cadena binaria
+    binary_representation = format(float32_bits, '032b')
+
+    return binary_representation
+
+def binary_to_float32(binary_value):
+    # Convertir una cadena binaria a un número entero
+    float32_bits = int(binary_value, 2)
+
+    # Extraer signo, exponente y mantisa.
+    sign_bit = (float32_bits >> 31) & 1
+    exponent = (float32_bits >> 23) & 0xFF
+    mantissa = float32_bits & 0x7FFFFF
+
+    #Calcular el valor real
+    value = (-1) ** sign_bit * (1 + mantissa / (2 ** 23)) * (2 ** (exponent - 127))
+
+    return value
+decimal_number = -134.3125  # Reemplaza con tu número decimal
+binary32_result = float_to_binary32(decimal_number)
+float32_result = binary_to_float32(binary32_result)
+
+print(f"Valor decimal: {decimal_number}")
+print(f"Coma flotante de 32 bits (binario): {binary32_result}")
+print(f"Coma flotante de 32 bits (decimal): {float32_result:.9f}")
