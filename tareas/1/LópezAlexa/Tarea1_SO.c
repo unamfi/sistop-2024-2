@@ -102,10 +102,10 @@ int main() {
 
 
     printf("Mapa de memoria inicial (30 Unidades):\n");
-    imprimirMapaMemoria();  // Imprime el mapa de memoria inicial con las 30 'O' que representan los espacios vacios
+    imprimirMapaMemoria();  // Imprime el mapa de memoria inicial con los 30 '#' que representan los espacios vacios
 
     // Lo primero que se puede hacer en nuestro programa es asignar memoria
-    printf("1r.Proceso_Asignar memoria:\n");
+    printf("1r.Acción_Asignar memoria:\n");
     char proceso;
     int unidades;
     do {
@@ -127,7 +127,7 @@ int main() {
     } while (continuar_asignando);//Mientras se quiera asignar y se pueda asignar se repite esta parte del código
 
     // Si ya no se quiere o puede asignar, continua la opción de liberar la memoria
-    printf("2do.Proceso_Liberar memoria:\n");
+    printf("2da.Acción_Liberar memoria:\n");
     do {
         printf("Proceso a liberar: (Ingrese la letra que se quiere liberar)");
         scanf(" %c", &proceso);//Se pide la letra a liberar al usuario
