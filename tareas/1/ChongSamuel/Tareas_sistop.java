@@ -16,6 +16,7 @@ public class Tareas_sistop {
         memoria = new char[tamMemoria];
         inicializarMemoria();
         
+        System.out.println("Asignacion de memoria con peor ajsute");
         while(true){
             System.out.println("Estado memoria: ");
             mapaMemoria();
