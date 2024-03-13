@@ -1,0 +1,17 @@
+{
+  "name": "tarea_1",
+  "scripts": {
+    "start": "yarn tsc && node ./dist/index.js"
+  },
+  "version": "1.0.0",
+  "type": "commonjs",
+  "main": "index.ts",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.25",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^4.3.0"
+  }
+}
