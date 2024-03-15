@@ -1,0 +1,66 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Docker Engine
+
+- Tema presentado por :: Erick Aguilar
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                        |   0.3 |               7.75 |  0.7 |    5.43 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad |   |   |   |   |   |       |
+| Nivel        |   |   |   |   |   |       |
+| Relevancia   |   |   |   |   |   |       |
+| Claridad     |   |   |   |   |   |       |
+| Presencia    |   |   |   |   |   |       |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |       |
+#+TBLFM: @7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |            5 |       1. |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |          7.5 |     0.75 |
+| Uso del tiempo         |    0.1 |            5 |      0.5 |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     7.75 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- Presentación demasiado larga (30:47)
+- ¡Muy bien que haces un cierre haciendo un resumen de todo el contenido que
+  presentaste! Ayuda mucho a encuadrar lo que presentaste.
+- Hiciste una muy buena presentación, partiendo de un punto de familiaridad con
+  /qué es Docker/ y /cómo es que está implementado/. Desde el principio
+  comienzas con un  /cómo funciona/, pero sin pasar con /para qué es/, /qué
+  problema busca resolver/, o algo porel estilo.
