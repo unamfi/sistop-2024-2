@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Asignación de memoria por primer ajuste</title>
+    <style>/*<![CDATA[*/
+      table {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      th, #procesos td {
+        border: 1px solid;
+      }
+      td, th {
+        padding: .5rem;
+      }
+      #mem td, th:first-child {
+        background-color: var(--col);
+      }
+      #mem td {
+        padding-block: 1rem;
+      }
+      #procesos {
+        width: min-content;
+      }
+    /*]]>*/</style>
+  </head>
+  <script>//<![CDATA[
+  "use strict"
+  
+  function anadirProceso(inicioTentativo, tam){
+    let mem = document.getElementById('mem');
+    let tbody = document.getElementById('procesos').tBodies[0];
+    let color = '#'+Math.round(Math.random()*255).toString(16).padStart('2', '0')+Math.round(Math.random()*255).toString(16).padStart('2', '0')+Math.round(Math.random()*255).toString(16).padStart('2', '0');
+    for (let j=0; j<tam; j++) mem.children[inicioTentativo+j].style.setProperty('--col', color);
+    let tr = document.createElement('tr');
+    tr.innerHTML = '<th style="--col: '+color+'"></th><td>'+inicioTentativo.toString()+'</td><td>'+tam.toString()+'</td>';
+    let tdb = document.createElement('td');
+    let tdborrar = document.createElement('button');
+    tdborrar.textContent = 'Borrar';
+    tdborrar.addEventListener('click', borrarProceso);
+    tdb.appendChild(tdborrar);
+    tr.appendChild(tdb);
+    tbody.appendChild(tr);
+  }
+  
+  function borrarProceso(e){
+    let mem = document.getElementById('mem');
+    let inicio = parseInt(e.target.parentNode.previousElementSibling.previousElementSibling.textContent);
+    let tam = parseInt(e.target.parentNode.previousElementSibling.textContent);
+    for (let i=inicio; i<tam+inicio; i++){
+      mem.children[i].style.removeProperty('--col');
+    }
+    let color = e.target.parentNode.previousElementSibling.previousElementSibling.previousElementSibling.style.getPropertyValue('--col');
+    e.target.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode);
+  }
+  
+  window.addEventListener('DOMContentLoaded', () => {
+    let mem = document.getElementById('mem');
+    let tbody = document.getElementById('procesos').tBodies[0];
+    document.getElementById('crearProceso').addEventListener('click', (e) => {
+      let inicioTentativo = 0;
+      let contadorVacios = 0;
+      let contadorVaciosGlobal = 0;
+      let tam = document.getElementById('cant').valueAsNumber;
+      
+      // Validaciones
+      if (isNaN(tam)) alert('Debes especificar un número');
+      else if (tam>15 || tam<2) alert('El tamaño del proceso debe ser entre 2 y 15 unidades');
+      else {
+        // Asignación
+        for (let i=0; i<mem.childElementCount; i++){
+          if (mem.children[i].style.getPropertyValue('--col')) contadorVacios = 0;
+          else {
+            if (!contadorVacios) inicioTentativo = i;
+            contadorVacios += 1;
+            contadorVaciosGlobal += 1;
+            if (contadorVacios == tam){
+              anadirProceso(inicioTentativo, tam);
+              return;
+            }
+          }
+        }
+        // No cabe en los espacios ahora
+        if (contadorVaciosGlobal < tam) alert('El proceso no cabe en memoria');
+        else {
+          let cols = document.getElementById('procesos').tBodies[0].rows;
+          let nuevaPos = 0;
+          let nuevoTam = 0;
+          for (let i=0; i<cols.length; i++){
+            nuevoTam = parseInt(cols[i].children[2].textContent);
+            let nuevoCol = cols[i].children[0].style.getPropertyValue('--col');
+            // Actualizar tabla
+            cols[i].children[1].textContent = nuevaPos.toString();
+            // Actualizar memoria
+            for (let j=0; j<nuevoTam; j++) mem.children[nuevaPos+j].style.setProperty('--col', nuevoCol);
+            nuevaPos += nuevoTam;
+          }
+          // Limpiar restantes
+          while (nuevaPos != 30){
+            mem.children[nuevaPos].style.removeProperty('--col');
+            nuevaPos++;
+          }
+          // Añadir el pendiente
+          inicioTentativo = 0;
+          contadorVacios = 0;
+          contadorVaciosGlobal = 0;
+          for (let i=0; i<mem.childElementCount; i++){
+            if (mem.children[i].style.getPropertyValue('--col')) contadorVacios = 0;
+            else {
+              if (!contadorVacios) inicioTentativo = i;
+              contadorVacios += 1;
+              contadorVaciosGlobal += 1;
+              if (contadorVacios == tam){
+                anadirProceso(inicioTentativo, tam);
+                alert('Se realizó una compactación');
+                return;
+              }
+            }
+          }
+        }
+      }
+    });
+  });
+  //]]></script>
+  <body>
+    <h1>Asignación de memoria por primer ajuste</h1>
+    <fieldset>
+      <legend>Configuración</legend>
+      <div><label>Memoria del próximo proceso a crear: </label><input type="number" id="cant" /></div>
+      <div><button id="crearProceso">Crear proceso</button></div>
+    </fieldset>
+    <h2>Memoria</h2>
+    <table>
+      <tr><th>0<br />0x00</th><th>1<br />0x01</th><th>2<br />0x02</th><th>3<br />0x03</th><th>4<br />0x04</th><th>5<br />0x05</th><th>6<br />0x06</th><th>7<br />0x07</th><th>8<br />0x08</th><th>9<br />0x09</th><th>10<br />0x0A</th><th>11<br />0x0B</th><th>12<br />0x0C</th><th>13<br />0x0D</th><th>14<br />0x0E</th><th>15<br />0x0F</th><th>16<br />0x10</th><th>17<br />0x11</th><th>18<br />0x12</th><th>19<br />0x13</th><th>20<br />0x14</th><th>21<br />0x15</th><th>22<br />0x16</th><th>23<br />0x17</th><th>24<br />0x18</th><th>25<br />0x19</th><th>26<br />0x1A</th><th>27<br />0x1B</th><th>28<br />0x1C</th><th>29<br />0x1D</th></tr>
+      <tr id="mem"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+    <h2>Lista de procesos</h2>
+    <table id="procesos">
+      <thead>
+        <tr><th>Proceso</th><th>Dirección de inicio</th><th>Memoria ocupada</th><th>Borrar</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </body>
+</html>
