@@ -1,0 +1,87 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Docker Engine
+
+- Tema presentado por :: Erick Aguilar
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                   9.42 |   0.3 |               7.75 |  0.7 |    8.25 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 |  5 |     Total |
+|--------------+---+---+---+---+----+-----------|
+| Originalidad | 0 | 0 | 1 | 2 |  9 | 9.3333333 |
+| Nivel        | 0 | 0 | 1 | 2 |  8 | 9.2727273 |
+| Relevancia   | 0 | 0 | 1 | 3 |  8 | 9.1666667 |
+| Claridad     | 0 | 0 | 0 | 2 | 10 | 9.6666667 |
+| Presencia    | 0 | 0 | 0 | 2 | 10 | 9.6666667 |
+|--------------+---+---+---+---+----+-----------|
+|              |   |   |   |   |    |      9.42 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6)::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Me pareció un tema bastante interesante y muy bien explicado para una persona
+  que sólo había oído de su existencia. Son estas explicaciones las que ayudan a
+  interesarse en un tema sin presentarlo como algo súper abstracto y difícil de
+  entender. Muy buen trabajo por parte del compañero ;)
+- sin comentarios
+- Un poco más de contexto por favor
+- Me gustó mucho que diera ejemplos de aplicaciones para cada concepto o idea
+  que expuso. La verdad es un tema en el que no había profundizado, y ahora
+  entiendo su funcionamiento como sistema de software. También creo que fue muy
+  importante explicar elementos como "imagen" o "contenedor", ya que es
+  importante tenerlos claros. Este tema es muy relevante para la materia porque
+  Docker es una herramienta utilizada de manera frecuente para configurar un
+  entorno determinado, incluyendo al sistema operativo.
+- 
+  1. En la exposición presentada se puede apreciar que el compañero tiene un
+     buen dominio del tema, además de haberse tomado el tiempo para realizarla.
+  2. Me pareció en cierta forma acertado que no hubiera texto en las
+     diapositivas, ya que eso hacía que prestaras más atención a lo que el
+     compañero explicaba y lo relacionabas con las imágenes que presentaba.
+  3. El video fue bueno, en cuestión de audio y video.
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |            5 |       1. |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |          7.5 |     0.75 |
+| Uso del tiempo         |    0.1 |            5 |      0.5 |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     7.75 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- Presentación demasiado larga (30:47)
+- ¡Muy bien que haces un cierre haciendo un resumen de todo el contenido que
+  presentaste! Ayuda mucho a encuadrar lo que presentaste.
+- Hiciste una muy buena presentación, partiendo de un punto de familiaridad con
+  /qué es Docker/ y /cómo es que está implementado/. Desde el principio
+  comienzas con un  /cómo funciona/, pero sin pasar con /para qué es/, /qué
+  problema busca resolver/, o algo porel estilo.
