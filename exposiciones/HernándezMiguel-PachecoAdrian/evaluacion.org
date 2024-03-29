@@ -1,7 +1,7 @@
 #+title: Evaluación de la exposición
 #+author: Gunnar Wolf
 
-* Docker Engine
+* La deduplicación en los sistemas operativos modernos
 
 - Tema presentado por :: 
 - Calificación global :: Por favor revisen más adelante para ver de
