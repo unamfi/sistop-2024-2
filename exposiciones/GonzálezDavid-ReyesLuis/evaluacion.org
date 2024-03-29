@@ -1,0 +1,77 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* El camino de la GPU a través de los sistemas operativos
+
+- Tema presentado por :: David González y Luis Reyes
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                   8.77 |   0.3 |               9.13 |  0.7 |    9.02 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 |     Total |
+|--------------+---+---+---+---+---+-----------|
+| Originalidad | 0 | 0 | 1 | 6 | 5 | 8.6666667 |
+| Nivel        | 0 | 0 | 0 | 6 | 6 |        9. |
+| Relevancia   | 0 | 0 | 0 | 5 | 7 | 9.1666667 |
+| Claridad     | 0 | 0 | 0 | 9 | 3 |       8.5 |
+| Presencia    | 0 | 0 | 2 | 5 | 5 |       8.5 |
+|--------------+---+---+---+---+---+-----------|
+|              |   |   |   |   |   |      8.77 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6)::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Como recomendacion, reducir el texto en ciertas diapositivas.
+- Básicamente me gustaría un poco más de ejemplos para la comprensión del tema
+- Un poco más de ejemplos por favor
+- Fue interesante conocer la interacción de la GPU con el Sistema Operativo, ya
+  que es un componente muy utilizado en la actualidad cuando hablamos de las
+  computadoras de uso personal. La información fue de calidad, y aunque creo que
+  faltó un poco de claridad y creatividad en algunas explicaciones, en general
+  la exposición estuvo a la altura.
+- En general fue una buena exposición.
+  Para las diapositivas ocupadas, creo que en algunos casos había mucho texto
+  que era en su mayoría repetitivo con lo que se explicaba, entonces hubiera
+  sido buena idea ocupar menos texto y explicar lo demás sin necesidad de
+  ponerlo todo en la presentación.
+- En cuestión de la calidad del video, había veces en que el audio no era el
+  mejor, pero no influyo en la claridad de la información explicada.
+- El audio no era muy bueno
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |           10 |       2. |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |          7.5 |    1.125 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     9.13 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- Muy buena presentación. ¡Felicidades!
