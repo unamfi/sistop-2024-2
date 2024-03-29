@@ -1,0 +1,86 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Docker Engine
+
+- Tema presentado por :: 
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                   9.16 |   0.3 |               7.88 |  0.7 |    8.26 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 |     Total |
+|--------------+---+---+---+---+---+-----------|
+| Originalidad | 0 | 0 | 1 | 3 | 5 | 8.8888889 |
+| Nivel        | 0 | 0 | 0 | 3 | 6 | 9.3333333 |
+| Relevancia   | 0 | 0 | 0 | 3 | 6 | 9.3333333 |
+| Claridad     | 0 | 0 | 1 | 2 | 6 | 9.1111111 |
+| Presencia    | 0 | 0 | 0 | 4 | 5 | 9.1111111 |
+|--------------+---+---+---+---+---+-----------|
+|              |   |   |   |   |   |      9.16 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6)::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Todo bien
+- El audio en la parte final del video tenía un volumen un poco bajo. Por otra
+  parte, me gustó que hicieran uso de imágenes en la presentación, sin embargo,
+  considero que algunas diapositivas tenían mucha información y podía parecer un
+  poco "saturado".
+- Me gustó mucho la información que aporta esta exposición, y la forma en la que
+  se explicó fue muy clara.
+- En general fue una buena exposición, ya que explicaron el contenido de esta de
+  una manera clara y sencilla.
+- Como punto a mejorar, note que en algunas partes se leía toda la información
+  que contenían las diapositivas.
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |            5 |       1. |
+| Contenido              |    0.2 |           10 |       2. |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |            5 |     0.75 |
+| Presencia              |   0.15 |          7.5 |    1.125 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     7.88 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- Su material cubre bastante bien el tema, y me parece que resulta clara y bien
+  explicada para sus compañeros. 
+- Varios dedazos en la presentación. ¡Sean más cuidadosos al prepararla!
+- Muchas veces se entiende “duplicación” donde quieren decir
+  “deduplicación” (¡que es lo opuesto!). Esto a veces ocurre también en el texto
+  escrito.
+- La mayor parte del contenido que presentan resulta directamente de la lectura
+  del material que presentan como documento. Esto resulta en un ritmo tedioso y
+  poco atractivo. Les recomiendo fuertemente trabajar en usar la presentación
+  y el texto como guía, como “acordeón”, y no como libreto textual.
+- Hay varios errores fácticos en el material que presentan (por ejemplo, la
+  implementación de Linux que describen no tiene nada que ver con la
+  deduplicación; el papel de Time Machine en MacOS tampoco se refiere
+  /principalmente/ a deduplicación, aunque la usa parcialmente).
+
