@@ -1,0 +1,86 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+*  Sistemas operativos en la realidad virtual y aumentada
+
+- Tema presentado por :: Ángel Pozos y Uriel Benjamín de la Merced
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                   9.13 |   0.3 |                7.5 |  0.7 |    7.99 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 |     Total |
+|--------------+---+---+---+---+---+-----------|
+| Originalidad | 0 | 0 | 0 | 1 | 5 | 9.6666667 |
+| Nivel        | 0 | 0 | 0 | 1 | 5 | 9.6666667 |
+| Relevancia   | 0 | 0 | 1 | 3 | 2 | 8.3333333 |
+| Claridad     | 0 | 0 | 1 | 1 | 4 |        9. |
+| Presencia    | 0 | 0 | 0 | 3 | 3 |        9. |
+|--------------+---+---+---+---+---+-----------|
+|              |   |   |   |   |   |      9.13 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6)::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |            5 |       1. |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |          7.5 |     0.75 |
+| Dominio del tema       |   0.15 |          7.5 |    1.125 |
+| Presencia              |   0.15 |          7.5 |    1.125 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     7.50 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- ¡Recuerden la gran diferencia entre /sistemas operativos/ y /entornos
+  operativos/! De la lista que presentan, mencionan que Oculus está basado en
+  Android, y Android es en realidad un Linux con un /entorno usuario/
+  distinto. SteamVR tampoco es un sistema operativo independiente (es un entorno
+  multiplataforma, que hasta donde entiendo puede correr por lo menos sobre
+  Windows y sobre Linux).
+- Si bien manejan el ritmo de la presentación muy bien, y /casi/ no se siente
+  que estén leyendo del material que prepararon (y a ratos dejan de lado el
+  libreto), a ratos resulta obvio que lo están leyendo, sobre todo cuando algún
+  detalle de redacción los lleva a improvisar sobre la marcha. ¡Ojo con eso!
+  Intenten no leer cuando van dando una presentación, sólo usar el material
+  preparado como guía.
+  - El compañero que presentó primero lo hizo de forma mucho más natural y
+    fluida que el segundo.
+- *Muy importante:* En el trabajo que presentan (y, como es leído directamente,
+  también en el video) presentan citas a texto completo de material escrito por
+  terceros, /sin presentarlo como cita/. *Es fundamental que aprendamos a no
+  hacer eso*. Por poner un ejemplo, el tercer párrafo de la página 13 de su
+  texto debería estar entrecomillada, e indicar que es una /cita directa/ de la
+  página de OpenXR en Microsoft Learn.
+  - *Todo el texto que forme parte de su documento debe ser redactado por
+    ustedes mismos* (o presentarse explícitamente como cita). No hacerlo así
+    lo convierte en plagio. Y ya saben que esa práctica ha llevado a muchas
+    personas, y a nuestra querida Universidad en conjunto, al banquillo de los
+    acusados.
+
