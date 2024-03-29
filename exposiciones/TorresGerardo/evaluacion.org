@@ -1,0 +1,90 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Aritmética Binaria
+
+- Tema presentado por :: Gerardo Torres
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                   8.64 |   0.3 |               8.63 |  0.7 |    8.63 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 1 | 6 | 3 |   8.4 |
+| Nivel        | 0 | 0 | 0 | 5 | 5 |    9. |
+| Relevancia   | 0 | 0 | 2 | 5 | 3 |   8.2 |
+| Claridad     | 0 | 0 | 1 | 4 | 5 |   8.8 |
+| Presencia    | 0 | 0 | 0 | 6 | 4 |   8.8 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  8.64 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6)::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- El video es muy largo, teniendo en cuenta la idea principal que se quiere
+  comunicar al principio
+- Me gustaría un poco más de participación
+- Es un tema que durante la carrera se ha estudiado más de una vez. Sin embargo,
+  repasarlo fue algo positivo. Quizás me faltó incluir una explicación de cómo
+  se relaciona con los Sistemas Operativos. La explicación fue clara y fluida, y
+  pude percibir el dominio del tema por parte de Gerardo.
+- Buena Expo en general
+- Es un tema relevante para la materia, anqué creo que es más importante para la
+  materia anterior a S.O, pues la mayoría de lo presentado en la exposición lo
+  aprendí en Estructura y programación de computadoras.
+- Es información muy completa y los ejemplos ayudan a entender mejor, pero
+  también esto hace que se haga demasiado extensa.
+- En algunos partes de la exposición podría omitir algunos ejemplos o
+  explicarlos de manera más general, como en la suma y resta de binarios, ya que
+  pienso que no era tan necesario explicar cada caso (si bien, te ayuda a
+  entender mejor, aumenta mucho la duración del video).
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |          7.5 |    1.125 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     8.63 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- Elegiste un tema complicado. Explicaste muy bien la /representación/ de los
+  valores numéricos en base 2, pero la exposición no aborda /mucho/ de lo bonito
+  de la aritmética: multiplicaciones y divisiones.
+  - La suma está bien explicada, pero a la resta le faltó claridad. Aplaudo el
+    esfuerzo que le dedicaste, que resulta claro, pero tu explicación sobre la
+    resta resulta incompleta y más bien difícil de seguir 🙁
+  - Comenzaste a explicar la representación de números fraccionales, pero no lo
+    desarrollaste más. Parecía que ibas a meterte de lleno a explicar el formato
+    de punto flotante, IEEE754:
+
+        https://es.wikipedia.org/wiki/IEEE_754
+
+    Aunque sin duda reconozco que sería meter demasiada complejidad.
