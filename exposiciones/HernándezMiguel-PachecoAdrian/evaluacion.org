@@ -3,7 +3,7 @@
 
 * La deduplicación en los sistemas operativos modernos
 
-- Tema presentado por :: 
+- Tema presentado por :: Miguel Hernández y Adrián Pacheco
 - Calificación global :: Por favor revisen más adelante para ver de
   dónde vienen todos estos números 😉
 
