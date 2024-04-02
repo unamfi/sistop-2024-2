@@ -1,0 +1,687 @@
+** Erick Aguilar
+- Documentación :: [[./AguilarErick/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/checkbox/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/confirm/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/core/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/editor/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/expand/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/input/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/password/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/prompts/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/rawlist/README.md][README.md]], [[./AguilarErick/node_modules/@inquirer/select/README.md][README.md]], [[./AguilarErick/node_modules/@types/mute-stream/README.md][README.md]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/README.md][README.md]], [[./AguilarErick/node_modules/@types/node/README.md][README.md]], [[./AguilarErick/node_modules/@types/wrap-ansi/README.md][README.md]], [[./AguilarErick/node_modules/ansi-escapes/readme.md][readme.md]], [[./AguilarErick/node_modules/ansi-regex/readme.md][readme.md]], [[./AguilarErick/node_modules/ansi-styles/readme.md][readme.md]], [[./AguilarErick/node_modules/chalk/readme.md][readme.md]], [[./AguilarErick/node_modules/chardet/README.md][README.md]], [[./AguilarErick/node_modules/cli-spinners/readme.md][readme.md]], [[./AguilarErick/node_modules/cli-width/README.md][README.md]], [[./AguilarErick/node_modules/color-convert/CHANGELOG.md][CHANGELOG.md]], [[./AguilarErick/node_modules/color-convert/README.md][README.md]], [[./AguilarErick/node_modules/color-name/README.md][README.md]], [[./AguilarErick/node_modules/emoji-regex/LICENSE-MIT.txt][LICENSE-MIT.txt]], [[./AguilarErick/node_modules/emoji-regex/README.md][README.md]], [[./AguilarErick/node_modules/escape-string-regexp/readme.md][readme.md]], [[./AguilarErick/node_modules/external-editor/README.md][README.md]], [[./AguilarErick/node_modules/figures/readme.md][readme.md]], [[./AguilarErick/node_modules/has-flag/readme.md][readme.md]], [[./AguilarErick/node_modules/iconv-lite/Changelog.md][Changelog.md]], [[./AguilarErick/node_modules/iconv-lite/README.md][README.md]], [[./AguilarErick/node_modules/is-fullwidth-code-point/readme.md][readme.md]], [[./AguilarErick/node_modules/mute-stream/README.md][README.md]], [[./AguilarErick/node_modules/os-tmpdir/readme.md][readme.md]], [[./AguilarErick/node_modules/run-async/README.md][README.md]], [[./AguilarErick/node_modules/safer-buffer/Porting-Buffer.md][Porting-Buffer.md]], [[./AguilarErick/node_modules/safer-buffer/Readme.md][Readme.md]], [[./AguilarErick/node_modules/signal-exit/LICENSE.txt][LICENSE.txt]], [[./AguilarErick/node_modules/signal-exit/README.md][README.md]], [[./AguilarErick/node_modules/string-width/readme.md][readme.md]], [[./AguilarErick/node_modules/strip-ansi/readme.md][readme.md]], [[./AguilarErick/node_modules/supports-color/readme.md][readme.md]], [[./AguilarErick/node_modules/tmp/README.md][README.md]], [[./AguilarErick/node_modules/type-fest/readme.md][readme.md]], [[./AguilarErick/node_modules/typescript/LICENSE.txt][LICENSE.txt]], [[./AguilarErick/node_modules/typescript/README.md][README.md]], [[./AguilarErick/node_modules/typescript/SECURITY.md][SECURITY.md]], [[./AguilarErick/node_modules/typescript/ThirdPartyNoticeText.txt][ThirdPartyNoticeText.txt]], [[./AguilarErick/node_modules/undici-types/README.md][README.md]], [[./AguilarErick/node_modules/wrap-ansi/readme.md][readme.md]]
+- Archivos :: [[./AguilarErick/GlobalConfigurations.ts][GlobalConfigurations.ts]], [[./AguilarErick/controllers/BestFitAllocator.ts][BestFitAllocator.ts]], [[./AguilarErick/controllers/FirstFitAllocator.ts][FirstFitAllocator.ts]], [[./AguilarErick/controllers/IAllocationStrategy.ts][IAllocationStrategy.ts]], [[./AguilarErick/controllers/MemoryManager.ts][MemoryManager.ts]], [[./AguilarErick/controllers/WorstFitAllocator.ts][WorstFitAllocator.ts]], [[./AguilarErick/dist/GlobalConfigurations.js][GlobalConfigurations.js]], [[./AguilarErick/dist/controllers/BestFitAllocator.js][BestFitAllocator.js]], [[./AguilarErick/dist/controllers/FirstFitAllocator.js][FirstFitAllocator.js]], [[./AguilarErick/dist/controllers/IAllocationStrategy.js][IAllocationStrategy.js]], [[./AguilarErick/dist/controllers/MemoryManager.js][MemoryManager.js]], [[./AguilarErick/dist/controllers/WorstFitAllocator.js][WorstFitAllocator.js]], [[./AguilarErick/dist/index.js][index.js]], [[./AguilarErick/dist/models/MemoryAddress.js][MemoryAddress.js]], [[./AguilarErick/dist/models/MemoryBlock.js][MemoryBlock.js]], [[./AguilarErick/dist/models/MemorySize.js][MemorySize.js]], [[./AguilarErick/dist/models/Process.js][Process.js]], [[./AguilarErick/dist/models/ProcessPid.js][ProcessPid.js]], [[./AguilarErick/dist/models/StateAllocate.js][StateAllocate.js]], [[./AguilarErick/dist/view/ShowTheCurrentMemory.js][ShowTheCurrentMemory.js]], [[./AguilarErick/index.ts][index.ts]], [[./AguilarErick/models/MemoryAddress.ts][MemoryAddress.ts]], [[./AguilarErick/models/MemoryBlock.ts][MemoryBlock.ts]], [[./AguilarErick/models/MemorySize.ts][MemorySize.ts]], [[./AguilarErick/models/Process.ts][Process.ts]], [[./AguilarErick/models/ProcessPid.ts][ProcessPid.ts]], [[./AguilarErick/models/StateAllocate.ts][StateAllocate.ts]], [[./AguilarErick/node_modules/@inquirer/checkbox/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/checkbox/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/checkbox/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/checkbox/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/checkbox/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/checkbox/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/confirm/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/confirm/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/confirm/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/confirm/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/confirm/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/confirm/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/core/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/Separator.js][Separator.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/create-prompt.js][create-prompt.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/errors.js][errors.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/hook-engine.js][hook-engine.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/key.js][key.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/make-theme.js][make-theme.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/pagination/lines.js][lines.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/pagination/position.js][position.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/pagination/use-pagination.js][use-pagination.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/read-line.type.js][read-line.type.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/screen-manager.js][screen-manager.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/theme.js][theme.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/use-effect.js][use-effect.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/use-keypress.js][use-keypress.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/use-memo.js][use-memo.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/use-prefix.js][use-prefix.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/use-ref.js][use-ref.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/use-state.js][use-state.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/lib/utils.js][utils.js]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/Separator.d.ts][Separator.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/create-prompt.d.ts][create-prompt.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/errors.d.ts][errors.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/hook-engine.d.ts][hook-engine.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/key.d.ts][key.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/make-theme.d.ts][make-theme.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/pagination/lines.d.ts][lines.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/pagination/position.d.ts][position.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/pagination/use-pagination.d.ts][use-pagination.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/read-line.type.d.ts][read-line.type.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/screen-manager.d.ts][screen-manager.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/theme.d.ts][theme.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/use-effect.d.ts][use-effect.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/use-keypress.d.ts][use-keypress.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/use-memo.d.ts][use-memo.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/use-prefix.d.ts][use-prefix.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/use-ref.d.ts][use-ref.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/use-state.d.ts][use-state.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/cjs/types/lib/utils.d.ts][utils.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/Separator.mjs][Separator.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/create-prompt.mjs][create-prompt.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/errors.mjs][errors.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/hook-engine.mjs][hook-engine.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/key.mjs][key.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/make-theme.mjs][make-theme.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/pagination/lines.mjs][lines.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/pagination/position.mjs][position.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/pagination/use-pagination.mjs][use-pagination.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/read-line.type.mjs][read-line.type.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/screen-manager.mjs][screen-manager.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/theme.mjs][theme.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/use-effect.mjs][use-effect.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/use-keypress.mjs][use-keypress.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/use-memo.mjs][use-memo.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/use-prefix.mjs][use-prefix.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/use-ref.mjs][use-ref.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/use-state.mjs][use-state.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/lib/utils.mjs][utils.mjs]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/Separator.d.mts][Separator.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/create-prompt.d.mts][create-prompt.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/errors.d.mts][errors.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/hook-engine.d.mts][hook-engine.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/key.d.mts][key.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/make-theme.d.mts][make-theme.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/pagination/lines.d.mts][lines.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/pagination/position.d.mts][position.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/pagination/use-pagination.d.mts][use-pagination.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/read-line.type.d.mts][read-line.type.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/screen-manager.d.mts][screen-manager.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/theme.d.mts][theme.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/use-effect.d.mts][use-effect.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/use-keypress.d.mts][use-keypress.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/use-memo.d.mts][use-memo.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/use-prefix.d.mts][use-prefix.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/use-ref.d.mts][use-ref.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/use-state.d.mts][use-state.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/dist/esm/types/lib/utils.d.mts][utils.d.mts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/assert.d.ts][assert.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/assert/strict.d.ts][strict.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/async_hooks.d.ts][async_hooks.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/buffer.d.ts][buffer.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/child_process.d.ts][child_process.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/cluster.d.ts][cluster.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/console.d.ts][console.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/constants.d.ts][constants.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/crypto.d.ts][crypto.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/dgram.d.ts][dgram.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/diagnostics_channel.d.ts][diagnostics_channel.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/dns.d.ts][dns.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/dns/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/dom-events.d.ts][dom-events.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/domain.d.ts][domain.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/events.d.ts][events.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/fs.d.ts][fs.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/fs/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/globals.d.ts][globals.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/globals.global.d.ts][globals.global.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/http.d.ts][http.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/http2.d.ts][http2.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/https.d.ts][https.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/inspector.d.ts][inspector.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/module.d.ts][module.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/net.d.ts][net.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/os.d.ts][os.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/path.d.ts][path.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/perf_hooks.d.ts][perf_hooks.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/process.d.ts][process.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/punycode.d.ts][punycode.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/querystring.d.ts][querystring.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/readline.d.ts][readline.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/readline/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/repl.d.ts][repl.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/stream.d.ts][stream.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/stream/consumers.d.ts][consumers.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/stream/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/stream/web.d.ts][web.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/string_decoder.d.ts][string_decoder.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/test.d.ts][test.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/timers.d.ts][timers.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/timers/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/tls.d.ts][tls.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/trace_events.d.ts][trace_events.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/tty.d.ts][tty.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/url.d.ts][url.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/util.d.ts][util.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/v8.d.ts][v8.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/vm.d.ts][vm.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/wasi.d.ts][wasi.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/worker_threads.d.ts][worker_threads.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/node_modules/@types/node/zlib.d.ts][zlib.d.ts]], [[./AguilarErick/node_modules/@inquirer/core/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/editor/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/editor/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/editor/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/editor/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/editor/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/editor/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/expand/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/expand/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/expand/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/expand/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/expand/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/expand/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/input/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/input/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/input/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/input/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/input/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/input/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/password/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/password/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/password/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/password/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/password/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/password/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/prompts/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/prompts/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/prompts/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/prompts/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/prompts/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/prompts/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/rawlist/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/rawlist/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/rawlist/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/rawlist/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/rawlist/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/rawlist/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/select/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/select/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/select/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/select/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/select/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/select/package.json][package.json]], [[./AguilarErick/node_modules/@inquirer/type/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@inquirer/type/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/@inquirer/type/dist/cjs/types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@inquirer/type/dist/esm/index.mjs][index.mjs]], [[./AguilarErick/node_modules/@inquirer/type/dist/esm/types/index.d.mts][index.d.mts]], [[./AguilarErick/node_modules/@inquirer/type/package.json][package.json]], [[./AguilarErick/node_modules/@types/mute-stream/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@types/mute-stream/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/assert.d.ts][assert.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/assert/strict.d.ts][strict.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/async_hooks.d.ts][async_hooks.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/buffer.d.ts][buffer.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/child_process.d.ts][child_process.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/cluster.d.ts][cluster.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/console.d.ts][console.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/constants.d.ts][constants.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/crypto.d.ts][crypto.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/dgram.d.ts][dgram.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/diagnostics_channel.d.ts][diagnostics_channel.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/dns.d.ts][dns.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/dns/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/dom-events.d.ts][dom-events.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/domain.d.ts][domain.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/events.d.ts][events.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/fs.d.ts][fs.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/fs/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/globals.d.ts][globals.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/globals.global.d.ts][globals.global.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/http.d.ts][http.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/http2.d.ts][http2.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/https.d.ts][https.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/inspector.d.ts][inspector.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/module.d.ts][module.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/net.d.ts][net.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/os.d.ts][os.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/package.json][package.json]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/path.d.ts][path.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/perf_hooks.d.ts][perf_hooks.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/process.d.ts][process.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/punycode.d.ts][punycode.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/querystring.d.ts][querystring.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/readline.d.ts][readline.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/readline/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/repl.d.ts][repl.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/stream.d.ts][stream.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/stream/consumers.d.ts][consumers.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/stream/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/stream/web.d.ts][web.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/string_decoder.d.ts][string_decoder.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/test.d.ts][test.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/timers.d.ts][timers.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/timers/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/tls.d.ts][tls.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/trace_events.d.ts][trace_events.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/tty.d.ts][tty.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/url.d.ts][url.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/util.d.ts][util.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/v8.d.ts][v8.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/vm.d.ts][vm.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/wasi.d.ts][wasi.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/worker_threads.d.ts][worker_threads.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/node_modules/@types/node/zlib.d.ts][zlib.d.ts]], [[./AguilarErick/node_modules/@types/mute-stream/package.json][package.json]], [[./AguilarErick/node_modules/@types/node/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@types/node/assert.d.ts][assert.d.ts]], [[./AguilarErick/node_modules/@types/node/assert/strict.d.ts][strict.d.ts]], [[./AguilarErick/node_modules/@types/node/async_hooks.d.ts][async_hooks.d.ts]], [[./AguilarErick/node_modules/@types/node/buffer.d.ts][buffer.d.ts]], [[./AguilarErick/node_modules/@types/node/child_process.d.ts][child_process.d.ts]], [[./AguilarErick/node_modules/@types/node/cluster.d.ts][cluster.d.ts]], [[./AguilarErick/node_modules/@types/node/console.d.ts][console.d.ts]], [[./AguilarErick/node_modules/@types/node/constants.d.ts][constants.d.ts]], [[./AguilarErick/node_modules/@types/node/crypto.d.ts][crypto.d.ts]], [[./AguilarErick/node_modules/@types/node/dgram.d.ts][dgram.d.ts]], [[./AguilarErick/node_modules/@types/node/diagnostics_channel.d.ts][diagnostics_channel.d.ts]], [[./AguilarErick/node_modules/@types/node/dns.d.ts][dns.d.ts]], [[./AguilarErick/node_modules/@types/node/dns/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/dom-events.d.ts][dom-events.d.ts]], [[./AguilarErick/node_modules/@types/node/domain.d.ts][domain.d.ts]], [[./AguilarErick/node_modules/@types/node/events.d.ts][events.d.ts]], [[./AguilarErick/node_modules/@types/node/fs.d.ts][fs.d.ts]], [[./AguilarErick/node_modules/@types/node/fs/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/globals.d.ts][globals.d.ts]], [[./AguilarErick/node_modules/@types/node/globals.global.d.ts][globals.global.d.ts]], [[./AguilarErick/node_modules/@types/node/http.d.ts][http.d.ts]], [[./AguilarErick/node_modules/@types/node/http2.d.ts][http2.d.ts]], [[./AguilarErick/node_modules/@types/node/https.d.ts][https.d.ts]], [[./AguilarErick/node_modules/@types/node/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@types/node/inspector.d.ts][inspector.d.ts]], [[./AguilarErick/node_modules/@types/node/module.d.ts][module.d.ts]], [[./AguilarErick/node_modules/@types/node/net.d.ts][net.d.ts]], [[./AguilarErick/node_modules/@types/node/os.d.ts][os.d.ts]], [[./AguilarErick/node_modules/@types/node/package.json][package.json]], [[./AguilarErick/node_modules/@types/node/path.d.ts][path.d.ts]], [[./AguilarErick/node_modules/@types/node/perf_hooks.d.ts][perf_hooks.d.ts]], [[./AguilarErick/node_modules/@types/node/process.d.ts][process.d.ts]], [[./AguilarErick/node_modules/@types/node/punycode.d.ts][punycode.d.ts]], [[./AguilarErick/node_modules/@types/node/querystring.d.ts][querystring.d.ts]], [[./AguilarErick/node_modules/@types/node/readline.d.ts][readline.d.ts]], [[./AguilarErick/node_modules/@types/node/readline/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/repl.d.ts][repl.d.ts]], [[./AguilarErick/node_modules/@types/node/stream.d.ts][stream.d.ts]], [[./AguilarErick/node_modules/@types/node/stream/consumers.d.ts][consumers.d.ts]], [[./AguilarErick/node_modules/@types/node/stream/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/stream/web.d.ts][web.d.ts]], [[./AguilarErick/node_modules/@types/node/string_decoder.d.ts][string_decoder.d.ts]], [[./AguilarErick/node_modules/@types/node/test.d.ts][test.d.ts]], [[./AguilarErick/node_modules/@types/node/timers.d.ts][timers.d.ts]], [[./AguilarErick/node_modules/@types/node/timers/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/tls.d.ts][tls.d.ts]], [[./AguilarErick/node_modules/@types/node/trace_events.d.ts][trace_events.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/assert.d.ts][assert.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/assert/strict.d.ts][strict.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/async_hooks.d.ts][async_hooks.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/buffer.d.ts][buffer.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/child_process.d.ts][child_process.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/cluster.d.ts][cluster.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/console.d.ts][console.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/constants.d.ts][constants.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/crypto.d.ts][crypto.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/dgram.d.ts][dgram.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/diagnostics_channel.d.ts][diagnostics_channel.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/dns.d.ts][dns.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/dns/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/dom-events.d.ts][dom-events.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/domain.d.ts][domain.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/events.d.ts][events.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/fs.d.ts][fs.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/fs/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/globals.d.ts][globals.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/globals.global.d.ts][globals.global.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/http.d.ts][http.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/http2.d.ts][http2.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/https.d.ts][https.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/inspector.d.ts][inspector.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/module.d.ts][module.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/net.d.ts][net.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/os.d.ts][os.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/path.d.ts][path.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/perf_hooks.d.ts][perf_hooks.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/process.d.ts][process.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/punycode.d.ts][punycode.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/querystring.d.ts][querystring.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/readline.d.ts][readline.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/readline/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/repl.d.ts][repl.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/stream.d.ts][stream.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/stream/consumers.d.ts][consumers.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/stream/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/stream/web.d.ts][web.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/string_decoder.d.ts][string_decoder.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/test.d.ts][test.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/timers.d.ts][timers.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/timers/promises.d.ts][promises.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/tls.d.ts][tls.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/trace_events.d.ts][trace_events.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/tty.d.ts][tty.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/url.d.ts][url.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/util.d.ts][util.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/v8.d.ts][v8.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/vm.d.ts][vm.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/wasi.d.ts][wasi.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/worker_threads.d.ts][worker_threads.d.ts]], [[./AguilarErick/node_modules/@types/node/ts4.8/zlib.d.ts][zlib.d.ts]], [[./AguilarErick/node_modules/@types/node/tty.d.ts][tty.d.ts]], [[./AguilarErick/node_modules/@types/node/url.d.ts][url.d.ts]], [[./AguilarErick/node_modules/@types/node/util.d.ts][util.d.ts]], [[./AguilarErick/node_modules/@types/node/v8.d.ts][v8.d.ts]], [[./AguilarErick/node_modules/@types/node/vm.d.ts][vm.d.ts]], [[./AguilarErick/node_modules/@types/node/wasi.d.ts][wasi.d.ts]], [[./AguilarErick/node_modules/@types/node/worker_threads.d.ts][worker_threads.d.ts]], [[./AguilarErick/node_modules/@types/node/zlib.d.ts][zlib.d.ts]], [[./AguilarErick/node_modules/@types/wrap-ansi/LICENSE][LICENSE]], [[./AguilarErick/node_modules/@types/wrap-ansi/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/@types/wrap-ansi/package.json][package.json]], [[./AguilarErick/node_modules/ansi-escapes/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/ansi-escapes/index.js][index.js]], [[./AguilarErick/node_modules/ansi-escapes/license][license]], [[./AguilarErick/node_modules/ansi-escapes/package.json][package.json]], [[./AguilarErick/node_modules/ansi-regex/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/ansi-regex/index.js][index.js]], [[./AguilarErick/node_modules/ansi-regex/license][license]], [[./AguilarErick/node_modules/ansi-regex/package.json][package.json]], [[./AguilarErick/node_modules/ansi-styles/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/ansi-styles/index.js][index.js]], [[./AguilarErick/node_modules/ansi-styles/license][license]], [[./AguilarErick/node_modules/ansi-styles/package.json][package.json]], [[./AguilarErick/node_modules/chalk/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/chalk/license][license]], [[./AguilarErick/node_modules/chalk/package.json][package.json]], [[./AguilarErick/node_modules/chalk/source/index.js][index.js]], [[./AguilarErick/node_modules/chalk/source/templates.js][templates.js]], [[./AguilarErick/node_modules/chalk/source/util.js][util.js]], [[./AguilarErick/node_modules/chardet/LICENSE][LICENSE]], [[./AguilarErick/node_modules/chardet/encoding/iso2022.js][iso2022.js]], [[./AguilarErick/node_modules/chardet/encoding/mbcs.js][mbcs.js]], [[./AguilarErick/node_modules/chardet/encoding/sbcs.js][sbcs.js]], [[./AguilarErick/node_modules/chardet/encoding/unicode.js][unicode.js]], [[./AguilarErick/node_modules/chardet/encoding/utf8.js][utf8.js]], [[./AguilarErick/node_modules/chardet/index.js][index.js]], [[./AguilarErick/node_modules/chardet/match.js][match.js]], [[./AguilarErick/node_modules/chardet/package.json][package.json]], [[./AguilarErick/node_modules/cli-spinners/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/cli-spinners/index.js][index.js]], [[./AguilarErick/node_modules/cli-spinners/license][license]], [[./AguilarErick/node_modules/cli-spinners/package.json][package.json]], [[./AguilarErick/node_modules/cli-spinners/spinners.json][spinners.json]], [[./AguilarErick/node_modules/cli-width/LICENSE][LICENSE]], [[./AguilarErick/node_modules/cli-width/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/cli-width/index.js][index.js]], [[./AguilarErick/node_modules/cli-width/package.json][package.json]], [[./AguilarErick/node_modules/color-convert/LICENSE][LICENSE]], [[./AguilarErick/node_modules/color-convert/conversions.js][conversions.js]], [[./AguilarErick/node_modules/color-convert/index.js][index.js]], [[./AguilarErick/node_modules/color-convert/package.json][package.json]], [[./AguilarErick/node_modules/color-convert/route.js][route.js]], [[./AguilarErick/node_modules/color-name/LICENSE][LICENSE]], [[./AguilarErick/node_modules/color-name/index.js][index.js]], [[./AguilarErick/node_modules/color-name/package.json][package.json]], [[./AguilarErick/node_modules/emoji-regex/es2015/index.js][index.js]], [[./AguilarErick/node_modules/emoji-regex/es2015/text.js][text.js]], [[./AguilarErick/node_modules/emoji-regex/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/emoji-regex/index.js][index.js]], [[./AguilarErick/node_modules/emoji-regex/package.json][package.json]], [[./AguilarErick/node_modules/emoji-regex/text.js][text.js]], [[./AguilarErick/node_modules/escape-string-regexp/index.js][index.js]], [[./AguilarErick/node_modules/escape-string-regexp/license][license]], [[./AguilarErick/node_modules/escape-string-regexp/package.json][package.json]], [[./AguilarErick/node_modules/external-editor/LICENSE][LICENSE]], [[./AguilarErick/node_modules/external-editor/example_async.js][example_async.js]], [[./AguilarErick/node_modules/external-editor/example_sync.js][example_sync.js]], [[./AguilarErick/node_modules/external-editor/main/errors/CreateFileError.d.ts][CreateFileError.d.ts]], [[./AguilarErick/node_modules/external-editor/main/errors/CreateFileError.js][CreateFileError.js]], [[./AguilarErick/node_modules/external-editor/main/errors/LaunchEditorError.d.ts][LaunchEditorError.d.ts]], [[./AguilarErick/node_modules/external-editor/main/errors/LaunchEditorError.js][LaunchEditorError.js]], [[./AguilarErick/node_modules/external-editor/main/errors/ReadFileError.d.ts][ReadFileError.d.ts]], [[./AguilarErick/node_modules/external-editor/main/errors/ReadFileError.js][ReadFileError.js]], [[./AguilarErick/node_modules/external-editor/main/errors/RemoveFileError.d.ts][RemoveFileError.d.ts]], [[./AguilarErick/node_modules/external-editor/main/errors/RemoveFileError.js][RemoveFileError.js]], [[./AguilarErick/node_modules/external-editor/main/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/external-editor/main/index.js][index.js]], [[./AguilarErick/node_modules/external-editor/package.json][package.json]], [[./AguilarErick/node_modules/figures/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/figures/index.js][index.js]], [[./AguilarErick/node_modules/figures/license][license]], [[./AguilarErick/node_modules/figures/package.json][package.json]], [[./AguilarErick/node_modules/has-flag/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/has-flag/index.js][index.js]], [[./AguilarErick/node_modules/has-flag/license][license]], [[./AguilarErick/node_modules/has-flag/package.json][package.json]], [[./AguilarErick/node_modules/iconv-lite/LICENSE][LICENSE]], [[./AguilarErick/node_modules/iconv-lite/encodings/dbcs-codec.js][dbcs-codec.js]], [[./AguilarErick/node_modules/iconv-lite/encodings/dbcs-data.js][dbcs-data.js]], [[./AguilarErick/node_modules/iconv-lite/encodings/index.js][index.js]], [[./AguilarErick/node_modules/iconv-lite/encodings/internal.js][internal.js]], [[./AguilarErick/node_modules/iconv-lite/encodings/sbcs-codec.js][sbcs-codec.js]], [[./AguilarErick/node_modules/iconv-lite/encodings/sbcs-data-generated.js][sbcs-data-generated.js]], [[./AguilarErick/node_modules/iconv-lite/encodings/sbcs-data.js][sbcs-data.js]], [[./AguilarErick/node_modules/iconv-lite/encodings/tables/big5-added.json][big5-added.json]], [[./AguilarErick/node_modules/iconv-lite/encodings/tables/cp936.json][cp936.json]], [[./AguilarErick/node_modules/iconv-lite/encodings/tables/cp949.json][cp949.json]], [[./AguilarErick/node_modules/iconv-lite/encodings/tables/cp950.json][cp950.json]], [[./AguilarErick/node_modules/iconv-lite/encodings/tables/eucjp.json][eucjp.json]], [[./AguilarErick/node_modules/iconv-lite/encodings/tables/gb18030-ranges.json][gb18030-ranges.json]], [[./AguilarErick/node_modules/iconv-lite/encodings/tables/gbk-added.json][gbk-added.json]], [[./AguilarErick/node_modules/iconv-lite/encodings/tables/shiftjis.json][shiftjis.json]], [[./AguilarErick/node_modules/iconv-lite/encodings/utf16.js][utf16.js]], [[./AguilarErick/node_modules/iconv-lite/encodings/utf7.js][utf7.js]], [[./AguilarErick/node_modules/iconv-lite/lib/bom-handling.js][bom-handling.js]], [[./AguilarErick/node_modules/iconv-lite/lib/extend-node.js][extend-node.js]], [[./AguilarErick/node_modules/iconv-lite/lib/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/iconv-lite/lib/index.js][index.js]], [[./AguilarErick/node_modules/iconv-lite/lib/streams.js][streams.js]], [[./AguilarErick/node_modules/iconv-lite/package.json][package.json]], [[./AguilarErick/node_modules/is-fullwidth-code-point/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/is-fullwidth-code-point/index.js][index.js]], [[./AguilarErick/node_modules/is-fullwidth-code-point/license][license]], [[./AguilarErick/node_modules/is-fullwidth-code-point/package.json][package.json]], [[./AguilarErick/node_modules/mute-stream/LICENSE][LICENSE]], [[./AguilarErick/node_modules/mute-stream/lib/index.js][index.js]], [[./AguilarErick/node_modules/mute-stream/package.json][package.json]], [[./AguilarErick/node_modules/os-tmpdir/index.js][index.js]], [[./AguilarErick/node_modules/os-tmpdir/license][license]], [[./AguilarErick/node_modules/os-tmpdir/package.json][package.json]], [[./AguilarErick/node_modules/run-async/LICENSE][LICENSE]], [[./AguilarErick/node_modules/run-async/index.js][index.js]], [[./AguilarErick/node_modules/run-async/package.json][package.json]], [[./AguilarErick/node_modules/safer-buffer/LICENSE][LICENSE]], [[./AguilarErick/node_modules/safer-buffer/dangerous.js][dangerous.js]], [[./AguilarErick/node_modules/safer-buffer/package.json][package.json]], [[./AguilarErick/node_modules/safer-buffer/safer.js][safer.js]], [[./AguilarErick/node_modules/safer-buffer/tests.js][tests.js]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/browser.d.ts][browser.d.ts]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/browser.d.ts.map][browser.d.ts.map]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/browser.js][browser.js]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/browser.js.map][browser.js.map]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/index.d.ts.map][index.d.ts.map]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/index.js][index.js]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/index.js.map][index.js.map]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/package.json][package.json]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/signals.d.ts][signals.d.ts]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/signals.d.ts.map][signals.d.ts.map]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/signals.js][signals.js]], [[./AguilarErick/node_modules/signal-exit/dist/cjs/signals.js.map][signals.js.map]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/browser.d.ts][browser.d.ts]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/browser.d.ts.map][browser.d.ts.map]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/browser.js][browser.js]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/browser.js.map][browser.js.map]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/index.d.ts.map][index.d.ts.map]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/index.js][index.js]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/index.js.map][index.js.map]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/package.json][package.json]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/signals.d.ts][signals.d.ts]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/signals.d.ts.map][signals.d.ts.map]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/signals.js][signals.js]], [[./AguilarErick/node_modules/signal-exit/dist/mjs/signals.js.map][signals.js.map]], [[./AguilarErick/node_modules/signal-exit/package.json][package.json]], [[./AguilarErick/node_modules/string-width/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/string-width/index.js][index.js]], [[./AguilarErick/node_modules/string-width/license][license]], [[./AguilarErick/node_modules/string-width/package.json][package.json]], [[./AguilarErick/node_modules/strip-ansi/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/strip-ansi/index.js][index.js]], [[./AguilarErick/node_modules/strip-ansi/license][license]], [[./AguilarErick/node_modules/strip-ansi/package.json][package.json]], [[./AguilarErick/node_modules/supports-color/browser.js][browser.js]], [[./AguilarErick/node_modules/supports-color/index.js][index.js]], [[./AguilarErick/node_modules/supports-color/license][license]], [[./AguilarErick/node_modules/supports-color/package.json][package.json]], [[./AguilarErick/node_modules/tmp/LICENSE][LICENSE]], [[./AguilarErick/node_modules/tmp/lib/tmp.js][tmp.js]], [[./AguilarErick/node_modules/tmp/package.json][package.json]], [[./AguilarErick/node_modules/type-fest/base.d.ts][base.d.ts]], [[./AguilarErick/node_modules/type-fest/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/type-fest/license][license]], [[./AguilarErick/node_modules/type-fest/package.json][package.json]], [[./AguilarErick/node_modules/type-fest/source/async-return-type.d.ts][async-return-type.d.ts]], [[./AguilarErick/node_modules/type-fest/source/asyncify.d.ts][asyncify.d.ts]], [[./AguilarErick/node_modules/type-fest/source/basic.d.ts][basic.d.ts]], [[./AguilarErick/node_modules/type-fest/source/conditional-except.d.ts][conditional-except.d.ts]], [[./AguilarErick/node_modules/type-fest/source/conditional-keys.d.ts][conditional-keys.d.ts]], [[./AguilarErick/node_modules/type-fest/source/conditional-pick.d.ts][conditional-pick.d.ts]], [[./AguilarErick/node_modules/type-fest/source/entries.d.ts][entries.d.ts]], [[./AguilarErick/node_modules/type-fest/source/entry.d.ts][entry.d.ts]], [[./AguilarErick/node_modules/type-fest/source/except.d.ts][except.d.ts]], [[./AguilarErick/node_modules/type-fest/source/fixed-length-array.d.ts][fixed-length-array.d.ts]], [[./AguilarErick/node_modules/type-fest/source/iterable-element.d.ts][iterable-element.d.ts]], [[./AguilarErick/node_modules/type-fest/source/literal-union.d.ts][literal-union.d.ts]], [[./AguilarErick/node_modules/type-fest/source/merge-exclusive.d.ts][merge-exclusive.d.ts]], [[./AguilarErick/node_modules/type-fest/source/merge.d.ts][merge.d.ts]], [[./AguilarErick/node_modules/type-fest/source/mutable.d.ts][mutable.d.ts]], [[./AguilarErick/node_modules/type-fest/source/opaque.d.ts][opaque.d.ts]], [[./AguilarErick/node_modules/type-fest/source/package-json.d.ts][package-json.d.ts]], [[./AguilarErick/node_modules/type-fest/source/partial-deep.d.ts][partial-deep.d.ts]], [[./AguilarErick/node_modules/type-fest/source/promisable.d.ts][promisable.d.ts]], [[./AguilarErick/node_modules/type-fest/source/promise-value.d.ts][promise-value.d.ts]], [[./AguilarErick/node_modules/type-fest/source/readonly-deep.d.ts][readonly-deep.d.ts]], [[./AguilarErick/node_modules/type-fest/source/require-at-least-one.d.ts][require-at-least-one.d.ts]], [[./AguilarErick/node_modules/type-fest/source/require-exactly-one.d.ts][require-exactly-one.d.ts]], [[./AguilarErick/node_modules/type-fest/source/set-optional.d.ts][set-optional.d.ts]], [[./AguilarErick/node_modules/type-fest/source/set-required.d.ts][set-required.d.ts]], [[./AguilarErick/node_modules/type-fest/source/set-return-type.d.ts][set-return-type.d.ts]], [[./AguilarErick/node_modules/type-fest/source/simplify.d.ts][simplify.d.ts]], [[./AguilarErick/node_modules/type-fest/source/stringified.d.ts][stringified.d.ts]], [[./AguilarErick/node_modules/type-fest/source/tsconfig-json.d.ts][tsconfig-json.d.ts]], [[./AguilarErick/node_modules/type-fest/source/typed-array.d.ts][typed-array.d.ts]], [[./AguilarErick/node_modules/type-fest/source/union-to-intersection.d.ts][union-to-intersection.d.ts]], [[./AguilarErick/node_modules/type-fest/source/utilities.d.ts][utilities.d.ts]], [[./AguilarErick/node_modules/type-fest/source/value-of.d.ts][value-of.d.ts]], [[./AguilarErick/node_modules/type-fest/ts41/camel-case.d.ts][camel-case.d.ts]], [[./AguilarErick/node_modules/type-fest/ts41/delimiter-case.d.ts][delimiter-case.d.ts]], [[./AguilarErick/node_modules/type-fest/ts41/get.d.ts][get.d.ts]], [[./AguilarErick/node_modules/type-fest/ts41/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/type-fest/ts41/kebab-case.d.ts][kebab-case.d.ts]], [[./AguilarErick/node_modules/type-fest/ts41/pascal-case.d.ts][pascal-case.d.ts]], [[./AguilarErick/node_modules/type-fest/ts41/snake-case.d.ts][snake-case.d.ts]], [[./AguilarErick/node_modules/type-fest/ts41/utilities.d.ts][utilities.d.ts]], [[./AguilarErick/node_modules/typescript/bin/tsc][tsc]], [[./AguilarErick/node_modules/typescript/bin/tsserver][tsserver]], [[./AguilarErick/node_modules/typescript/lib/cancellationToken.js][cancellationToken.js]], [[./AguilarErick/node_modules/typescript/lib/cs/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/de/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/es/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/fr/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/it/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/ja/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/ko/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/lib.d.ts][lib.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.decorators.d.ts][lib.decorators.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.decorators.legacy.d.ts][lib.decorators.legacy.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.dom.asynciterable.d.ts][lib.dom.asynciterable.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.dom.d.ts][lib.dom.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.dom.iterable.d.ts][lib.dom.iterable.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.collection.d.ts][lib.es2015.collection.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.core.d.ts][lib.es2015.core.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.d.ts][lib.es2015.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.generator.d.ts][lib.es2015.generator.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.iterable.d.ts][lib.es2015.iterable.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.promise.d.ts][lib.es2015.promise.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.proxy.d.ts][lib.es2015.proxy.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.reflect.d.ts][lib.es2015.reflect.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.symbol.d.ts][lib.es2015.symbol.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts][lib.es2015.symbol.wellknown.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2016.array.include.d.ts][lib.es2016.array.include.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2016.d.ts][lib.es2016.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2016.full.d.ts][lib.es2016.full.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2016.intl.d.ts][lib.es2016.intl.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2017.d.ts][lib.es2017.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2017.date.d.ts][lib.es2017.date.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2017.full.d.ts][lib.es2017.full.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2017.intl.d.ts][lib.es2017.intl.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2017.object.d.ts][lib.es2017.object.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts][lib.es2017.sharedmemory.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2017.string.d.ts][lib.es2017.string.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts][lib.es2017.typedarrays.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts][lib.es2018.asyncgenerator.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts][lib.es2018.asynciterable.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2018.d.ts][lib.es2018.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2018.full.d.ts][lib.es2018.full.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2018.intl.d.ts][lib.es2018.intl.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2018.promise.d.ts][lib.es2018.promise.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2018.regexp.d.ts][lib.es2018.regexp.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2019.array.d.ts][lib.es2019.array.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2019.d.ts][lib.es2019.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2019.full.d.ts][lib.es2019.full.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2019.intl.d.ts][lib.es2019.intl.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2019.object.d.ts][lib.es2019.object.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2019.string.d.ts][lib.es2019.string.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2019.symbol.d.ts][lib.es2019.symbol.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.bigint.d.ts][lib.es2020.bigint.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.d.ts][lib.es2020.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.date.d.ts][lib.es2020.date.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.full.d.ts][lib.es2020.full.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.intl.d.ts][lib.es2020.intl.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.number.d.ts][lib.es2020.number.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.promise.d.ts][lib.es2020.promise.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.sharedmemory.d.ts][lib.es2020.sharedmemory.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.string.d.ts][lib.es2020.string.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2020.symbol.wellknown.d.ts][lib.es2020.symbol.wellknown.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2021.d.ts][lib.es2021.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2021.full.d.ts][lib.es2021.full.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2021.intl.d.ts][lib.es2021.intl.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2021.promise.d.ts][lib.es2021.promise.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2021.string.d.ts][lib.es2021.string.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2021.weakref.d.ts][lib.es2021.weakref.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2022.array.d.ts][lib.es2022.array.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2022.d.ts][lib.es2022.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2022.error.d.ts][lib.es2022.error.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2022.full.d.ts][lib.es2022.full.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2022.intl.d.ts][lib.es2022.intl.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2022.object.d.ts][lib.es2022.object.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2022.regexp.d.ts][lib.es2022.regexp.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2022.sharedmemory.d.ts][lib.es2022.sharedmemory.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2022.string.d.ts][lib.es2022.string.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2023.array.d.ts][lib.es2023.array.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2023.collection.d.ts][lib.es2023.collection.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2023.d.ts][lib.es2023.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es2023.full.d.ts][lib.es2023.full.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es5.d.ts][lib.es5.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.es6.d.ts][lib.es6.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.esnext.collection.d.ts][lib.esnext.collection.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.esnext.d.ts][lib.esnext.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.esnext.decorators.d.ts][lib.esnext.decorators.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.esnext.disposable.d.ts][lib.esnext.disposable.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.esnext.full.d.ts][lib.esnext.full.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.esnext.intl.d.ts][lib.esnext.intl.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.esnext.object.d.ts][lib.esnext.object.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.esnext.promise.d.ts][lib.esnext.promise.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.scripthost.d.ts][lib.scripthost.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.webworker.asynciterable.d.ts][lib.webworker.asynciterable.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.webworker.d.ts][lib.webworker.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.webworker.importscripts.d.ts][lib.webworker.importscripts.d.ts]], [[./AguilarErick/node_modules/typescript/lib/lib.webworker.iterable.d.ts][lib.webworker.iterable.d.ts]], [[./AguilarErick/node_modules/typescript/lib/pl/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/pt-br/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/ru/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/tr/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/tsc.js][tsc.js]], [[./AguilarErick/node_modules/typescript/lib/tsserver.js][tsserver.js]], [[./AguilarErick/node_modules/typescript/lib/tsserverlibrary.d.ts][tsserverlibrary.d.ts]], [[./AguilarErick/node_modules/typescript/lib/tsserverlibrary.js][tsserverlibrary.js]], [[./AguilarErick/node_modules/typescript/lib/typesMap.json][typesMap.json]], [[./AguilarErick/node_modules/typescript/lib/typescript.d.ts][typescript.d.ts]], [[./AguilarErick/node_modules/typescript/lib/typescript.js][typescript.js]], [[./AguilarErick/node_modules/typescript/lib/typingsInstaller.js][typingsInstaller.js]], [[./AguilarErick/node_modules/typescript/lib/watchGuard.js][watchGuard.js]], [[./AguilarErick/node_modules/typescript/lib/zh-cn/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/lib/zh-tw/diagnosticMessages.generated.json][diagnosticMessages.generated.json]], [[./AguilarErick/node_modules/typescript/package.json][package.json]], [[./AguilarErick/node_modules/undici-types/agent.d.ts][agent.d.ts]], [[./AguilarErick/node_modules/undici-types/api.d.ts][api.d.ts]], [[./AguilarErick/node_modules/undici-types/balanced-pool.d.ts][balanced-pool.d.ts]], [[./AguilarErick/node_modules/undici-types/cache.d.ts][cache.d.ts]], [[./AguilarErick/node_modules/undici-types/client.d.ts][client.d.ts]], [[./AguilarErick/node_modules/undici-types/connector.d.ts][connector.d.ts]], [[./AguilarErick/node_modules/undici-types/content-type.d.ts][content-type.d.ts]], [[./AguilarErick/node_modules/undici-types/cookies.d.ts][cookies.d.ts]], [[./AguilarErick/node_modules/undici-types/diagnostics-channel.d.ts][diagnostics-channel.d.ts]], [[./AguilarErick/node_modules/undici-types/dispatcher.d.ts][dispatcher.d.ts]], [[./AguilarErick/node_modules/undici-types/errors.d.ts][errors.d.ts]], [[./AguilarErick/node_modules/undici-types/fetch.d.ts][fetch.d.ts]], [[./AguilarErick/node_modules/undici-types/file.d.ts][file.d.ts]], [[./AguilarErick/node_modules/undici-types/filereader.d.ts][filereader.d.ts]], [[./AguilarErick/node_modules/undici-types/formdata.d.ts][formdata.d.ts]], [[./AguilarErick/node_modules/undici-types/global-dispatcher.d.ts][global-dispatcher.d.ts]], [[./AguilarErick/node_modules/undici-types/global-origin.d.ts][global-origin.d.ts]], [[./AguilarErick/node_modules/undici-types/handlers.d.ts][handlers.d.ts]], [[./AguilarErick/node_modules/undici-types/header.d.ts][header.d.ts]], [[./AguilarErick/node_modules/undici-types/index.d.ts][index.d.ts]], [[./AguilarErick/node_modules/undici-types/interceptors.d.ts][interceptors.d.ts]], [[./AguilarErick/node_modules/undici-types/mock-agent.d.ts][mock-agent.d.ts]], [[./AguilarErick/node_modules/undici-types/mock-client.d.ts][mock-client.d.ts]], [[./AguilarErick/node_modules/undici-types/mock-errors.d.ts][mock-errors.d.ts]], [[./AguilarErick/node_modules/undici-types/mock-interceptor.d.ts][mock-interceptor.d.ts]], [[./AguilarErick/node_modules/undici-types/mock-pool.d.ts][mock-pool.d.ts]], [[./AguilarErick/node_modules/undici-types/package.json][package.json]], [[./AguilarErick/node_modules/undici-types/patch.d.ts][patch.d.ts]], [[./AguilarErick/node_modules/undici-types/pool-stats.d.ts][pool-stats.d.ts]], [[./AguilarErick/node_modules/undici-types/pool.d.ts][pool.d.ts]], [[./AguilarErick/node_modules/undici-types/proxy-agent.d.ts][proxy-agent.d.ts]], [[./AguilarErick/node_modules/undici-types/readable.d.ts][readable.d.ts]], [[./AguilarErick/node_modules/undici-types/webidl.d.ts][webidl.d.ts]], [[./AguilarErick/node_modules/undici-types/websocket.d.ts][websocket.d.ts]], [[./AguilarErick/node_modules/wrap-ansi/index.js][index.js]], [[./AguilarErick/node_modules/wrap-ansi/license][license]], [[./AguilarErick/node_modules/wrap-ansi/package.json][package.json]], [[./AguilarErick/package.json][package.json]], [[./AguilarErick/tsconfig.json][tsconfig.json]], [[./AguilarErick/view/ShowTheCurrentMemory.ts][ShowTheCurrentMemory.ts]], [[./AguilarErick/yarn.lock][yarn.lock]]
+- Comentarios ::
+  - ¡Excelente implementación!
+    - Permite cambiar el algoritmo de selección al vuelo
+    - Amigable y, más que "aguantar" mis errores, los corrige. ¡Bien!
+  - Sin embargo (...siempre hay un pero, ¿verdad? 😉), ¿viste la cantidad de
+    archivos que me estás enviando?
+    - ¡Me incluíste al /framework/ completo!
+    - ¿Cómo puedo saber cuáles son los archivos fuente que incluyen tus cambios
+      (y cuáles son únicamente el framework)?
+
+      (claro, son únicamente aquellos que están bajo =models=, =views= y
+      =controllers=, pero... hay que conocer el framework para saber por dónde
+      llegarle 😉)
+- Calificación :: 10
+
+** Patricio Alfaro y Francisco Galindo
+- Archivos :: [[./AlfaroPatricioGalindoFrancisco/main.go][main.go]]
+- Comentarios ::
+  - OK, me costó un poquito entender al principio cómo presentaban todo, pero
+    muy bien: Ejecución/simulación no-interactiva
+    - (¡y hasta me resulta conveniente, más ágil! 😉)
+  - buena implementación, y muy bueno también que usen Go. Soy demaisado novato
+    con él, pero es un lenguaje de lo más interesante.
+- Calificación :: 10
+
+** Gerardo Arredondo
+- Archivos :: [[./ArredondoGerardo/Prueba.py][Prueba.py]], [[./ArredondoGerardo/Tarea1.py][Tarea1.py]]
+- Comentarios ::
+  - Tu implementación me parece bonita e ingeniosa
+  - Sin embargo, no implementa la compactación... y no notifica al usuario en
+    caso de no poder cumplir la asignación que se le solicita
+    #+begin_src text
+      AAA---BBB---CCC---DDD---EEE---
+
+
+      ¿Qué es lo que quieres hacer?
+      1.-Asignar a la memoria
+      2.-Liberar espacio en la memoria
+      3.-Salir
+      Quiero --> 1
+      ¿Qué es lo que quieres ingresar?RRRRR
+      La memoria queda de la siguiente manera: AAA---BBB---CCC---DDD---EEE---
+    #+end_src
+- Calificación :: 7
+
+** Julian Bolaños y Juan Pablo Zurita
+- Archivos :: [[./BolañosJulian-ZuritaJuanPablo/sistop_t1.py][sistop_t1.py]]
+- Comentarios ::
+  - Dedazos obvios (la palabra =Incgresa= aparece varias veces 😉)
+  - Eviten usar =cls= para limpiar la pantalla, pues es un binario que sólo
+    existe en Windows. Tampoco usen =clear=, porque los /amarraría/ a sistemas
+    Unix. Y lo peor, ambos requieren una llamada al sistema.
+
+    Probablemente la mejor manera de hacerlo (aunque sea feo) sea con la
+    secuencia ANSI para limpiar la terminal: ~print("\033c\033[3J",end='')~
+  - ¡Ojo! El programa no verifica que solicites un nombre de proceso que no haya
+    sido elegido aún:
+    #+begin_src text
+      Mapa de Memoria Inicial: KK----HHHHHH--IIIIIIIIIIIII---
+      1. Asignar Proceso
+      2. Liberar Proceso
+      3. Salir
+      Opcion: 1
+      sh: 1: cls: not found
+      Incgresa Proceso (A - Z): I
+      Incgresa Numero de Procesos: 2
+      Mapa de Memoria Anterior: KK----HHHHHH--IIIIIIIIIIIII---
+      Mapa de Memoria Actualizado (Mejor Ajuste): KKII--HHHHHH--IIIIIIIIIIIII---
+      ________________________________________________________________
+
+      Mapa de Memoria Inicial: KKII--HHHHHH--IIIIIIIIIIIII---
+      1. Asignar Proceso
+      2. Liberar Proceso
+      3. Salir
+      Opcion: 
+    #+end_src
+- Calificación :: 9
+
+** Samuel Chong
+- Archivos :: [[./ChongSamuel/Tareas_sistop.java][Tareas_sistop.java]]
+- Comentarios ::
+  - ¡Ojo con los espacios de nombre! Estuve a nada de rendirme y no ejecutar tu
+    programa:
+    #+begin_src text
+      $ javac Tareas_sistop.java 
+      $ java Tareas_sistop 
+      Error: Could not find or load main class Tareas_sistop
+      Caused by: java.lang.NoClassDefFoundError: sachhe/tareas_sistop/Tareas_sistop (wrong name: Tareas_sistop)
+    #+end_src
+    - Esto se debe a que declaraste a tu programa como parte de un espacio de
+      nombres, con =package sachhe.tareas_sistop=
+    - Esto se refiere a una ruta /en tu computadora/... ¡yo no tengo ningún
+      directorio por el estilo!
+    - ...Bastó comentar esa línea para que corra 😉
+  - Cuando la memoria está llena, el programa no asume que puede haber un error
+    y creyendo que basta con compactar, se queda en un ciclo inescapable:
+    #+begin_src text
+      Volver a ingresar las unidades del proceso
+      Requiero entre 2 y 15 unidades: 
+      2
+      Se requiere compactar
+      Mapa actualizado: 
+      aaaaabbbbbccccccccccdddddddddd
+      Volver a ingresar las unidades del proceso
+      Requiero entre 2 y 15 unidades: 
+      0
+      Se requiere compactar
+      Mapa actualizado: 
+      aaaaabbbbbccccccccccdddddddddd
+      Volver a ingresar las unidades del proceso
+      (...)
+    #+end_src
+  - Los comentarios en tu códigoindican que empleas "peor ajuste", pero en
+    realidad usas "primer ajuste", ¿no?
+    #+begin_src text
+      (0) para asignar / (1) para liberar / (cualquier otro numero) salir: 0
+      Nuevo proceso, elegir [a-z]: h
+      Requiero entre 2 y 15 unidades: 
+      4
+      Nueva asignacion: 
+      aaaaahhhh-cccccc------eeeeeee-
+    #+end_src
+- Calificación :: 8
+
+** Armando Cruz y Angel Pozos
+- Archivos :: [[./CruzArmando-PozosAngel/Tarea1.c][Tarea1.c]]
+- Comentarios ::
+  - ¡Buena resolución!
+  - ¡Ojo! El programa no verifica que solicites un nombre de proceso que no haya
+    sido elegido aún:
+    #+begin_src text
+      Memoria actual:
+      AAAABBBB----------------------
+      Asignar (0), Liberar (1), Salir(2): 
+      0
+      Ingrese el nuevo proceso desee asignar, este debe ser un caracter en mayusculas (A-Z): 
+      A
+      Indique cuantas unidades necesita el nuevo proceso:
+      4
+      Quieres continuar: (S), (N)
+      S
+      Memoria actual:
+      AAAABBBBAAAA------------------
+    #+end_src
+  - ¡Muy bueno que entregues código en C! 😃
+  - Me queda claro que realizan /primer ajuste/, pero no lo mencionan
+    explícitamente en ningún lugar.
+- Calificación :: 9
+
+** Uriel De La Merced y Carlos Hernandez
+- Archivos :: [[./DeLaMercedUriel-HernandezCarlos/Tarea1SO.py][Tarea1SO.py]]
+- Comentarios ::
+  - Cuando la memoria está llena y solicitas asignar, tu algoritmo no lo
+    reconoce correctamente y entra en un ciclosin fin... hasta que excede la
+    capacidad de recursión del stack:
+    #+begin_src text
+      Asignación actual:
+      ------------------------------
+      Asignar (0), liberar (1) o salir (salir): 0
+      Tamaño del proceso (2-15): 15
+      Asignación actual:
+      AAAAAAAAAAAAAAA---------------
+      Asignar (0), liberar (1) o salir (salir): 0
+      Tamaño del proceso (2-15): 15
+      Asignación actual:
+      AAAAAAAAAAAAAAABBBBBBBBBBBBBBB
+      Asignar (0), liberar (1) o salir (salir): 0
+      Tamaño del proceso (2-15): 2
+      ,*Compactación requerida*
+      Nueva situación:
+      AAAAAAAAAAAAAAABBBBBBBBBBBBBBB
+      ,*Compactación requerida*
+      Nueva situación:
+      AAAAAAAAAAAAAAABBBBBBBBBBBBBBB
+      ,*Compactación requerida*
+	  (... casi 1000 repeticiones después ...)
+      AAAAAAAAAAAAAAABBBBBBBBBBBBBBB
+      ,*Compactación requerida*
+      Nueva situación:
+      AAAAAAAAAAAAAAABBBBBBBBBBBBBBB
+      ,*Compactación requerida*
+      Traceback (most recent call last):
+	File "/home/gwolf/vcs/sistop-2024-2/tareas/1/DeLaMercedUriel-HernandezCarlos/Tarea1SO.py", line 67, in <module>
+	  procesoActual = AsignarMemoria(memoriaTotal, procesoActual, memoriaDisponible, procesosOcupados, tamanioMemoria)
+			  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/home/gwolf/vcs/sistop-2024-2/tareas/1/DeLaMercedUriel-HernandezCarlos/Tarea1SO.py", line 34, in AsignarMemoria
+	  procesoActual = AsignarMemoria(memoriaTotal, procesoActual, memoriaDisponible, procesosOcupados, tamanioMemoria)
+			  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/home/gwolf/vcs/sistop-2024-2/tareas/1/DeLaMercedUriel-HernandezCarlos/Tarea1SO.py", line 34, in AsignarMemoria
+	  procesoActual = AsignarMemoria(memoriaTotal, procesoActual, memoriaDisponible, procesosOcupados, tamanioMemoria)
+			  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/home/gwolf/vcs/sistop-2024-2/tareas/1/DeLaMercedUriel-HernandezCarlos/Tarea1SO.py", line 34, in AsignarMemoria
+	  procesoActual = AsignarMemoria(memoriaTotal, procesoActual, memoriaDisponible, procesosOcupados, tamanioMemoria)
+			  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	[Previous line repeated 992 more times]
+	File "/home/gwolf/vcs/sistop-2024-2/tareas/1/DeLaMercedUriel-HernandezCarlos/Tarea1SO.py", line 33, in AsignarMemoria
+	  compactarMemoria(memoriaTotal)
+	File "/home/gwolf/vcs/sistop-2024-2/tareas/1/DeLaMercedUriel-HernandezCarlos/Tarea1SO.py", line 7, in compactarMemoria
+	  print("*Compactación requerida*")
+      RecursionError: maximum recursion depth exceeded while calling a Python object
+    #+end_src
+  - Tus instrucciones dicen que indique ='salir'=, pero tu código espera
+    ='salir'= en la línea 61... y ='exit'= en la línea 81, por lo que es
+    imposible salir limpiamente ☺
+  - Me queda claro que realizas /primer ajuste/, pero no lo mencionan
+    explícitamente en ningún lugar.
+  - Fuera de eso, buena implementación.
+- Calificación :: 9
+
+** Angel Diaz Gonzalez
+- Archivos :: [[./DiazGonzalezAngel/SO_T1.py][SO_T1.py]]
+- Comentarios ::
+  - Me pareció interesante (aunque poco habitual) que tu programa pida a cada
+    paso el algoritmo a utilizar (primer, mejor o peor ajuste)
+    - ... aunque no lo hace: Las tres veces que lo intenté, la asignación fue
+      por /peor ajuste/:
+      #+begin_src text
+	Operaciones disponibles:
+	0. Asignar memoria a un proceso
+	1. Liberar memoria de un proceso
+	2. Salir
+	Seleccione una opción: 0
+	Ingrese nuevo proceso: s
+	Ingrese el tamaño del proceso (entre 2 y 15 unidades): 3
+	Seleccione el tipo de ajuste (peor_ajuste (0), mejor_ajuste (1), primer_ajuste (2): 0
+	Proceso s asignado con éxito a la memoria.
+	Asignación actual:
+	AAAA-----rrrsss---------------
+
+	Operaciones disponibles:
+	0. Asignar memoria a un proceso
+	1. Liberar memoria de un proceso
+	2. Salir
+	Seleccione una opción: 0
+	Ingrese nuevo proceso: S
+	Ingrese el tamaño del proceso (entre 2 y 15 unidades): 3
+	Seleccione el tipo de ajuste (peor_ajuste (0), mejor_ajuste (1), primer_ajuste (2): 1
+	Proceso S asignado con éxito a la memoria.
+	Asignación actual:
+	AAAA-----rrrsssSSS------------
+
+	Operaciones disponibles:
+	0. Asignar memoria a un proceso
+	1. Liberar memoria de un proceso
+	2. Salir
+	Seleccione una opción: 0
+	Ingrese nuevo proceso: z
+	Ingrese el tamaño del proceso (entre 2 y 15 unidades): 3
+	Seleccione el tipo de ajuste (peor_ajuste (0), mejor_ajuste (1), primer_ajuste (2): 2
+	Proceso z asignado con éxito a la memoria.
+	Asignación actual:
+	AAAA-----rrrsssSSSzzz---------
+      #+end_src
+- Calificación :: 9
+
+** Jesus Dominguez
+- Archivos :: [[./DominguezJesus/T1_DominguezJesus.java][T1_DominguezJesus.java]]
+- Comentarios ::
+  - Java exige una convención de nomenclatura específica: los archivos tienen
+    que llevar el mismo nombre que la clase pública que declaren. Tu archivo no
+    compila como lo enviaste; afortunadamente es fácil de arreglar:
+    #+begin_src text
+      $ javac T1_DominguezJesus.java 
+      T1_DominguezJesus.java:21: error: class AsignaciondePrimerAjuste is public, should be declared in a file named AsignaciondePrimerAjuste.java
+      public class AsignaciondePrimerAjuste {
+	     ^
+      1 error
+      $ mv T1_DominguezJesus.java AsignaciondePrimerAjuste.java
+      $ javac AsignaciondePrimerAjuste.java
+      $
+    #+end_src
+  - Tu programa no va presentando el esquema de la memoria conforme avanza (que
+    es lo que para esta tarea más me importaba), ni permite “jugar” (como no sea
+    modificando el fuente) con el orden de asignaciones/liberaciones para
+    verificar que el funcionamiento sea como lo esperamos.
+- Calificación :: 6
+
+** Carlos Figueroa
+- Archivos :: [[./FigueroaCarlos/Tarea1.py][Tarea1.py]]
+- Comentarios ::
+  - Inicias la compactación cuando el primer espacio que se encuentra es
+    insuficiente, aún habiendo espacios más grandes disponibles:
+    #+begin_src text
+      Asignación actual:
+      AAAAABBBHH---DDDDDDDD-----FFF-
+       |Asignar (0)|Liberar (1)|Salir (2):
+      0
+      Nuevo proceso (I):
+      4
+      Compactando...
+      Asignación actual:
+      AAAAABBBHHDDDDDDDDIIII----FFF-
+       |Asignar (0)|Liberar (1)|Salir (2):
+    #+end_src
+  - Me queda claro que realizas /primer ajuste/, pero no lo mencionas
+    explícitamente en ningún lugar.
+- Calificación :: 9
+
+** Flores Evelyn y Marisol Vera
+- Archivos :: [[./FloresEvelyn-VeraMarisol/Tarea1_sistop_2024-2.py][Tarea1_sistop_2024-2.py]]
+- Comentarios ::
+  - Me queda claro que realizas /primer ajuste/, pero no lo mencionas
+    explícitamente en ningún lugar.
+  - No verifican que no haya ya un proceso con el nombre solicitado. Esto puede
+    llevar a comportamientos “raros”:
+    #+begin_src text
+      Ingrese una opcion: 1
+      Ingresa la letra que nombra al proceso: A
+      Ingresa uniidades de memoria que ocupara: 5
+
+      Memoria actual:
+      AAAAAaaaaa--------------------
+      Nuevo proceso (A): 5
+      Memoria actual:
+      AAAAAaaaaaAAAAA---------------
+
+		      Administrador de procesos
+
+      1. Asignar
+      2. Liberar
+      3. Mostrar
+      4. Salir
+
+      Ingrese una opcion: 2
+
+      Ingresa el proceso que desea remover: A
+      Memoria actual:
+       AAAAAaaaaaAAAAA---------------
+      Proceso a liberar (Aa)
+      Memoria actual:
+      -----aaaaa--------------------
+    #+end_src
+- Calificación :: 9
+
+** David González y Luis Reyes
+- Archivos :: [[./GonzálezDavid-ReyesLuis/GonzálezDavid-ReyesLuis_SO_T01.py][GonzálezDavid-ReyesLuis_SO_T01.py]]
+- Comentarios ::
+  - Me queda claro que realizan /primer ajuste/, pero no lo mencionan
+    explícitamente en ningún lugar.
+  - ¡Les recomiendo fuertemente limitar el /ancho/ de su código a 80
+    columnas... puede ser 100... Pero más que eso dificulta la lectura
+    - Recomiendo tambián comentar respecto a una línea o un bloque /en la línea
+      anterior/, no a la derecha de lo mismo, salvo que el comentario sera muy
+      cortito. Esto es, en vez de:
+      #+begin_src python
+	indice = cadena.find('-' * cantidad) #Una vez compactada la memoria se hace nuevamente el mismo metodo para la asignacion de unidades, para la memoria ya compactada.
+      #+end_src
+      resulta más legible:
+      #+begin_src python
+	 # Una vez compactada la memoria se hace nuevamente el mismo metodo para la
+	 # asignacion de unidades, para la memoria ya compactada.
+	 indice = cadena.find('-' * cantidad)
+      #+end_src
+  - No verifican que no haya ya un proceso con el nombre solicitado. Esto puede
+    llevar a comportamientos “raros”:
+    #+begin_src text
+      Asignación actual:
+       AAABBBBCCCCCCDDEEEFFFGGGHHHIII
+      Asignar (0) o Liberar (1) o Salir (2): 1
+      Proceso a liberar: G
+      Asignación actual:
+       AAABBBBCCCCCCDDEEEFFF---HHHIII
+      Asignar (0) o Liberar (1) o Salir (2): 0
+      Nuevo proceso: A
+      Cuántas unidades quieres asignar: 3
+      Asignación actual:
+       AAABBBBCCCCCCDDEEEFFFAAAHHHIII
+      Asignar (0) o Liberar (1) o Salir (2): 2
+      Proceso a liberar: A
+      Asignación actual:
+       ---BBBBCCCCCCDDEEEFFF---HHHIII
+      Asignar (0) o Liberar (1) o Salir (2):
+    #+end_src
+- Calificación :: 
+
+** Miguel Hernandez y Adrian Pacheco
+- Archivos :: [[./HernandezMiguel-PachecoAdrian/T1.py][T1.py]]
+- Comentarios ::
+  - Estamos trabajando bajo el supuesto de /memoria contigua/. Cuando su
+    programa se encuentra con la necesidad de realizar compactación, no responde
+    de forma adecuada:
+    #+begin_src text
+      BBBCCCCCCCC----EEEE-----------
+      Selecciona una opción:
+      0. Asignar espacio
+      1. Liberar espacio
+      2. Ver memoria ocupada
+      3. Salir
+      Opción: 0
+      Nuevo proceso (ID): F
+      Tamaño del proceso (2-15): 5
+      Asignando a F:
+      BBBCCCCCCCCFFFFEEEEF----------
+    #+end_src
+    El proceso =F= no debería haber sido separado en dos áreas: tendrían que
+    haber ya sea lanzado una compactación (para que =E= iniciara en =12= en vez
+    de =16=), o ubicado a =F= detrás de =E=, a partir de =20=.
+  - Me queda claro que realizan una versión curiosa de /primer ajuste/, pero no
+    lo mencionan explícitamente en ningún lugar.
+- Calificación :: 7
+
+** Axel Jimenez Gutierrez y Saida Sanchez Calvillo
+- Archivos :: [[./JimenezGutierrez-SanchezCalvillo/tarea01_jimenezgutierrez_sanchezcalvillo.py][tarea01_jimenezgutierrez_sanchezcalvillo.py]]
+- Comentarios ::
+  - Me queda claro que realizan una versión curiosa de /primer ajuste/, pero no
+    lo mencionan explícitamente en ningún lugar.
+  - No verifican que no haya ya un proceso con el nombre solicitado. Esto puede
+    llevar a comportamientos “raros”:
+    #+begin_src text
+      Asignacion Actual: AABBBBCCCCDDDDDDEEEE---HHHII--
+      Asignar (0), Liberar (1), Salir (2): 0
+      Ingrese el proceso a añadir: B
+      Ingrese el tamaño de memoria del proceso a añadir (entre 2 y 15 unidades): 3
+      Asignacion modificada: AABBBBCCCCDDDDDDEEEEBBBHHHII--
+      ¿Desea continuar? (S/N): S
+      Asignar (0), Liberar (1), Salir (2): 1
+      Ingrese el proceso a liberar: B
+      Asignacion modificada: AA----CCCCDDDDDDEEEE---HHHII--
+    #+end_src
+- Calificación :: 9
+
+** Erick Leon
+- Archivos :: [[./LeonErick/tarea1.cpp][tarea1.cpp]]
+- Comentarios ::
+  - ¡Muy buena implementación!
+  - Hay un error lógico menor en la interacción: Cuando solicitas asignar
+    espacio a un proceso, y el usuario te da una entrada que no cumple con las
+    condiciones (numérico entre 2 y 15):
+    #+begin_src C++
+      if (input[0] == '0') {
+	  cout << "Cantidad de unidades de memoria a asignar: ";
+	  cin >> memorySize;
+	  if (memorySize < 2 || memorySize > 15) {
+	      cout << "Cantidad de unidades inválida" << endl;
+	      cout << "Un proceso puede especificar que requiere entre 2 y 15 unidades." << endl;
+	      continue;
+    #+end_src
+    te lleva a un ciclo infinito, porque no se modifican ni =input= ni
+    =memorySize=:
+    #+begin_src text
+      Asignar(0) o liberar(1) memoria: 0
+      Cantidad de unidades de memoria a asignar: R
+      Cantidad de unidades inválida
+      Un proceso puede especificar que requiere entre 2 y 15 unidades.
+      Asignar(0) o liberar(1) memoria: Cantidad de unidades de memoria a asignar: Cantidad de unidades inválida
+      Un proceso puede especificar que requiere entre 2 y 15 unidades.
+      Asignar(0) o liberar(1) memoria: Cantidad de unidades de memoria a asignar: Cantidad de unidades inválida
+      Un proceso puede especificar que requiere entre 2 y 15 unidades.
+      Asignar(0) o liberar(1) memoria: Cantidad de unidades de memoria a asignar: Cantidad de unidades inválida
+      Un proceso puede especificar que requiere entre 2 y 15 unidades.
+      (...)
+    #+end_src
+    - Basta con que reinicies ya sea a =input= antes de saltar a =continue= para
+      que se interrumpa la ejecución.
+- Calificación :: 10
+
+** Francisco Lopez
+- Archivos :: [[./LopezFrancisco/tarea1.c][tarea1.c]]
+- Comentarios ::
+  - ¡Muy bin implementado!
+- Calificación :: 10
+
+** Alam Lopez Reyes
+- Archivos :: [[./LopezReyesAlam/programaTarea01.py][programaTarea01.py]]
+- Comentarios ::
+  - Buena implementación, verifica (o responde bien ante) varios casos
+    habituales que habitualmente causan “tropezones”.
+- Calificación :: 10
+
+** Alexa López
+- Archivos :: [[./LópezAlexa/Tarea1_SO.c][Tarea1_SO.c]]
+- Comentarios ::
+  - La ejecución de tu programa divide la interacción en dos etapas: Primero,
+    asginar la memoria entre todos los procesos, y luego, ir liberando
+    - Para validar los puntos que les pedí desarrollar, es necesario alternar
+      entre ellos
+    - ...de modo que se puedan crear "agujeros" en la memoria, y validar si las
+      asignaciones se realizan correctamente, si se lanza la compactación, etc.
+- Calificación :: 6
+
+** Israel Martinez
+- Archivos :: [[./MartinezIsrael/primerajuste.py][primerajuste.py]]
+- Comentarios ::
+  - ¿Para qué incluíste =from typing_extensions import Self=? No estás anotando
+    la firma de ninguna de tus funciones (p.ej. con =-> Self=), resulta más
+    sencillo comentar la llamada a =typing_extensions= que instalarlo en mi
+    sistema 😉
+- Calificación :: 
+
+** Martin Mendoza
+- Archivos :: [[./MendozaMartin/Memory.c][Memory.c]]
+- Comentarios ::
+  - La implementación de asignación por primer ajuste es correcta
+  - Pero no implementas compactación 🙁
+    - Tu programa tendría que poder resolver situaciones como esta:
+      #+begin_src text
+	AAATTT--FFF-CCCCCPPP--EEEEE---
+	Asignar (0) o liberar (1): 0
+	Nuevo proceso (A-Z): Q
+	Tamano del proceso (2-15): 4
+	No hay espacio suficiente para asignar el proceso.
+      #+end_src
+- Calificación :: 7.5
+
+** Francisco Miranda
+- Archivos :: [[./MirandaFrancisco/T1.py][T1.py]]
+- Comentarios ::
+  - Buena implementación 😉
+  - Me queda claro que realizas /primer ajuste/, pero no lo mencionas
+    explícitamente en ningún lugar.
+  - Recomendación de estilo al programar, por facilidad de lectura: En
+    vez de agregar tus comentarios después del código que describen:
+    #+begin_src python
+      impProcesos.append(i) # Guardamos las de 'asignacion' que estan en 'procesos'
+    #+end_src
+    resulta más fácil de leer si lo describes en la línea inmediata
+    anterior:
+    #+begin_src python
+      # Guardamos las de 'asignacion' que estan en 'procesos'
+      impProcesos.append(i)
+    #+end_src
+    - Evita, además, escribir líneas demasiado largas, porque son
+      difíciles de leer. Puede sonar exagerado, pero yo sugiero no
+      sobrepasar los 80 caracteres por línea... Puede ser un poco más,
+      pero evita a toda costa que una línea (o comentario) se extienda
+      más allá del ancho de una ventana común.
+- Calificación :: 9
+
+** Ricardo Pineda
+- Archivos :: [[./PinedaRicardo/Tarea1_Asignacion_de_Memoria.py][Tarea1_Asignacion_de_Memoria.py]]
+- Comentarios ::
+  - ¡Buena implementación! 😃
+  - Me parece curioso (¡pero válido!) que tu programa genere
+    aleatoriamente el tamaño de los procesos. ¡me costó un poco de
+    trabajo verificar que efectivamente actuara como primer/mejor/peor
+    ajuste según le pedía! 😉
+  - Recomendación: Si bien está bien que verifiques según el sistema
+    operativo en que corres, no uses =cls= o =clear= para limpiar la
+    pantalla. ¡Es muy /caro/ ejecutar un programa cada vez que quieres
+    limpiar la pantalla! Puedes imprimir los códigos de terminal
+    (ANSI) para hacerlo:
+    #+begin_src python
+      print(chr(27) + "[2J" + chr(27) + "[H")
+    #+end_src
+    Claro, puedes definir una función que haga esto, y hacerlo
+    sencillito 😉
+- Calificación :: 10
+
+** Ernesto Quintana
+- Archivos :: [[./QuintanaErnesto/QuintanaErnesto_T1_AsignacionMemoria.py][QuintanaErnesto_T1_AsignacionMemoria.py]]
+- Comentarios ::
+  - ¡Muy buena implementación! Le aventé varios /toritos/ y no logré
+    que se comportara mal 😉
+- Calificación :: 10
+
+** Luis Quintana y Marco Vigi
+- Archivos :: [[./QuintanaLuis-VigiMarco/SO_T1.py][SO_T1.py]]
+- Comentarios ::
+  - El punto de partida que su programa asume "en duro" es
+    imposible. Para un esquema de asignación contigua, debería ser
+    imposible tener una situación como
+    =A--------------CCC---A--B---BB= en que dos de los procesos tienen
+    "hoyos" en su espacio asignado.
+  - Me queda claro que realizas /primer ajuste/, pero no lo mencionas
+    explícitamente en ningún lugar.
+- Calificación :: 7.5
+
+** Francisco Javier Reynoso Ortega 
+- Archivos :: [[./ReynosoOrtegaFRanciscoJavier/memoria.py][memoria.py]]
+- Comentarios ::
+  - El programa asigna como identificador de proceso la longitud que
+    tiene en memoria. Eso hace imposible que haya dos procesos del
+    mismo tamaño
+    #+begin_src text
+      Asignación actual:
+      ------------------------------
+      Asignar (0) o liberar (1): 0
+      Tamaño del proceso (entre 2 y 15): 5
+      Asignación actual:
+      -----55555--------------------
+      Asignar (0) o liberar (1): 0
+      Tamaño del proceso (entre 2 y 15): 5
+      Asignación actual:
+      -----55555--------------------
+    #+end_src
+  - Pero además, al hacer otra asignación, ¡la hace encima del mismo
+    bloque!
+    #+begin_src text
+
+      Asignación actual:
+      -----55555--------------------
+      Asignar (0) o liberar (1): 0
+      Tamaño del proceso (entre 2 y 15): 4
+      Asignación actual:
+      -----44445--------------------
+    #+end_src
+  - Si solicito liberar memoria, no libera un proceso, sino que la
+    ubicación específica de memoria que le solicito:
+    #+begin_src text
+      Asignación actual:
+      ------55555-------------------
+      Asignar (0) o liberar (1): 1
+      Índice de la porción de proceso a liberar: 5
+      Asignación actual:
+      ------55555-------------------
+      Asignar (0) o liberar (1): 1
+      Índice de la porción de proceso a liberar: 6
+      Asignación actual:
+      -------5555-------------------
+      Asignar (0) o liberar (1): 1
+      Índice de la porción de proceso a liberar: 8
+      Asignación actual:
+      -------5-55-------------------
+      Asignar (0) o liberar (1): 1
+      Índice de la porción de proceso a liberar: 7
+      Asignación actual:
+      ---------55-------------------
+    #+end_src
+  - No puedo llevar a que haya en memoria ninguna de las situaciones
+    planteadas para este problema ☹
+- Calificación :: 5
+
+** Isaías Rosas
+- Archivos :: [[./RosasIsaias/RosasIsaias_Tarea1.py][RosasIsaias_Tarea1.py]]
+- Comentarios ::
+  - Tu programa identifica la necesidad de compactación, pero no la
+    lleva a cabo:
+    #+begin_src text
+       === Mapa de la memoria === 
+      A A A A - - - D D D D - - - - B B B B B B B B B B B B B B B 
+      TAREA 1: Asignación de memoria --> MÉTODO: Primer Ajuste 
+      1) Agregar un proceso
+      2) Quitar un proceso
+      3) Salir del programa 
+      Escoja una de las opciones anteriores: 1
+      Ingrese el proceso que desea almacenar [Valores alfanuméricos]: E
+      Ingrese el tamaño del proceso [Sólo de 2 a 15]: 5
+       <AVISO>: Se requiere compactación de memoria. 
+      sh: 1: cls: not found
+       === Mapa de la memoria === 
+      A A A A E E E D D D D E E - - B B B B B B B B B B B B B B B 
+    #+end_src
+    - Hay espacio para tres /unidades/ de memoria antes de =D= y
+      cuatro después
+    - Al intentar asignar espacio para un proceso de cinco, tendrías
+      (por lo menos) que recorrer =D= para que quede contiguo a =A=
+  - Recimendación: Para limpiar la pantalla, el uso de =cls= no solo
+    es específico a Windows, sino que es demasiado caro (implica la
+    ejecución de un programa externo).  Puedes imprimir los códigos de terminal
+    (ANSI) para hacerlo:
+    #+begin_src python
+      print(chr(27) + "[2J" + chr(27) + "[H")
+    #+end_src
+    Claro, puedes definir una función que haga esto, y hacerlo
+    sencillito 😉
+- Calificación :: 8
+
+** Atzin Ugalde
+- Archivos :: [[./UgaldeAtzin/Atzin.xhtml][Atzin.xhtml]]
+- Comentarios ::
+  - ¡Muy buena implementación!
+- Calificación :: 10
+
+** Andrea Zenon y Michelle Barrios
+- Archivos :: [[./ZenonAndrea_BarriosMichelle/sistop_t1.py][sistop_t1.py]]
+- Comentarios ::
+  - Si bien la asignación por primer/peor/mejor ajuste está bien
+    implementada, la liberación de memoria no está bien
+    implementada. El mapa de memoria sí marca que hay espacio, pero
+    cualquier asignación posterior a una liberación fracasa:
+    #+begin_src text
+      ---------------BBBBBBBBBBBBBBB
+      1. Asignar memoria a un proceso
+      2. Liberar memoria de un proceso
+      0. Salir
+      Seleccione una opción: 1
+      Ingrese nuevo proceso: C
+      Ingrese el tamaño del proceso (entre 2 y 15 unidades): 3
+      Seleccione el tipo de ajuste: 1) Peor ajuste  2) Mejor ajuste  3) Primer_ajuste: 3
+      El proceso se asignó con éxito a la memoria.
+      Error: el proceso excede los límites de la memoria.
+    #+end_src
+- Calificación :: 8
+
