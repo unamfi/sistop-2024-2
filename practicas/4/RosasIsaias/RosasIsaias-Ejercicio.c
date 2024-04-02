@@ -1,3 +1,8 @@
+// ASIGNATURA: Sistemas Operativos
+// GRUPO: 6
+// ALUMNO: Rosas Meza Isaías
+// SEMESTRE: 2024-2
+
 #include <stdio.h>
 int main() {
 	#pragma omp parallel
