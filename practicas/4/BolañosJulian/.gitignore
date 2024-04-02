@@ -1,0 +1,5 @@
+# Entorno virtual donde se desarrolla el proyecto.
+venv/
+
+# Base de datos del proyecto.
+db.sqlite3
