@@ -1,0 +1,20 @@
+# Bytecode compilado
+__pycache__/
+*.pyc
+
+# Carpetas de entorno virtual
+venv/
+.env/
+
+# Archivos de configuración de editores/IDEs
+.vscode/
+.idea/
+
+# Archivos de sistema operativo
+.DS_Store # Para macOS
+Thumbs.db # Para Windows
+
+# Archivos de paquetes
+*.egg-info/
+dist/
+build/
