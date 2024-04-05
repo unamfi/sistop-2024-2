@@ -1,0 +1,26 @@
+{
+  "name": "4",
+  "version": "1.0.0",
+  "description": "Práctica creada el 2024.03.21 \tEntrega: 2024.04.02",
+  "main": "index.js",
+  "engines": {
+    "node": ">= 18.18.2"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "npx uglifyjs -c -o min.js index.js && node min.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "gradient-string": "^2.0.2",
+    "uglify-js": "^3.17.4"
+  }
+}
