@@ -1,0 +1,88 @@
+#+title:  Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Chipeo: Las vulnerabilidades del SO en las consolas de entretenimiento
+
+- Tema presentado por :: Isaías Rosas, Jesús Abner Domínguez y Saida Mayela Sánchez
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                    9.4 |   0.3 |               6.63 |  0.7 |    7.46 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 3 | 7 |  9.40 |
+| Nivel        | 0 | 0 | 0 | 3 | 7 |  9.40 |
+| Relevancia   | 0 | 0 | 1 | 3 | 6 |  9.00 |
+| Claridad     | 0 | 0 | 0 | 3 | 7 |  9.40 |
+| Presencia    | 0 | 0 | 0 | 1 | 9 |  9.80 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.40 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Ninguno
+- Mucho texto por diapositivaen mi opinión.
+- Me gustó mucho la exposición, empezando con la calidad y empeño
+  destacados en la elaboración de la presentación, y terminando con la
+  claridad y manejo de la información que demostraron los
+  expositores. Además el tema sin duda me llama la atención, y la
+  relevancia para la materia quizás no es crucial, pero se explora lo
+  que concierne a los sistemas operativos.
+
+* Evaluación por parte del docente
+
+| *Aspecto*                   | *Peso* | *Evaluación* | *Puntos* |
+|-----------------------------+--------+--------------+----------|
+| Originalidad del tema       |    0.1 |           10 |       1. |
+| Material desarrollado       |    0.2 |            5 |       1. |
+| Contenido                   |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas      |    0.1 |            5 |      0.5 |
+| Uso del tiempo              |    0.1 |          7.5 |     0.75 |
+| Dominio del tema            |   0.15 |          7.5 |    1.125 |
+| Presencia                   |   0.15 |          7.5 |    1.125 |
+|-----------------------------+--------+--------------+----------|
+| *Global*                    |        |              |     7.00 |
+| *Ajustada (ver comentarios) |        |              |     5.00 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- La presentacióncompleta fue leída directamente del material que
+  presentaron. Esto no únicamente llevó a que, como lo indicaron los comentarios
+  de sus compañeros, la preentación esté demasiado cargada de texto, sino que el
+  ritmo con el que la leían hace menos atractiva, menos fluída la presentación
+- Dicen que /el que mucho abarca poco aprieta/. Mencionaron diversas maneras de
+  explotar seis diferentes consolas. Sin embargo, no dieron /explicación técnica
+  completa/ de ninguna de ellas 🙁
+- No puedo asegurar nada, y puedo estar levantando falsos (y si lo hago, les
+  pido que me lo indiquen, para corregir mi apreciación). Me parece que el texto
+  que me enviaron es, en gran medida, autogenerado. Dejando de lado el lenguaje
+  utilizado, encuentro algunas /alucinaciones/ muy obvias propias de los LLMs
+  (p.ej. el que el sistema operativo de Nintendo se llame MIOS y haya sido
+  desarrollado por Microsoft, su competencia directa).
+
+  ¿Es realmente el texto de ustedes?
+
+  La presentación sin duda les requirió trabajo. Pero si el generador del texto
+  es un LLM, y el texto es directamente leído de ahí... no puedo darles arriba
+  de un 5 como calificación.
