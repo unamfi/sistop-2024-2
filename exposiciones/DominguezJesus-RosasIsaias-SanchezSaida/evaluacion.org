@@ -10,7 +10,7 @@
 |------------------------+-------+--------------------+------+---------|
 | Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
 |------------------------+-------+--------------------+------+---------|
-|                    9.4 |   0.3 |               6.63 |  0.7 |    7.46 |
+|                    9.4 |   0.3 |               7.00 |  0.7 |    7.72 |
 |------------------------+-------+--------------------+------+---------|
 #+TBLFM: @2$5=$1*$2+$3*$4;f-2
 
@@ -63,7 +63,6 @@ parte de tus compañeros:
 | Presencia                   |   0.15 |          7.5 |    1.125 |
 |-----------------------------+--------+--------------+----------|
 | *Global*                    |        |              |     7.00 |
-| *Ajustada (ver comentarios) |        |              |     5.00 |
 #+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
 
 ** Comentarios
@@ -74,15 +73,3 @@ parte de tus compañeros:
 - Dicen que /el que mucho abarca poco aprieta/. Mencionaron diversas maneras de
   explotar seis diferentes consolas. Sin embargo, no dieron /explicación técnica
   completa/ de ninguna de ellas 🙁
-- No puedo asegurar nada, y puedo estar levantando falsos (y si lo hago, les
-  pido que me lo indiquen, para corregir mi apreciación). Me parece que el texto
-  que me enviaron es, en gran medida, autogenerado. Dejando de lado el lenguaje
-  utilizado, encuentro algunas /alucinaciones/ muy obvias propias de los LLMs
-  (p.ej. el que el sistema operativo de Nintendo se llame MIOS y haya sido
-  desarrollado por Microsoft, su competencia directa).
-
-  ¿Es realmente el texto de ustedes?
-
-  La presentación sin duda les requirió trabajo. Pero si el generador del texto
-  es un LLM, y el texto es directamente leído de ahí... no puedo darles arriba
-  de un 5 como calificación.
