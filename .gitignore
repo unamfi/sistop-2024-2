@@ -1,1 +1,12 @@
 .DS_Store
+
+# Aplicaciones
+**/AguilarErick/node_modules/
+**/AguilarErick/.vscode/
+**/AguilarErick/.env
+**/AguilarErick/.next/
+**/AguilarErick/dist/
+
+
+
+

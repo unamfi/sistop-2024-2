@@ -1,0 +1,91 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Desarrollo de sistemas operativos basados en AI
+
+- Tema presentado por :: Axel Uriel Jiménez y Alam López
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                   9.34 |   0.3 |               8.63 |  0.7 |    8.84 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 2 | 9 |  9.64 |
+| Nivel        | 0 | 0 | 0 | 3 | 8 |  9.45 |
+| Relevancia   | 0 | 0 | 0 | 3 | 8 |  9.45 |
+| Claridad     | 0 | 0 | 0 | 3 | 8 |  9.45 |
+| Presencia    | 1 | 0 | 0 | 3 | 7 |  8.73 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.34 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Creo que es interesante, más por la popularidad que toma el tema hoy en día
+- Creo que es un gran tema, me interesa mucho. Creo que faltó
+  concretar algunos puntos, pero en general fue un buen acercamiento.
+- Muy buena exposición, pues logra juntar los tópicos de los Sistemas
+  Operativos con las novedades tecnológicas de la IA, estableciendo
+  que se trata de una idea en el aire pero que tiene mucho potencial y
+  que se está explorando activamente.
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |           10 |       2. |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |            5 |      0.5 |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |          7.5 |    1.125 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     8.63 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- Mi gran, gran queja con el término /«Inteligencia Artificial»/ es
+  que no está acotado, que en su uso habitual no tiene una definición
+  clara que permita en una conversación informal saber si algo es o no /IA/.
+  - En la exposición presentan, por ejemplo, que el SO está
+    monitoreando constantemente los niveles de rendimiento de la
+    computadora, para ajustar los /FPS/ de un juego para mantenerse
+    óptimo. Eso es simple monitoreo y decisión basada en umbrales. ¡No
+    puede llamarse IA!
+  - No puedo hacerme el experto en temas que no lo soy... Pero la
+    definición que atribuyen a Mateus Ruzzarin es incorrecta por donde
+    se vea. Hay sistemas /no inteligentes/ que aprenden, y hay muchas
+    aplicaciones de /IA/ que no incluyen aprendizaje de máquina.
+- Me gustaría ver cualquier referencia al SO de Lenovo que mencionan
+  más allá de media página en un sitio tan genérico como /Noticias 3D/
+  o /Hipertextual/. Me sorprende no encontrar información técnica
+  alguna, siendo que el desarrollo de un sistema operativo /que busca
+  ser atractivo para el consumidor final/ es suficientemente complejo
+  como para que resulte prácticamente imposible desarrollarlo sin
+  comunicar información técnica al respecto.
+- Ojo: La exposición que ustedes hicieron es correcta y está bien /a
+  la luz de los datos utilizados/, no puedo culparlos de la
+  mercadotecnia que rodea a nuestro campo. Sin embargo, estos puntos
+  ilustran bien por qué los invito a buscar /recursos formales/ de
+  consulta, no revistas o sitios Web.

@@ -1,0 +1,91 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Sistemas operativos móviles
+
+- Tema presentado por :: Alexa López y Atzin Ugalde
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                   8.89 |   0.3 |               7.00 |  0.7 |    7.57 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 1 | 4 | 4 |  8.67 |
+| Nivel        | 0 | 0 | 1 | 3 | 5 |  8.89 |
+| Relevancia   | 0 | 0 | 1 | 3 | 5 |  8.89 |
+| Claridad     | 0 | 0 | 0 | 3 | 6 |  9.33 |
+| Presencia    | 0 | 0 | 0 | 6 | 3 |  8.67 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  8.89 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Es un tema que me interesa mucho, y creo que la información fue muy
+  completa y explicada perfectamente. Únicamente puedo señalar que
+  algunas partes del audio se cortaron, pero en general me gustó mucho
+  la presentación.
+
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |            5 |       1. |
+| Contenido              |    0.2 |            5 |       1. |
+| Fuentes bibliográficas |    0.1 |          7.5 |     0.75 |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |          7.5 |    1.125 |
+| Presencia              |   0.15 |          7.5 |    1.125 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     7.00 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- Espera, espera, espera... Casi lo primero que dicen es que Android
+  fue desarrollado por Microsoft. ¡No, claro que no! Microsoft
+  desarrolló Windows Phone. Luego demostró estar muy lejos de lo que
+  los usuarios querían... y fue abandonado.
+
+  Android es un núcleo Linux, y un espacio de usuario desarrollado por
+  Google.
+
+- La definición que presnetan de "sistema operativo móvil", por más
+  que venga de una página en particular (¡muy bien por citar
+  fuentes!), es... incorrecta, contradictoria a bastante de lo que
+  hemos platicado 🙁
+
+- En el ritmo de la presentación (particularmente con Atzin) se siente
+  fuertemente que está leyendo texto, no "platicando". ¡Cuida el ritmo
+  para que puedas conservar mejor el interés de tu público!
+
+- El volumen de lo expuesto por Alexa subía y bajaba, y algunos
+  pasajes resultaban difíciles de entender 🙁
+
+- Siento que les faltó un poco mantener la hilación temática. Al
+  saltar entre varios temas, y aparentemente no tener un destino claro
+  hacia dónde llegar,es fácil perderse.
+
+- Se ve quele pusieron empeño a la edición del video, cortando y
+  rearmando varias veces. ¡muy bien!
