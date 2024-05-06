@@ -1,0 +1,78 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Máquinas virtuales
+
+- Tema presentado por :: Francisco Miranda
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                    9.2 |   0.3 |                  5 |  0.7 |    6.26 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 2 | 1 |  8.67 |
+| Nivel        | 0 | 0 | 0 | 1 | 2 |  9.33 |
+| Relevancia   | 0 | 0 | 0 | 1 | 2 |  9.33 |
+| Claridad     | 0 | 0 | 0 | 1 | 2 |  9.33 |
+| Presencia    | 0 | 0 | 0 | 1 | 2 |  9.33 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.20 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Siempre me ha parecido interesante la información que está detrás de
+  las máquinas virtuales y me pareció una buena recopilación que es
+  bastante digerible.
+
+* Evaluación por parte del docente
+
+| *Aspecto*                        | *Peso* | *Evaluación* | *Puntos* |
+|----------------------------------+--------+--------------+----------|
+| Originalidad del tema            |    0.1 |          7.5 |     0.75 |
+| Material desarrollado            |    0.2 |            5 |       1. |
+| Contenido                        |    0.2 |           10 |       2. |
+| Fuentes bibliográficas           |    0.1 |            5 |      0.5 |
+| Uso del tiempo                   |    0.1 |           10 |       1. |
+| Dominio del tema                 |   0.15 |           10 |      1.5 |
+| Presencia                        |   0.15 |           10 |      1.5 |
+|----------------------------------+--------+--------------+----------|
+| *Global*                         |        |              |     8.25 |
+| *Corrregido ☹ (ver comentarios)* |        |              |      5.0 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+- /KVM/ es un módulo de Linux, por lo cual si lo tienes clasificar en "tipo 1" o
+  "tipo 2", sería sin duda alguna un "tipo 2" (en el hardware estás corriendo un
+  Linux estandar). Un buen ejemplo de hipervisor "tipo 1" libre" es /Xen/.
+- Me parece muy notable cómo desarrollaste una exposición parafraseando lo que
+  presentas por escrito. Si bien sigues el guión, no te mantienes estrictamente
+  dentro de los límites que te da.
+- Verifiqué el texto que enviaste con uno de los servicios disponibles
+  para detección de plagios en la UNAM, y me arrojó un *53%* de
+  contenido copiado textualmente de distintas páginas:
+
+  [[./reporte_plagio.png]]
+
+  Comprenderás que no puedo evaluarte con más de 5.0 ☹

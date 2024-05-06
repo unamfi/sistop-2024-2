@@ -1,0 +1,74 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Sistemas Distribuidos
+
+- Tema presentado por :: Julián Bolaños y Juan Zurita
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                    9.5 |   0.3 |               6.63 |  0.7 |    7.49 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+- El tema me pareció muy acertado para la materia, pues se relaciona
+  de buena manera con algunos tópicos como la administración de
+  recursos y procesos, así como temas muy ligados tales como la
+  abstracción y la encapsulación. Si bien el tiempo del video fue algo
+  prolongado, lo cierto es que la información está completa y se nota
+  el dominio del tema. ¡Muy bien hecho!
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 1 | 1 | 2 |  8.50 |
+| Nivel        | 0 | 0 | 0 | 1 | 3 |  9.50 |
+| Relevancia   | 0 | 0 | 0 | 0 | 4 | 10.00 |
+| Claridad     | 0 | 0 | 0 | 1 | 3 |  9.50 |
+| Presencia    | 0 | 0 | 0 | 0 | 4 | 10.00 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.50 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |          7.5 |     0.75 |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |            5 |       1. |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |            5 |      0.5 |
+| Dominio del tema       |   0.15 |            5 |     0.75 |
+| Presencia              |   0.15 |          7.5 |    1.125 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     6.63 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- ¡Se pasaron del doble del tiempo esperado! 🙁
+- La presentación completa la van dando leyendo del material que presentaron, y
+  resulta /muy claro/ cuando están leyendo un párrafo que comprenden claramente,
+  y cuándo es uno que no comprenden bien. ¡Eviten hacer eso! Da bastante mala
+  impresión.
+- No hay una progresión natural de temas. Conforme avanzamos de sección en
+  sección, van abordando diferentes subtemas sin una hilación clara. Hay temas
+  que ubican bastante adelante que deberían ir al inicio (p.ej. sección 7).
