@@ -76,3 +76,17 @@ parte de tus compañeros:
   [[./reporte_plagio.png]]
 
   Comprenderás que no puedo evaluarte con más de 5.0 ☹
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- *65%* de textos sospechosos
+  - *53%* de similitudes con otros documentos
+  - 27% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 0% idiomas no reconocidos
+  - 0% de citas atribuídas (citas expresas)

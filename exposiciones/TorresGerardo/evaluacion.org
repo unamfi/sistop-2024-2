@@ -88,3 +88,18 @@ parte de tus compañeros:
         https://es.wikipedia.org/wiki/IEEE_754
 
     Aunque sin duda reconozco que sería meter demasiada complejidad.
+
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 17% de textos sospechosos
+  - 2% de similitudes con otros documentos
+  - 13% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 2% idiomas no reconocidos
+  - <1% de citas atribuídas (citas expresas)

@@ -89,3 +89,17 @@ parte de tus compañeros:
   mercadotecnia que rodea a nuestro campo. Sin embargo, estos puntos
   ilustran bien por qué los invito a buscar /recursos formales/ de
   consulta, no revistas o sitios Web.
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 24% de textos sospechosos
+  - <1% de similitudes con otros documentos
+  - 21% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 2% idiomas no reconocidos
+  - 1% de citas atribuídas (citas expresas)

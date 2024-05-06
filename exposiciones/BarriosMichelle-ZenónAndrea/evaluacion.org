@@ -1,0 +1,115 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Sistemas operativos en automóviles
+
+- Tema presentado por :: Dulce Michelle Barrios y Andrea Sofía Zenón
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+-------+--------------------+------+---------|
+| Evaluación  compañeros | Valor | Evaluación docente | Peso | *Total* |
+|------------------------+-------+--------------------+------+---------|
+|                   8.97 |   0.3 |                8.5 |  0.7 |    8.64 |
+|------------------------+-------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 1 | 1 | 5 |  9.14 |
+| Nivel        | 0 | 0 | 1 | 3 | 3 |  8.57 |
+| Relevancia   | 0 | 0 | 2 | 0 | 5 |  8.86 |
+| Claridad     | 0 | 0 | 0 | 4 | 3 |  8.86 |
+| Presencia    | 0 | 0 | 0 | 2 | 5 |  9.43 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  8.97 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Me pareció una exposición muy interesante, original, con calidad en los
+  recursos didácticos y en la presencia de mis compañeras como expositoras. Su
+  manejo de la información, claridad y fluidez en la explicación fue destacable,
+  y el nivel me parece adecuado para la clase. 
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |            5 |      0.5 |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     8.50 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+- Los sistemas operativos que delínean en la lámina 9 (sección 3.1) se limitan a
+  las áreas que son controladas por el usuario: Como ustedes lo mencionaon ya,
+  prácticamente se centran en la sección de sistemas de infoentretenimiento,
+  control de confort y sistema de asistencia.
+- Me pareció muy buena presentación, lograron darla con muy buen ritmo y
+  profundizando bien en varios temas interesantes, y no leyeron directamente de
+  las notas que prepararon. Sin embargo, ¡se fueron al doble del tiempo
+  esperado! Supongo que eso contribuyó a que pocos compañeros vieran hasta el
+  final la presentación 🙁
+- Me parece que en su material el límite entre el sistema operativo y las
+  aplicaciones que corren sobre de éste queda nebulosa o /de a tiro/ se
+  omite. Algunos de los puntos que mencionan sí son relativos a los sistemas
+  operativos (las necesidades de seguridad y confiabilidad, la planificación en
+  tiempo real), pero otras muchas se refieren a programas que corren en espacio
+  de usuario — y no únicamente me refiero al sistema de entretenimiento.
+  - Por poner un ejemplo, el monitor de presión de neumáticos no es parte del
+    sistema operativo, sino que un programa que corre en espacio de usuario (y
+    está facultado por el SO a leer el dispositivo que está realizando la medida
+    de niveles). No podrían formalmente decir que el SO es el que implementa
+    esta funcionalidad.
+- A nivel interfaz usuario, ustedes mencionan en sus conclusiones y visión de
+  futuro el uso cada vez mayor de grandes superficies para presentar y controlar
+  diferentes aspectos de la conducción. Me parece que ya se va en sentido
+  inverso: Se han hecho investigaciones de usabilidad y seguridad, y se ha
+  encontrado que controlar los aspectos de un vehículo mediante botones físicos
+  resulta mucho mejor que hacerlo por /touchscreen/. Algunas ligas al respecto:
+  - https://www.theverge.com/2024/3/5/24091043/euro-ncap-safety-rating-europe-2026-touchscreen-buttons-dials
+  - https://arstechnica.com/cars/2022/08/yes-touchscreens-really-are-worse-than-buttons-in-cars-study-finds/ 
+  - https://www.popsci.com/technology/too-many-screens-in-cars/
+- ¡Me encanta que usen LaTeX para escribir su material! Sin embargo,
+  practíquenlo un poco más. Algunos caracteres como la comilla doble (") son
+  /combinantes/, y como pueden verlo convierten algunos caracteres en otra
+  cosa. Además, no es lo mismo /abrir comillas/ con “ que cerrarlas con ”. Mismo
+  asunto con el caracter _ (sobre todo en la bibliografía). hay que indicar al
+  URL con =\url{}= ! Si van a usar una herramienta excelente, ¡aprendan el
+  pasito más para obtener resultados excelentes! 😉
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 47% de textos sospechosos
+  - 8% de similitudes con otros documentos
+  - 39% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 2% idiomas no reconocidos
+  - <1% de citas atribuídas (citas expresas)

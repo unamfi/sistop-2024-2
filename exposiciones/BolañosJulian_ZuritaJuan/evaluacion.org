@@ -72,3 +72,17 @@ parte de tus compañeros:
 - No hay una progresión natural de temas. Conforme avanzamos de sección en
   sección, van abordando diferentes subtemas sin una hilación clara. Hay temas
   que ubican bastante adelante que deberían ir al inicio (p.ej. sección 7).
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 34% de textos sospechosos
+  - 25% de similitudes con otros documentos
+  - 14% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 0% idiomas no reconocidos
+  - <1% de citas atribuídas (citas expresas)

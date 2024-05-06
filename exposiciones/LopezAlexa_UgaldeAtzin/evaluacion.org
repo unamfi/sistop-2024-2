@@ -89,3 +89,17 @@ parte de tus compañeros:
 
 - Se ve quele pusieron empeño a la edición del video, cortando y
   rearmando varias veces. ¡muy bien!
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 36% de textos sospechosos
+  - 25% de similitudes con otros documentos
+  - 16% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 1% idiomas no reconocidos
+  - 2% de citas atribuídas (citas expresas)

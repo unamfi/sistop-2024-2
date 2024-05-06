@@ -85,3 +85,17 @@ parte de tus compañeros:
   /qué es Docker/ y /cómo es que está implementado/. Desde el principio
   comienzas con un  /cómo funciona/, pero sin pasar con /para qué es/, /qué
   problema busca resolver/, o algo porel estilo.
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 46% de textos sospechosos
+  - 5% de similitudes con otros documentos
+  - 42% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 2% idiomas no reconocidos
+  - <1% de citas atribuídas (citas expresas)
