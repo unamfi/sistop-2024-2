@@ -1,0 +1,158 @@
+#+title: Proyecto 2: (Micro) sistema de archivos multihilos
+
+#+BEGIN_SRC yaml
+Planteamiento: 2024.15.07
+Entrega: 2024.05.19
+#+END_SRC
+
+# ¡Las [[./calificaciones.org][calificaciones y comentarios]] ya están disponibles!
+
+** Descripción del proyecto
+
+El paro de actividades nos cambió el ritmo, y nos obliga a meter
+acelerador y combinar evaluaciones.
+
+Trabajaremos este proyecto conjunto para las últimas dos unidades:
+
+- Sistemas de archivos :: Resulta natural que el proyecto sea
+  implementar un sistema de archivos 😉 Para esto, lo harán trabajando
+  sobre una /especificación/ y sobre un /caso de referencia/.
+- Administración de procesos :: Para esta unidad toca dividir la
+  lógica de un proceso en sus componentes /concurrentes/, buscando que
+  se comuniquen los cambios de estado empleando /mecanismos de
+  sincronización/.
+
+** ¿Qué tengo que hacer?
+
+Lo que ustedes deben desarrollar es un programa que pueda obtener,
+crear y modificar información en el micro-sistema-de-archivos de la
+Facultad de Ingeniería, =FiUnamFS=.
+
+Siguiendo la especificación que aparece en la siguiente sección,
+tienen que desarrollar un programa que pueda:
+
+1. Listar los contenidos del directorio
+2. Copiar uno de los archivos de dentro del =FiUnamFS= hacia tu sistema
+3. Copiar un archivo de tu computadora hacia tu =FiUnamFS=
+4. Eliminar un archivo del =FiUnamFS=
+5. El programa que desarrollen debe contar, por lo menos, dos hilos de
+   ejecución, operando /concurrentemente/, y que se /comuniquen su
+   estado/ mediante mecanismos de sincronización.
+
+*** Sistema muestra
+
+Para verificar su implementación, pueden [[./fiunamfs.img][descargar un sistema de
+archivos ejemplo]] que cumple con el planteamiento. Verifiquen que
+pueden realizar todas las tareas que les solicité con éste. Indíquenme
+— ¿Cuáles son los contenidos del /«disco»/?
+
+** Especificación de =FiUnamFS=
+
+- El sistema de archivos cabe en un /diskette/ tradicional. Claro, no
+  espero que tengan acceso al hardware, por lo que lo simularemos
+  representándolo en un archivo de longitud fija, de 1440 Kilobytes
+- Por simplicidad, en todas las estructuras de FIUnamFS, las cadenas
+  de texto deben ser ASCII 8-bit (/no/ requerimos que sean Unicode
+  UTF-8).
+- En las estructuras del disco, todos los enteros serán representados
+  como valores de 32 bits, en formato /little endian/.
+  - Esto es, por ejemplo: El valor =1354= se representará como los
+    bytes =(74, 5, 0, 0)= (porque =((0 * 256 + 0) * 256 + 5) * 256 +
+    74 = 1354=). El valor =1234567890= se representará como los bytes
+    =210, 2, 150, 7= (porque =((7 * 256 + 150) * 256 + 2) * 256 + 210
+    = 1234567890=.
+  - Para hacer las conversiones desde o hacia este formato, les
+    sugiero usar el formato =<I= con las funciones =pack()= y
+    =unpack()=, disponibles en distintos lenguajes ([[https://docs.python.org/3/library/struct.html][Python:
+    struct.pack()]], [[https://ruby-doc.com/core/Array.html#method-i-pack][Ruby: Array#pack()]], [[https://perldoc.perl.org/perlpacktut][Perl: pack()]], [[https://www.php.net/manual/en/function.pack.php][PHP: pack()]], hay
+    varias biblitecas que pueden usar para Javascript, como
+    [[https://github.com/pgriess/node-jspack][node-jspack]] o [[https://github.com/ryanrolds/bufferpack][bufferpack]]). Si van a usar C o C++, les sugiero
+    revisar las funciones [[https://linux.die.net/man/3/htons][htons() y ntohs()]]. ¿Java? Si bien no forman
+    parte del lenguaje, pueden encontrar [[https://stackoverflow.com/questions/2675957/java-implementing-htonl#15547976][varias]] [[https://coderanch.com/t/366549/java/Java-equivilent-functions-htonl-ntohl][implementaciones]] de
+    =htons()= y =ntohs()= en la red.
+- La superficie del disco se divide en sectores de 512 bytes. Cada
+  /cluster/ mide cuatro sectores.
+- El pseudodispositivo no maneja /tabla de particiones/, sino que
+  hospeda directamente un /volumen/ en la totalidad de su espacio.
+- =FiUnamFS= maneja únicamente un /directorio plano/, no se consideran
+  subdirectorios.
+- El primer cluster (#0) del pseudodispositivo es el
+  /superbloque/. Este contiene información en los siguientes bytes:
+  - 0--8 :: Para identificación, el nombre del sistema de
+            archivos. ¡Debes validar nunca modificar un sistema de
+            archivos que no sea el correcto! Debe ser la cadena =FiUnamFS=.
+  - 10--14 :: Versión de la implementación. Estamos implementando la
+    versión =24-2= (ojo, es una /cadena/, no un número). Deben validar
+    que el sistema de archivos a utilizar sea de esta versión, para
+    evitar la corrupción de datos.
+  - 20--35 :: Etiqueta del volumen
+  - 40--44 :: Tamaño del cluster en bytes
+  - 45--49 :: Número de clusters que mide el directorio
+  - 50--54 :: Número de clusters que mide la unidad completa
+  El resto del superbloque puede quedar vacío (o puedes
+  /sobrecargarlo/ con otros datos  — No es importante para la
+  implementación.
+
+- El sistema de archivos es de /asignación contigua/. Toda la
+  información de los archivos está en el directorio.
+- El directorio está ubicado en los clusters 1 a 4. Cada entrada del
+  directorio mide 64 bytes, consistentes en:
+  - 0 :: Tipo de archivo. Dado que el sistema de archivos actual no
+    tien soporte para directorios, dispositivos, pipes, ni otros
+    archivos especiales, siempre será el caracter =-= (=0x2d=,
+    =45=). Cuando la entrada está vacía, se indica con el caracter =/=
+    (=0x2f=, =47=).
+  - 1--15 :: Nombre del archivo
+  - 16--20 :: Tamaño del archivo, en bytes
+  - 20--23 :: Cluster inicial
+  - 24--37 :: Hora y fecha de creación del archivo, especificando
+              AAAAMMDDHHMMSS (p.ej. '20221108182600' para 2022-11-08
+	     18:26:00)
+  - 38-51 :: Hora y fecha de última modificación del archivo,
+              especificando AAAAMMDDHHMMSS (p.ej. '20221109182600')
+  - 52--64 :: Espacio no utilizado (¿reservado para expansión futura?)
+- Las entradas no utilizadas del directorio se identifican porque
+  en el campo de nombre llevan la cadena =###############=.
+  - Los nombres de archivos pueden componerse de cualquier caracter
+    dentro del subconjunto ASCII de 7 bits (no acentuados, no Unicode,
+    sólo el /viejo y aburrido/ US-ASCII)
+- Es un sistema de archivos plano — No maneja subdirectorios.
+- Después del directorio, todo el espacio restante es espacio de
+  datos.
+
+
+** Calificación del proyecto
+
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+|                          | *Excelente (100%)*                                                                                                                                                                                                                                                 | *Bueno (75%)*                                                                                                                                                   | *Suficiente (50%)*                                                                                                                                               | *Insuficiente (0%)*                                                                                                        | *Peso* |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| *Proyecto*               |                                                                                                                                                                                                                                                                    |                                                                                                                                                                 |                                                                                                                                                                  |                                                                                                                            |    30% |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| /Cumplimiento/           | Se cumplen los cinco puntos planteados: Listar los contenidos, copiar un archivo de FiUNAMfs hacia tu equipo, copiar un archivo de tu equipo hacia FiUNAMfs, eliminar un archivo, sincronización entre hilos                                                       | Se cumplen cuatro de los objetivos                                                                                                                              | Se cumplen tres o dos de los objetivos                                                                                                                           | Se cumple uno solo de los objetivos o ninguno                                                                              |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| /Claridad de desarrollo/ | El código, acompañado de la documentación, resultan de clara comprensión, a pesar de cualquier nivel de complejidad que mantengan                                                                                                                                  | El código es ofuscado, dificil de seguir, pero la lectura de la documentación ayuda a hacerlo                                                                   | Es dificil comprender la forma en que se desarrolló incluso teniendo la documentación, o esta está incompleta y no cubre este aspecto                            | Imposible de comprender                                                                                                    |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| /Interfaz usuario/       | Módulo de FUSE, o interfaz gráfica/navegación textual que no requiera de ayuda para realizar las operaciones requeridas                                                                                                                                            | Interfaz gráfica / navegación textual que requiere comprender documentación; interfaz de línea de comandos sencilla o natural                                   | La interfaz usuario es suficiente para presentar y manipular los datos, pero su uso requiere comprender el código fuente                                         | El programa es imposible de utilizar exitosamente sin conocer la implementación detalladamente                             |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| *Desarrollo*             |                                                                                                                                                                                                                                                                    |                                                                                                                                                                 |                                                                                                                                                                  |                                                                                                                            |    30% |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| /Directorio de proyecto/ | El trabajo entregado consta exclusivamente del código fuente y la documentación, en una estructura acorde para su construcción/compilación, evaluación y uso directo; en caso de requerirlo, un .gitignore mantiene limpio el directorio al compilar               | Sólo el código fuente y la documentación forman parte de los commits, pero construir / ejecutar el código ensucia al repositorio (¿debería manejar .gitignore?) | El trabajo entregado incluye archivos innecesarios (como archivos objeto ya compilados o subdirectorios generados por el entorno de desarrollo empleado          | No entregó usando Git                                                                                                      |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| /Código válido/          | Al ejecutar las instrucciones documentadas, el código puede ejecutarse exitosamente al primer intento                                                                                                                                                              | Las instrucciones que forman parte de la documentación tienen que adecuarse para poder ejecutar el código, o hay errores menores que corregir para que funcione | No está documentado cómo ejecutar el código, o hay errores mayores que corregir para poder ejecutarlo                                                            | Resultó imposible probar la ejecución                                                                                      |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| /Comentarios/            | El código está comentado donde hace falta, no repite información obvia. Los comentarios ayudan a comprender la lógica, no la implementación                                                                                                                        | El código está comentado donde hace falta, pero los comentarios son excesivos: Además de la lógica general, mencionan lo obvio                                  | Hay algunos comentarios útiles en el programa, pero falta mucho para que ayude a una buena comprensión                                                           | No hay comentarios                                                                                                         |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| *Legibilidad*            |                                                                                                                                                                                                                                                                    |                                                                                                                                                                 |                                                                                                                                                                  |                                                                                                                            |    20% |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| Estructura               | El código está bien organizado y emplea un estilo de indentación de forma consistente                                                                                                                                                                              | El código está mayormente indentado; hay inconsistencias menores                                                                                                | Falta claridad en los bloques por no emplear indentación o hacerlo de forma absolutamente inconsistente                                                          |                                                                                                                            |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| Nomenclatura             | Los nombres de los símbolos (variables, funciones, métodos, clases) son claros y acorde a su función; los principales elementos están documentados expresamente                                                                                                    | Los nombres de los símbolos mencionados son claros y acorde a su función, aunque no estén documentados                                                          | Los nombres de los símbolos no son claros, pero su uso y significado forma parte de la documentación                                                             | Cuesta trabajo seguir la lógica; los símbolos empleados no tienen nombres significativos, y su función no está documentada |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| *Entrega*                |                                                                                                                                                                                                                                                                    |                                                                                                                                                                 |                                                                                                                                                                  |                                                                                                                            |    20% |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| /Documentación externa/  | Autores, estrategia, requisitos y explicación acerca del uso, descripción de la sincronización empleada, ejemplos de uso                                                                                                                                           |                                                                                                                                                                 |                                                                                                                                                                  |                                                                                                                            |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| /Entorno y dependencias/ | Presenta el entorno para el cual el programa fue escrito, detallando según sea pertinente lenguaje (incluyendo la implementación y versión mayor), principales módulos que deben ser instalados (con sus respectivas versiones), y demás instrucciones pertinentes |                                                                                                                                                                 | Indica los principales componentes requeridos para la construcción y ejecución del proyecto, pero omite detalles importantes que dificultan su exitosa ejecución |                                                                                                                            |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
+| /Historia en Git/        | El proyecto consta de un mínimo de cinco commits, con información suficientemente descriptiva para comprender el proceso de desarrollo                                                                                                                             | Consta de un mínimo de cinco commits, pero no presentan un título/comentario suficiente para entender el proceso de desarrollo                                  | La entrega consta de un sólo commit, no permite entender el proceso de desarrollo del proyecto                                                                   | No entregó usando Git                                                                                                      |        |
+|--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------+--------|
