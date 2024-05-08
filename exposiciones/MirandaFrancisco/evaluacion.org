@@ -10,7 +10,7 @@
 |------------------------+------+--------------------+------+---------|
 | Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
 |------------------------+------+--------------------+------+---------|
-|                    9.2 |  0.3 |                  5 |  0.7 |    6.26 |
+|                    9.2 |  0.3 |               8.25 |  0.7 |    8.54 |
 |------------------------+------+--------------------+------+---------|
 #+TBLFM: @2$5=$1*$2+$3*$4;f-2
 
@@ -58,7 +58,6 @@ parte de tus compañeros:
 | Presencia                        |   0.15 |           10 |      1.5 |
 |----------------------------------+--------+--------------+----------|
 | *Global*                         |        |              |     8.25 |
-| *Corrregido ☹ (ver comentarios)* |        |              |      5.0 |
 #+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
 
 ** Comentarios
@@ -69,13 +68,27 @@ parte de tus compañeros:
 - Me parece muy notable cómo desarrollaste una exposición parafraseando lo que
   presentas por escrito. Si bien sigues el guión, no te mantienes estrictamente
   dentro de los límites que te da.
-- Verifiqué el texto que enviaste con uno de los servicios disponibles
-  para detección de plagios en la UNAM, y me arrojó un *53%* de
-  contenido copiado textualmente de distintas páginas:
+- +Verifiqué el texto que enviaste con uno de los servicios disponibles+
+  +para detección de plagios en la UNAM, y me arrojó un *53%* de+
+  +contenido copiado textualmente de distintas páginas:+
 
   [[./reporte_plagio.png]]
 
-  Comprenderás que no puedo evaluarte con más de 5.0 ☹
+  +Comprenderás que no puedo evaluarte con más de 5.0 ☹+
+- Estuve dándole vueltas al asunto, y decidí /revertir mi decisión/:
+  Te voy a dar la calificación completa. Pero mantengo el comentario
+  para mantenerlo como una nota explícita y consciente
+  - El hecho es que más de la mitad del texto de tu artículo está
+    /directamente copiado/. Eso es claramente /plagio/, y es una
+    práctica que debes evitar, ya sea /dando atribución clara y
+    correcta/, o aprendiendo a /refrasear/ la información que copias.
+  - Sin embargo, el trabajo de investigación que hiciste /no es/ un
+    copiado y pegado:
+    - Te informaste en 8 distintas fuentes, y /armaste tu documento/
+      con ellas. Indudablemente hay trabajo original.
+    - La mayoría de los textos copiados son cortos (≤5% de tu texto
+      total), sólo dos de los documentos aportaron más del 10% de tu
+      texto resultante.
 
 * Verificación de originalidad
 
