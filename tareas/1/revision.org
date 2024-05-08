@@ -374,7 +374,7 @@
        ---BBBBCCCCCCDDEEEFFF---HHHIII
       Asignar (0) o Liberar (1) o Salir (2):
     #+end_src
-- Calificación :: 
+- Calificación :: 8
 
 ** Miguel Hernandez y Adrian Pacheco
 - Archivos :: [[./HernandezMiguel-PachecoAdrian/T1.py][T1.py]]
@@ -488,7 +488,7 @@
     la firma de ninguna de tus funciones (p.ej. con =-> Self=), resulta más
     sencillo comentar la llamada a =typing_extensions= que instalarlo en mi
     sistema 😉
-- Calificación :: 
+- Calificación :: 10
 
 ** Martin Mendoza
 - Archivos :: [[./MendozaMartin/Memory.c][Memory.c]]
