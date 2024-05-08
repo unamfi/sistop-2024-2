@@ -1,0 +1,88 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Ataque a la cadena de suministros de xz
+
+- Tema presentado por :: Armando Cruz y Ángel Iñaki Díaz González
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                   9.07 |  0.3 |               7.38 |  0.7 |    7.89 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 1 | 2 |  9.33 |
+| Nivel        | 0 | 0 | 0 | 1 | 2 |  9.33 |
+| Relevancia   | 0 | 0 | 1 | 0 | 2 |  8.67 |
+| Claridad     | 0 | 0 | 0 | 1 | 2 |  9.33 |
+| Presencia    | 0 | 0 | 0 | 2 | 1 |  8.67 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.07 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |            5 |       1. |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |            5 |     0.75 |
+| Presencia              |   0.15 |          7.5 |    1.125 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     7.38 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+- Le falta fluidez a su presentación: Parecería que van leyendo
+  material con el que no están del todo familiarizados.
+  - Antes de grabar, conviene repasar el texto lo suficiente para que
+    pueda leerse de forma fluida; en caso opuesto, hace difícil que
+    sus compañeros mantengan su atención
+  - Reconozco como punto positivo: Hacen lo posible por no leer
+    textualmente del documento. Sin embargo, la falta de fluidez
+    “domina”. ☹
+- El tema que eligieron es complejo y novedoso. Les reconozco que
+  hicieron una buena investigación con los datos disponibles hoy por
+  hoy. Sin embargo, para explicar los puntos necesarios a sus
+  compañeros, falta explicar con claridad qué es un ataque a cadenas
+  de suministro, y por qué este ataque se clasifica de esa manera.
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 33% de textos sospechosos
+  - 11% de similitudes con otros documentos
+  - 22% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 6% idiomas no reconocidos
+  - 4% de citas atribuídas (citas expresas)

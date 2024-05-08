@@ -1,0 +1,92 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Ingeniería inversa
+
+- Tema presentado por :: Ricardo Pineda
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                   9.83 |  0.3 |                  9 |  0.7 |    9.25 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 1 | 6 |  9.71 |
+| Nivel        | 0 | 0 | 0 | 0 | 7 | 10.00 |
+| Relevancia   | 0 | 0 | 0 | 1 | 6 |  9.71 |
+| Claridad     | 0 | 0 | 0 | 0 | 7 | 10.00 |
+| Presencia    | 0 | 0 | 0 | 1 | 6 |  9.71 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.83 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Ese compañero es un gran expositor, tiene una voz tan llamativa y
+  encantadora ��
+- Fue una muy buena exposición, ya que además de cumplir con los
+  puntos de evaluación, nos presenta un área de la ingeniería que está
+  enfocada a la seguridad de la computadora, tema que nos debe
+  preocupar si estamos estudiando para proteger los datos que están
+  dentro de nuestros dispositivos. Aunado a ello, la presentación a mi
+  gusto está bien equilibrada entre información y diseño (simple y
+  directo). ¡Mis felicitaciones para el compañero!
+- Me gusto mucho la presentación estilo retro, creo que da mucha vista
+  a la exposición, las ideas son claras y el tema es de bastante
+  importancia para la comunidad. La presentación esta muy bien, solo
+  que en algunas diapositivas visualmente solo se encuentra el título
+  de ella y a mi parecer debería de por lo menos llevar una o dos
+  líneas, por lo menos para que el que esta viéndola no se pierda en
+  la gran explicación que nos brinda el expositor.
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |           10 |       2. |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |            5 |      0.5 |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     9.00 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- ¡Muy buena exposición! Se nota que es un tema que te gusta, te
+  apasiona, y has aprendido por tu cuenta.
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 20% de textos sospechosos
+  - 9% de similitudes con otros documentos
+  - 11% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 2% idiomas no reconocidos
+  - 0% de citas atribuídas (citas expresas)
