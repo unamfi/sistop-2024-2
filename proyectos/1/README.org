@@ -1,4 +1,4 @@
-#+title: Proyecto 2: (Micro) sistema de archivos multihilos
+#+title: Proyecto: (Micro) sistema de archivos multihilos
 
 #+BEGIN_SRC yaml
 Planteamiento: 2024.15.07
