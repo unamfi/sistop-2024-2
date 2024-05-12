@@ -37,8 +37,8 @@ class File():
         start = self.initial_cluster * self.cluster_size
         
         try:
-            '''Si la lectura es correcta se retorna el contenido leído 'content'
-               si presenta fallos en el proceso retorna 'None' '''
+            # Si la lectura es correcta se retorna el contenido leído 'content'
+            # si presenta fallos en el proceso retorna 'None'
             with open('fiunamfs.img', 'rb') as FiUnamFS:
                 FiUnamFS.seek(start)
                 content = FiUnamFS.read(self.size + 1)
@@ -117,8 +117,8 @@ class FiUnamFS():
             return content.decode('ascii')
     
 
-    '''Retorna una lista de objetos 'File' equivalentes a los archivos contenidos
-       en el directorio.'''
+    '''Retorna una lista de objetos 'File' equivalentes a los archivos (entradas)
+       contenidos en el directorio.'''
     def getFiles(self) -> list:
 
         num_files = (self.cluster_size * self.num_clusters) // self.directory_entry_size
@@ -140,3 +140,87 @@ class FiUnamFS():
                 )
         
         return files
+    
+    '''Copia un archivo de fuera del directorio 'FiUnamFS' hacia dentro de
+       este mismo, requiere la ubicación del archivo en la computadora
+       incluyendo el nombre del archivo a copiar ej: '/d:archivos/archivo.jpg'''
+    def copyFromSystem(self, path:str):
+
+        # Tamaño del archivo a copiar
+        new_file_size = os.path.getsize(path)
+
+        # Obtenemos el cluster inicial de donde se comenzará a
+        # alamacenar el contenido del archivo a copiar.
+        start = self._searchSpace(new_file_size)
+        print(f'se pego en cluster inicial = {start}')
+        if start != None:
+            # Movemos nuestro 'apuntador' a donde inicia el cluster obtenido
+            # (cluster inicial * tamaño de cluster)
+            start *= self.cluster_size
+            content = self._getContentFile(path)
+
+            try:
+                with open(self.path, 'wb') as new_file:
+                    new_file.seek(start)
+                    new_file.write(content)
+                
+                # Si se copio con éxito
+                return True
+            except:
+                print('Error al copiar contenido.')
+                return False
+            
+        print('No existe espacio suficiente para copiar el archivo.')
+        return False
+
+
+    def _searchSpace(self, new_file_size:int):
+
+       files_in_fiunamfs = self.getFiles()
+       clusters_taken = []
+       all_clusters = [i for i in range(self.num_total_clusters)]
+       necessary_clusters = math.ceil(new_file_size / self.cluster_size)
+       
+       for file in files_in_fiunamfs:
+           clusters_taken.extend(file.getClustersTaken()[1])
+       
+       # Elimina de 'all_clusters' todos aquellos clusters que esten ocupados. 
+       for i in clusters_taken:
+           if i in all_clusters:
+               all_clusters.remove(i)
+
+       # Buscamos una cantidad de clusters consecutivos del tamaño
+       # necesario para almacenar el archivo nuevo (necessary_clusters).
+       index = self._consecutiveSequence(all_clusters, necessary_clusters)
+       if index != None:
+           
+           # Retorna el que deberá ser el cluster inicial
+           return all_clusters[index]
+       
+       return None
+           
+        
+    '''Busca una secuencia consecutiva de números en una lista, si la busqueda
+       es exitosa retorna el índice de la lista donde inicia la secuencia.'''
+    def _consecutiveSequence(self, lista, n):
+
+        for i in range(len(lista) - n + 1):
+            if all(lista[i + j] == lista[i] + j for j in range(n)):
+                return i
+              
+        # Si no se encuentra ninguna secuencia consecutiva, devuelve None
+        return None
+    
+
+    '''Obtiene el contenido de un archivo leído en modo binario. El archivo
+       que se lee, es ajeno al directorio 'FiUnamFS', es decir, se encuentra
+       fuera de este.'''
+    def _getContentFile(self, path):
+        
+        try:
+            with open(path, 'rb') as file:
+                content = file.read()
+            return content
+        
+        except:
+            return None
