@@ -1,17 +1,10 @@
-import struct
+from models import FiUnamFS
 
-''' 'readDirectory' retorna un dato de tipo <str> o bien <int> decimal según 
-    lo que encuentre en el directorio mediante una lectura en modo binario a 
-    partir una posición y desplazamiento definidos. '''
-def readDirectory(name:str, start:int, size:int):
+directory_path = 'D:/workspace/sistemasOp/sistop-2024-2/proyectos/1/FiUnamFS.img'
 
-    with open(name, 'rb') as FiUnamFS:
-        FiUnamFS.seek(start)
-        content = FiUnamFS.read(size)
+fiunamfs = FiUnamFS(path = directory_path, directory_entry_size = 64)
+fiunamfs.showDetails()
 
-    try:
-        c, = struct.unpack('<I', content)
-        return c
-    
-    except:
-        return content.decode('ascii')
+files = fiunamfs.getFiles()
+for file in files:
+    print(file)
