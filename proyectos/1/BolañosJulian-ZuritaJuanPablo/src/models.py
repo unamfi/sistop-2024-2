@@ -1,6 +1,7 @@
 import os
 import math
 import struct
+from datetime import datetime
 
 class File():
 
@@ -126,16 +127,16 @@ class FiUnamFS():
         files = []
 
         for i in range(num_files):
-            file_name = self._readDirectory(start + (i * 64), 15)
+            file_name = self._readDirectory(start + (i * self.cluster_size), 15+1)
             
             if '-' in file_name:            
                 files.append(
                     File(
                         name = file_name[1:].strip(),
-                        size = self._readDirectory(start + (i * 64) + 16, 4),
-                        initial_cluster = self._readDirectory(start + (i * 64) + 20, 4),
-                        creation_date = self._readDirectory(start + (i * 64) + 24, 14),
-                        update_date = self._readDirectory(start + (i * 64) + 38, 14)
+                        size = self._readDirectory(start + (i * self.directory_entry_size) + 16, 4),
+                        initial_cluster = self._readDirectory(start + (i * self.directory_entry_size) + 20, 4),
+                        creation_date = self._readDirectory(start + (i * self.directory_entry_size) + 24, 14),
+                        update_date = self._readDirectory(start + (i * self.directory_entry_size) + 38, 14)
                     )
                 )
         
@@ -151,20 +152,21 @@ class FiUnamFS():
 
         # Obtenemos el cluster inicial de donde se comenzará a
         # alamacenar el contenido del archivo a copiar.
-        start = self._searchSpace(new_file_size)
-        print(f'se pego en cluster inicial = {start}')
-        if start != None:
+        initial_cluster = self._searchSpace(new_file_size)
+        print(f'se pego en cluster inicial = {initial_cluster}')
+        if initial_cluster != None:
             # Movemos nuestro 'apuntador' a donde inicia el cluster obtenido
             # (cluster inicial * tamaño de cluster)
-            start *= self.cluster_size
+            start = self.cluster_size * initial_cluster
             content = self._getContentFile(path)
 
             try:
-                with open(self.path, 'wb') as new_file:
+                with open(self.path, 'rb+') as new_file:
                     new_file.seek(start)
                     new_file.write(content)
                 
                 # Si se copio con éxito
+                self._insertIntoDirectory(path, initial_cluster)
                 return True
             except:
                 print('Error al copiar contenido.')
@@ -185,6 +187,11 @@ class FiUnamFS():
            clusters_taken.extend(file.getClustersTaken()[1])
        
        # Elimina de 'all_clusters' todos aquellos clusters que esten ocupados. 
+       all_clusters.remove(0)
+       all_clusters.remove(1)
+       all_clusters.remove(2)
+       all_clusters.remove(3)
+       all_clusters.remove(4)
        for i in clusters_taken:
            if i in all_clusters:
                all_clusters.remove(i)
@@ -224,3 +231,49 @@ class FiUnamFS():
         
         except:
             return None
+    
+
+    '''Inserta dentro del directorio 'FiUnamFS' los datos de entrada del archivo
+       a copiar, busca espacio disponible entre los cluster 1-4.'''
+    def _insertIntoDirectory(self, path:str, cluster:int) -> bool:
+
+        # Buscamos algún espacio (64 bytes) para colocar la esntrada
+        num_files = (self.cluster_size * self.num_clusters) // self.directory_entry_size
+        start = self.cluster_size
+        
+        for i in range(num_files):   
+            file_name = self._readDirectory(start + (i * self.directory_entry_size), 15)
+            
+            if '/' in file_name:
+
+                # Si hay espacio disponible, entences obtenemos los datos del
+                # archivo que está en la computadora
+                name = ('-' + os.path.basename(path)).encode('utf-8')
+                size = struct.pack('<I', os.path.getsize(path))
+                initial_cluster = struct.pack('<I', cluster)
+
+                # Obtener la fecha de creación del archivo y formatearla
+                initial_date = datetime.fromtimestamp(os.path.getctime(path)).strftime('%Y%m%d%H%M%S').encode('utf-8')
+
+                # Obtener la fecha de última modificación del archivo y formatearla
+                update_date = datetime.fromtimestamp(os.path.getmtime(path)).strftime('%Y%m%d%H%M%S').encode('utf-8')
+
+                start = self.cluster_size + (i * self.directory_entry_size)
+                with open(self.path, 'rb+') as _FiUnamFS:
+                    _FiUnamFS.seek(start, 0)
+                    _FiUnamFS.write(name)
+
+                    _FiUnamFS.seek(start + 16, 0)
+                    _FiUnamFS.write(size)
+
+                    _FiUnamFS.seek(start + 20, 0)
+                    _FiUnamFS.write(initial_cluster) 
+
+                    _FiUnamFS.seek(start + 24, 0)
+                    _FiUnamFS.write(initial_date)  
+
+                    _FiUnamFS.seek(start + 38, 0)
+                    _FiUnamFS.write(update_date)
+
+                break
+            
