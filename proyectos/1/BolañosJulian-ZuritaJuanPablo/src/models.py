@@ -127,7 +127,7 @@ class FiUnamFS():
         files = []
 
         for i in range(num_files):
-            file_name = self._readDirectory(start + (i * self.cluster_size), 15+1)
+            file_name = self._readDirectory(start + (i * self.directory_entry_size), 15+1)
             
             if '-' in file_name:            
                 files.append(
