@@ -1,5 +1,6 @@
 import os
 import math
+import struct
 
 class File():
 
@@ -72,3 +73,70 @@ class File():
             clusters_taken.append(i)
 
         return (num_clusters_taken, clusters_taken)
+
+
+class FiUnamFS():
+
+    def __init__(self, path:str, directory_entry_size:int) -> None:
+        self.path = path
+        self.system_name = self._readDirectory(0, 8)
+        self.version = self._readDirectory(10, 4)
+        self.volumen_label = self._readDirectory(20, 15)
+        self.cluster_size = self._readDirectory(40, 4)
+        self.num_clusters = self._readDirectory(45, 4)
+        self.num_total_clusters = self._readDirectory(50, 4)
+        self.directory_entry_size = directory_entry_size
+    
+    def __str__(self) -> str:
+        return self.system_name
+    
+    def showDetails(self) -> None:
+        print(f'Nombre Directorio: {self.system_name}\n' +
+              f'Version: {self.version}\n' +
+              f'Etiqueta de Volumen: {self.volumen_label}\n' +
+              f'Tamaño de Cluster: {self.cluster_size}\n' +
+              f'Num de Clusters: {self.num_clusters}\n' +
+              f'Num Total de Clusters: {self.num_total_clusters}'
+            )
+    
+
+    ''' 'readDirectory' retorna un dato de tipo <str> o bien <int> decimal según 
+        lo que encuentre en el directorio mediante una lectura en modo binario a 
+        partir una posición y desplazamiento definidos. '''
+    def _readDirectory(self, start:int, reading_size:int):
+
+        with open(self.path, 'rb') as _FiUnamFS:
+            _FiUnamFS.seek(start)
+            content = _FiUnamFS.read(reading_size)
+
+        try:
+            c, = struct.unpack('<I', content)
+            return c
+        
+        except:
+            return content.decode('ascii')
+    
+
+    '''Retorna una lista de objetos 'File' equivalentes a los archivos contenidos
+       en el directorio.'''
+    def getFiles(self) -> list:
+
+        num_files = (self.cluster_size * self.num_clusters) // self.directory_entry_size
+        start = self.cluster_size
+        files = []
+
+        for i in range(num_files):
+            file_name = self._readDirectory(start + (i * 64), 15)
+            
+            if '-' in file_name:            
+                files.append(
+                    File(
+                        name = file_name[1:].strip(),
+                        size = self._readDirectory(start + (i * 64) + 16, 4),
+                        initial_cluster = self._readDirectory(start + (i * 64) + 20, 4),
+                        creation_date = self._readDirectory(start + (i * 64) + 24, 14),
+                        update_date = self._readDirectory(start + (i * 64) + 38, 14)
+                    )
+                )
+        
+        return files
