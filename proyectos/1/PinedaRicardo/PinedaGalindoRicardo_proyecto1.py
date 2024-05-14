@@ -4,8 +4,8 @@
     Última Modificación: 13/05/2024
     Primera modificación: Creación de la función para listar el contenido y otra función para mostrar la 
     información del sistema
-    Segunda modificación: Reestructuración del código modularizando las funciones y creación de la función
-    para borrar los archivos del sistema de archivos
+    Segunda modificación: Reestructuración del código modularizando las funciones, creación de la función
+    para borrar los archivos del sistema de archivos y otra función para copiar archivos del sistema a la computadora
 
     NOTA: Aún no se implementan hilos, primero debe funcionar bien el programa
 
