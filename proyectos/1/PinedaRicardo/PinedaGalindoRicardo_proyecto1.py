@@ -10,7 +10,9 @@
     NOTA: Aún no se implementan hilos, primero debe funcionar bien el programa
 
 """
-from os import path #Se va a utilizar para ver si las rutas dadas existen o no en la computadora
+from os import path #Se va a utilizar para ver si las rutas dadas existen o no en la computadora y obtener información de los archivos
+from time import localtime,strftime #Esto me sirve para convertir los objetos que contienen las fechas de los archivos de la compu en cadenas
+from operator import itemgetter #Me permite ordenar el diccionario utilizando los valores
 
 #Parte 1: Definición de funciones para poder leer la informacion de la imagen del sistema de archivos
 """
@@ -34,32 +36,35 @@ def leer_numEntero(desplazamiento,cantidadBytes):
         imagen.close()
     return numero
 
-def getInformacion(desplazamiento,cantidadBytes): #Se va a extraer la información de n bytes y se va a regresar
-    with open(rutaImagen,'rb') as imagen: #para poder copiar el contenido de un archivo del sistema a la computadora
+def getInformacion(desplazamiento,cantidadBytes,ruta): #Se va a extraer la información de n bytes y se va a regresar
+    with open(ruta,'rb') as imagen: #para poder copiar el contenido de un archivo del sistema a la computadora
         imagen.seek(desplazamiento)
         contenido = imagen.read(cantidadBytes)
         imagen.close()
     return contenido
 
-def leerDirectorio(entradaConInfo,entradaSinInfo):
+def leerDirectorio(entradaConInfo,entradaSinInfo,espacioOcupado):
     inicio = 2048 #El inicio del directorio empieza en el cluster 1
+    infoArchivos.clear()
     while True:
+        if inicio == 5*tamCluster: break #Esto evita que se lea más allá de los 4 clusters para el directorio
         tipoArchivo = leer_texto(inicio,1) #Si es una "/" entonces no hay nada, de lo contrario esta ocupado
-        if tipoArchivo == '\x00': #Cuando ya no hay archivos, el primer caracter que se lee es este y por eso se compara
-            break
+        if tipoArchivo == '\x00': break#Cuando ya no hay archivos, el primer caracter que se lee es este y por eso se compara
         elif tipoArchivo == '-': #Si el archivo tiene contenido entonces procede a obtener la información faltante
             nombreArchivo = leer_texto(inicio+1,14)   
             tamArchivo = leer_numEntero(inicio+16,4)
             clusterInicial = leer_numEntero(inicio+20,4)
             horaCreacion = leer_texto(inicio+24,13)
             horaModificacion = leer_texto(inicio+38,13)
-            infoArchivos[nombreArchivo] = [tamArchivo,clusterInicial,horaCreacion,horaModificacion,inicio]
+            espacioOcupado += tamArchivo
+            if nombreArchivo not in infoArchivos.keys():
+                infoArchivos[nombreArchivo] = [tamArchivo,clusterInicial,horaCreacion,horaModificacion,inicio]
             #Se guarda el inicio de la entrada de los archivos para acceder más fácil en el directorio
             entradaConInfo += 1
         else:
             entradaSinInfo += 1
         inicio += 64 #Se desplaza 64 bytes para leer la siguiente entrada
-    return entradaConInfo,entradaSinInfo
+    return entradaConInfo,entradaSinInfo,espacioOcupado
 
 def limpiarPantalla():
     print(chr(27) + "[2J" + chr(27) + "[H") #Esto fue proporcionado por el profesor
@@ -88,13 +93,23 @@ def escribirEnDirectorio(desplazamiento,tipo,nombre,tam,clusterInicial,horaCreac
     escribirTexto(horaCreacion,desplazamiento+24)
     escribirTexto(horaModificacion,desplazamiento+38)
 
+def escribirEnDatos(desplazamiento,cantidadBytes,rutaArchivo,modo):
+    if modo == 0: #Con este modo se va a leer la información de un archivo y se va a guardar en la imagen del sistema
+        contenido = getInformacion(0,cantidadBytes,rutaArchivo)
+    if modo == 1: #Con este modo se va a sobreescribir la información en el espacio de datos por caracteres nulos
+        contenido = b'\x00'*cantidadBytes
+    with open(rutaImagen,'rb+') as imagen:
+        imagen.seek(desplazamiento)
+        imagen.write(contenido)
+        imagen.close()
+
 #Parte 3: Definición del menú 
 def imprimirMenu():
     #Ponerlo mas bonito despues
     print(espacio + "Manejador del Sistema de Archivos")
     print(espacio + "1. Listar los contenidos del directorio")
-    print(espacio + "2. Copiar uno de los archivos de dentro del FiUnamFS hacia tu sistema")
-    print(espacio + "3. Copiar un archivo de tu computadora hacia tu FiUnamFS")
+    print(espacio + "2. Copiar un archivo del sistema FiUnamFS hacia tu computadora")
+    print(espacio + "3. Copiar un archivo de tu computadora hacia el sistema FiUnamFS")
     print(espacio + "4. Eliminar un archivo del FiUnamFS")
     print(espacio + "5. Mostrar información del sistema")
     print(espacio + "6. Salir del programa")
@@ -102,7 +117,8 @@ def imprimirMenu():
 #Parte 4: Definición de funciones para poder trabajar con la informacion de la imagen del sistema de archivos
 
 def listarContenido():
-    print("Entradas Ocupadas: " + str(archivos) + "|| Entradas Disponibles: " + str(archivosLibres))
+    print(espacio + "Entradas Ocupadas: " + str(archivos) + "    || Entradas Disponibles: " + str(archivosLibres) )
+    print(espacio + "Espacio Disponible: " + str(espacioLibre) + " Bytes  || Espacio Ocupado: " + str(espacioNoLibre) + " Bytes\n\n")
     for i,llave in enumerate(infoArchivos.keys()):
         print(espacio + str(i+1) + ". " + llave)
         print(espacio + ("."*5) + "Tamaño: " + str(infoArchivos[llave][0]) + " bytes")
@@ -119,7 +135,7 @@ def copiarArchivoACompu():
     nombreArchivo = archivos[opcion][1] #Se obtiene el nombre para poder obtener su información del diccionario
     tamArchivo = infoArchivos[nombreArchivo][0]#Se obtiene para saber cuantos bytes va a leer de la imagen
     clusterInicio = infoArchivos[nombreArchivo][1] #Se obtiene para indicar a que byte desplazar el apuntador
-    contenido = getInformacion(clusterInicio*tamCluster,tamArchivo)
+    contenido = getInformacion(clusterInicio*tamCluster,tamArchivo,rutaImagen)
     ruta = input("\n\nEscribe la ruta hacia donde quieras guardar el archivo: ")
     if path.exists(ruta) == False: #Esta condición solo es para entrar en el while y poder escribir la ruta varias veces
         print("Error 5: La ruta proporcionada no existe, revisa que la hayas escrito bien.")
@@ -135,17 +151,89 @@ def copiarArchivoACompu():
     print("El archivo se ha copiado con éxito!!")
 
 def copiarArchivoASistema():
-#PENDIENTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+#Ya se ocuparon 5 clusters: 0,1,2,3 y 4 Por lo tanto, hay 10239 bytes apartados
+#En total hay 1,464,320 bytes libres para información (720 clusters * 2048 c/u - 5 * 2048 c/u)
     rutaArchivo = input("Escriba la ruta del archivo que desea copiar al sistema de archivos:")
     if path.exists(rutaArchivo) == False: 
         print("Error 5: La ruta proporcionada no existe, revisa que la hayas escrito bien.")
         input("Presiona enter para continuar...")
         limpiarPantalla()
-        rutaArchivo = input("\n\nEscribe la ruta hacia donde quieras guardar el archivo: ")
+        rutaArchivo = input("\n\nEscribe la ruta hacia donde quieras guardar el archivo:  ")
         if path.exists(rutaArchivo) == False: #Solo tiene 2 oportunidades para escribir bien la ruta
             print("\n\nError 5: La dirección ingresada no existe, regresando al menú")
             return -1 #Indica una manipulación incorrecta del programa
+    tamArchivo = path.getsize(rutaArchivo) #Se guarda esta información antes de dividir la cadena de la ruta
+    if revisarEspacioParaDatos(tamArchivo):#Si el archivo se puede guardar en el sistema, va a revisar el formato del nombre
+        rutaArchivo = rutaArchivo.split('\\')
+        nombreArchivo =  rutaArchivo[-1] #Se divide la cadena solo para obtener el nombre que está en la última posición de la lista
+        if nombreArchivo.isascii() == False:
+            print("Error 8: El nombre del archivo solo puede contener caracteres pertenecientes a ASCII")
+            return False
+        tamNombre = len(nombreArchivo)
+        if tamNombre < 14:
+            tamNombre = 14 - tamNombre
+            nombreArchivo += " " * tamNombre
+        rutaArchivo = chr(92).join(rutaArchivo)
+        #Mientras se va asumir que ya está bien el formato
+        horaCreacion = strftime("%Y%m%d%H%M%S",localtime(path.getctime(rutaArchivo)))
+        horaModificacion = strftime("%Y%m%d%H%M%S",localtime(path.getmtime(rutaArchivo)))
+        #Ya solo falta ver el cluster donde se va a almacenar
+        desplazamientoDatos,clusterInicial = asignacionDeEspacioDatos(tamArchivo)
+        desplazamientoDirectorio = asignacionEspacioDirectorio()
+        escribirEnDirectorio(desplazamientoDirectorio,'-',nombreArchivo,tamArchivo,clusterInicial,horaCreacion,horaModificacion)
+        escribirEnDatos(desplazamientoDatos,tamArchivo,rutaArchivo,0)
+        print("El archivo se copió con éxito!!")
+    else:
+        return False
+        
+
+def revisarEspacioParaDatos(tamArchivo):
+    if archivosLibres == 0:  #Esto sirve para ver el espacio en el directorio
+        print("Error 6: Se ha alcanzado el límite de archivos, si desea copiar un archivo primero borre alguno del sistema")
+        return False
+    if espacioLibre - tamArchivo < 0: #Esto sirve para ver los bytes disponibles del espacio de datos
+        print("Error 7: El archivo que desea copiar al sistema es muy grande")
+        return False 
+    return True #Ya se revisó que si cabe la información del archivo tanto en el directorio como en el espacio de datos
     
+def asignacionDeEspacioDatos(tamArchivo):
+    inicio = 5 * tamCluster
+    #Primero se van a apartar los bytes de los archivos para no revisarlos en vano
+    bytesOcupados = {}
+    for contenido in infoArchivos.values():
+        bytesOcupados[contenido[0]] = contenido[1] #La lista va a guardar el tamaño del archivo y el cluster inicial
+    contador = 0 #Sirve para contar los bytes contiguos y ver si se podría guardar la información del archivo
+    with open(rutaImagen,'rb') as imagen:
+        while True:
+            if contador < tamArchivo:
+                if inicio not in bytesOcupados.keys():
+                    imagen.seek(inicio)
+                    if imagen.read(1) == b'\x00':
+                        contador += 1
+                    else:
+                        contador = 0
+                else:
+                    inicio += bytesOcupados[inicio]
+            elif contador == tamArchivo:
+                inicio -= tamArchivo #Con esto se obtiene en byte desde el cual se puede empezar a escribir la información
+                break
+            if inicio > espacioTotal: break
+            inicio += 1
+        imagen.close()
+    clusterInicial = inicio//2048
+    return inicio,clusterInicial
+
+def asignacionEspacioDirectorio():
+    inicio = tamCluster #El directorio empieza en el cluster 1
+    with open(rutaImagen,'rb+') as imagen:
+        imagen.seek(inicio)
+        caracter = (imagen.read(1)).decode("latin-1")
+        while caracter != '/' and inicio < tamCluster*5:#Esto evita que lea solo del cluster 1 al 4
+            inicio += 64
+        imagen.close()
+    return inicio #Aqui ya encontró una entrada disponible
+
+
 def eliminarArchivo():
 #Para eliminar un archivo hay que borrarlo del directorio y sustituir todo su contenido por los caracteres indicados en las especificaciones
 #del proyecto
@@ -157,6 +245,7 @@ def eliminarArchivo():
     nombreArchivo = archivos[opcion][1]
     #A continuación se va a sobreescribir toda esa entrada por los valores default de una entrada vacía
     escribirEnDirectorio(infoArchivos[nombreArchivo][4],'/',"##############",0,0,"00000000000000","00000000000000")
+    escribirEnDatos(infoArchivos[nombreArchivo][1]*tamCluster,infoArchivos[nombreArchivo][0],rutaImagen,1)
     #Falta borrar el archivo del diccionario
     infoArchivos.pop(nombreArchivo)
     print("El archivo se ha eliminado con éxito!!")
@@ -187,9 +276,14 @@ numClusters = leer_numEntero(45,4)
 clustersUnidad = leer_numEntero(50,4)
 archivos = 0 #Indica la cantidad de archivos actual en el directorio
 archivosLibres = 0 #Indica cuantas entradas sobran en el directorio
+espacioTotal = 0 #Indica el espacio disponible para guardar datos
+espacioNoLibre = 0
+espacioLibre = 0
 
 #Esto ya no es parte de la funcion, ya es el main
-archivos,archivosLibres = leerDirectorio(archivos,archivosLibres) #Se debe ir actualizando constantemente
+archivos,archivosLibres,espacioNoLibre = leerDirectorio(archivos,archivosLibres,espacioNoLibre) #Se debe ir actualizando constantemente
+espacioTotal = tamCluster * (clustersUnidad -5)
+espacioLibre = espacioTotal - espacioNoLibre
 while True:
     imprimirMenu()
     menu = int(input("\n\n"+ espacio +"Escribe la opción a la que deseas acceder: "))
@@ -202,12 +296,16 @@ while True:
         copiarArchivoASistema()
         archivosLibres = 0
         archivos = 0
-        archivos,archivosLibres = leerDirectorio(archivos,archivosLibres)
+        espacioNoLibre = 0
+        archivos,archivosLibres,espacioNoLibre = leerDirectorio(archivos,archivosLibres,espacioNoLibre)
+        espacioLibre = espacioTotal - espacioNoLibre
     elif menu == 4:
         eliminarArchivo()
         archivosLibres = 0
         archivos = 0
-        archivos,archivosLibres = leerDirectorio(archivos,archivosLibres)
+        espacioNoLibre = 0
+        archivos,archivosLibres,espacioNoLibre = leerDirectorio(archivos,archivosLibres,espacioNoLibre)
+        espacioLibre = espacioTotal - espacioNoLibre
     elif menu == 5:
         if mostrarInfoSistema() is False:
             menu = 0
