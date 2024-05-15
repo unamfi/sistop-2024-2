@@ -1,0 +1,24 @@
+#+title: Proyecto 1: FIUNAMFS
+
+#+BEGIN_SRC yaml
+Elaborado por Gerardo Torres Mayén
+#+END_SRC
+
+** Descripción del proyecto
+
+Sistema de archivos con lenguaje C y OpenMP.
+OpenMP es una API para programación concurrente y la documentación relacionada con los compiladores compatibles con openMP están en el siguiente enlace:
+
+#+BEGIN_SRC yaml
+
+https://www.openmp.org/resources/openmp-compilers-tools/
+
+#+END_SRC
+Yo utilicé el compilador GCC versión 6.3.0 y adicionalmente instalé el package 'mingw32-libpthreadgc', tengo entendido que sólo es para multithreading en Windows.
+Para compilar con GCC un archivo C que contiene directivas o funciones de openMP se usa el siguiente comando:
+
+#+BEGIN_SRC yaml
+
+gcc archivo.c -fopenmp -o ejecutable.exe
+
+#+END_SRC
