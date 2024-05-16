@@ -1,0 +1,95 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Sistemas heredados (/legacy/)
+
+- Tema presentado por :: Gerardo Arredondo
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                   9.84 |  0.3 |               8.88 |  0.7 |    9.17 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 1 | 4 |  9.60 |
+| Nivel        | 0 | 0 | 0 | 0 | 5 | 10.00 |
+| Relevancia   | 0 | 0 | 0 | 0 | 5 | 10.00 |
+| Claridad     | 0 | 0 | 0 | 1 | 4 |  9.60 |
+| Presencia    | 0 | 0 | 0 | 0 | 5 | 10.00 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.84 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- La verdad lo único a tratar es que el audio por alguna razón es demasiado
+  bajo, por lo que se llega a perder el hilo de la exposición, es un tema muy
+  complejo, pero se abordó muy bien.
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |           10 |       2. |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |          7.5 |     0.75 |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |          7.5 |    1.125 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     8.88 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+- Muy buena exposición. Presentada íntegramente con tus palabras, no leyendo del
+  texto. Hace tu exposición más “atrapante”, facilita irla siguiendo.
+- Me queda la impresión de que te refieres con “sistemas legacy” únicamente a
+  los sistemas operativos. ¡No! La complejidad estiba justo en que va mucho más
+  a profundidad que eso. Además del sistema operativo, puedes estar /acumulando
+  deuda técnica/ en el /middleware/, en el lenguaje, en el marco de desarrollo,
+  incluso en el sistema desarrollado en casa mismo
+  - Y eso me lleva a... desafortunadamente, y basado en mi experiencia, estar en
+    desacuerdo con tus conclusiones. Hoy en día hay software en ejecución en
+    entornos de producción que puede tener 50 años. En mi caso en particular,
+    tengo algunos sistemas que escribí hace 25 (¡y están mantenidos!)... Sí, por
+    las razones que mencionas. Y tal vez logremos actualizar una que otra cosas
+    de estos entornos, pero...
+
+    La tendencia es que siempre hay más desarrollos que
+    actualizaciones. Conforme pasen los años... no puedo ver que haya menos
+    legacy. Muy por el contrario.
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 0% de textos sospechosos
+  - 0% de similitudes con otros documentos
+  - 0% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 2% idiomas no reconocidos
+  - 0% de citas atribuídas (citas expresas)

@@ -1,0 +1,89 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Sistemas operativos en consolas de videojuegos
+
+- Tema presentado por :: Ernesto Quintana y Carlos Enrique Figueroa
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                    9.6 |  0.3 |                8.0 |  0.7 |    8.48 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 4 | 5 |  9.11 |
+| Nivel        | 0 | 0 | 0 | 0 | 9 | 10.00 |
+| Relevancia   | 0 | 0 | 0 | 1 | 8 |  9.78 |
+| Claridad     | 0 | 0 | 0 | 1 | 8 |  9.78 |
+| Presencia    | 0 | 0 | 0 | 3 | 6 |  9.33 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.60 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- Me gusto mucho como se abordo el tema, tengo solo unos comentarios pequeños
+  respecto a la presentación, ya que considero que utilizar colores obscuros en
+  las diapositivas y letras con colores muy vistosos como el blanco, generan un
+  poco de estrés visual, la explicación esta muy bien detalla y con un amplio
+  conocimiento del tema. Lo que creo que se debió de hacer en equipo es poder
+  obtener los audios de la misma fuente para todos los expositores.
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |          7.5 |     0.75 |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |          7.5 |    1.125 |
+| Presencia              |   0.15 |          7.5 |    1.125 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     8.00 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+- Me hubiera gustado ver más una comparación diferenciando los sistemas
+  empleados para consolas y los de uso general
+  - Mencionan, sí, /mayor rendimiento/, /mayor estabilidad/... Pero, ¿mayor que
+    qué? ¿Siguiendo qué estrategias? Si es posible lograr /mayor rendimiento/
+    que el de un SO de propósito general, ¿no le interesaría a los
+    desarrolladores de dicho SO incorporar también estos cambios?
+- Pero, en general: Tengo que reconocerles un buen trabajo, con información
+  interesante y de buen nivel técnico. ¡Muy bien!
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 38% de textos sospechosos
+  - 6% de similitudes con otros documentos
+  - 33% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 0% idiomas no reconocidos
+  - 0% de citas atribuídas (citas expresas)
