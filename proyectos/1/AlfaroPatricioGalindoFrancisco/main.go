@@ -12,14 +12,14 @@ import (
 )
 
 type FileSystem struct {
-	nombre, version, etiqueta string
+	nombre, version, etiqueta            string
 	tamCluster, tamDirectorio, tamUnidad uint32
-	file *os.File
+	file                                 *os.File
 }
 
 type archivo struct {
 	nombre, creado, modificado string
-	tam, cluster, offset uint32
+	tam, cluster, offset       uint32
 }
 
 var miFS FileSystem = FileSystem{}
@@ -48,7 +48,7 @@ func main() {
 	for {
 		offset, err := miFS.file.Seek(0, io.SeekCurrent)
 		genErrCheck(err)
-		if offset >= int64(miFS.tamCluster * (miFS.tamDirectorio + 1)) {
+		if offset >= int64(miFS.tamCluster*(miFS.tamDirectorio+1)) {
 			break
 		}
 
@@ -100,8 +100,8 @@ func leerEntradaDirectorio(buf []byte, offset uint32) (archivo, error) {
 }
 
 func copiarArchivo(arch archivo) (err error) {
-	_, err = miFS.file.Seek(int64(miFS.tamCluster * arch.cluster), 0)
-	if err != nil { 
+	_, err = miFS.file.Seek(int64(miFS.tamCluster*arch.cluster), 0)
+	if err != nil {
 		return err
 	}
 
