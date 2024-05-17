@@ -1,0 +1,84 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* El modelo de computación distribuida de Hadoop
+
+- Tema presentado por :: Israel Martínez y Erick León
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                   9.92 |  0.3 |                9.5 |  0.7 |    9.63 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 0 | 5 | 10.00 |
+| Nivel        | 0 | 0 | 0 | 0 | 5 | 10.00 |
+| Relevancia   | 0 | 0 | 0 | 1 | 4 |  9.60 |
+| Claridad     | 0 | 0 | 0 | 0 | 5 | 10.00 |
+| Presencia    | 0 | 0 | 0 | 0 | 5 | 10.00 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.92 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- A pesar del ruido de fondo estuvo bien.
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |           10 |       2. |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     9.50 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+- ¡Muy buen tema, y muy bien desarrollado! Me gustaría saber qué los llevó a
+  sugerir y elegir este tema. ¿Han trabajado directamente con Hadoop? Habría
+  sido muy interesante que la exposición incluyera, a modo de ejemplo, una
+  descripción de cuándo lo utilizaron, para qué fue, y cómo fue su experiencia.
+- Además, presentaron la exposición de forma excelente. No leyeron directamente
+  el escrito que presentaron (aunque claramente lo fueron siguiendo y cubrieron
+  bastante bien, y presentaron a buen ritmo y con seguridad (con algún hipo
+  ocasional, pero muy menor).
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 36% de textos sospechosos
+  - 27% de similitudes con otros documentos
+  - 10% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 3% idiomas no reconocidos
+  - 0% de citas atribuídas (citas expresas)
