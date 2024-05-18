@@ -196,3 +196,42 @@ def eliminar_archivo_fiunamfs(img_file, nombre_archivo_fiunamfs):
 def eliminar_archivo_hilo(img_file, nombre_archivo_fiunamfs):
     eliminar_archivo_fiunamfs(nombre_archivo_fiunamfs)
 
+# Función principal
+def main():
+    # Abrir el archivo de imagen FiUnamFS
+    with open(NOMBRE_FIUNAMFS_IMG, "rb") as img_file:
+
+        nombre_archivo_local = "haciaFiunam.txt"
+        nombre_archivo_fiunamfs = "haciaFiunam.txt"
+        
+
+        # Crear hilos de ejecución
+        hilo_listar = HiloOperacion("listar", img_file)
+        hilo_copiar = HiloOperacion("copiar_desde", img_file, "logo.png")
+
+        # En la función principal, después de crear el hilo para la operación de copia desde FiUnamFS
+        
+        # Iniciar hilos
+        hilo_listar.start()
+        hilo_copiar.start()
+
+
+        # Esperar a que los hilos terminen
+        hilo_listar.join()
+        hilo_copiar.join()
+        
+
+    with open(NOMBRE_FIUNAMFS_IMG, "r+b") as img_file:
+        hilo_eliminar = HiloOperacion("eliminar", img_file, "mensaje.jpg")
+        hilo_copiar_hacia_fiunamfs = HiloOperacion("copiar_hacia", img_file, nombre_archivo_local, nombre_archivo_fiunamfs)
+        # Iniciar el hilo para eliminar el archivo
+        hilo_eliminar.start()
+        hilo_copiar_hacia_fiunamfs.start()
+        # Esperar a que el hilo de eliminación termine antes de continuar
+        hilo_eliminar.join()
+        hilo_copiar_hacia_fiunamfs.join()  # Esperar a que el hilo termine antes de continuar
+
+    
+
+if __name__ == "__main__":
+    main()
