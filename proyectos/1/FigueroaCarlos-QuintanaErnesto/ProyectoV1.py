@@ -104,7 +104,7 @@ def escribir_info(cabezal,contenido):
     with open(sistema_archivos,'rb+') as file:
         file.seek(cabezal)
         file.write(contenido)
-    #guardarInformacionArchivos()
+    guardarInformacionArchivos()
 
 #Elimina el un directorio del sistema de archivos
 def eliminar_dir(cabezal):
@@ -136,7 +136,7 @@ def guardar_info_archivos():
     archivos.clear()
     num_entradas = 128
     #Guarda la informacion de los archivos en el diccionario 'archivos'
-    while(cabezal != finDir):
+    while(cabezal != fin_dir):
         archivo = {}
         with open(sistema_archivos,'rb') as file:
             file.seek(cabezal)
@@ -164,3 +164,29 @@ def guardar_info_archivos():
                 #Es ignorado y deja avanzar el cabezal
                 entradas_libres.append(cabezal)
                 cabezal += 64
+# Listar los elementos del directorio
+def listar_contenidos():
+    print("Archivos:")
+    # Recorremos los archivos, sólo se mostrarán los que tengan nombre
+    for i,archivo in enumerate(archivos.items()):
+        print(f"{i:>5}- {archivo[0]:<14}|{archivo[1]['tam']:<10}|{archivo[1]['fecha_creacion']}|{archivo[1]['fecha_modificacion']}")
+
+def mostrar_menu():
+    while True:
+        opc=int(input("Selecciona una opcion:\n"+
+            "1.-listar contenidos\n"+
+            "2.-Copiar de sistema a FIUNAMFS\n"+
+            "3.-Copiar de FIUNAMFS a sistema\n"+
+            "4.-Eliminar archivo\n"+
+            "5.-Salir\n"))
+        #Switch de python, se necesita mínimo Python 3
+        match opc:
+            case 1:
+                listar_contenidos()
+            case 5:
+                break
+            case _:
+                print("opción inválida")
+
+guardar_info_archivos()
+mostrar_menu()
