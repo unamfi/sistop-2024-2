@@ -7,10 +7,10 @@ from threading import Semaphore, Thread #Permite crear hilos y sincronizarlos me
 
 def leer_texto(desplazamiento,cantidadBytes):
 #Para trabajar los bytes como cadenas con la codificacion ASCII 8 se utiliza la codificacion Latin-1 que es lo mismo o tambien iso-8859-1
-    with open(rutaImagen,'rb') as imagen: #Es una forma eficiente de abrir un archivo, trabajar con él y después cerrarlo
-        imagen.seek(desplazamiento) #Primero se desplaza el apuntador hasta el byte deseado
+    with open(rutaImagen,'rb') as imagen:
+        imagen.seek(desplazamiento)
         texto = imagen.read(cantidadBytes).decode("latin-1") #Esta función de la libreria Bytes convierte los bytes a una cadena usando una codificación
-        imagen.close() #Antes de cerrar el archivo se guarda la cadena generada en otra variable
+        imagen.close()
     return texto
 
 def leer_numEntero(desplazamiento,cantidadBytes):
@@ -49,11 +49,11 @@ def leerDirectorio():
             archivos += 1
         else:
             archivosLibres += 1
-        inicio += 64 #Se desplaza 64 bytes para leer la siguiente entrada
+        inicio += 64
     infoArchivos = dict(sorted(infoArchivos.items(), key=lambda item: item[1][1]))
 
 def limpiarPantalla():
-    print(chr(27) + "[2J" + chr(27) + "[H") #Esto fue proporcionado por el profesor
+    print(chr(27) + "[2J" + chr(27) + "[H")
 
 def escribirTexto(cadena,desplazamiento): #Convierte las cadenas en bytes con el formato adecuado
     texto = str.encode(cadena,"latin-1") #Para escribir en la imagen se debe codificar en ASCII de 8 bits
@@ -143,8 +143,6 @@ def copiarArchivoACompu(sem1,sem2):
 def copiarArchivoASistema(sem1,sem2):
     while True:
         sem2.acquire()
-    #Ya se ocuparon 5 clusters: 0,1,2,3 y 4 Por lo tanto, hay 10239 bytes apartados
-    #En total hay 1,464,320 bytes libres para información (720 clusters * 2048 c/u - 5 * 2048 c/u)
         if menu == '6': break
         rutaArchivo = input("Escriba la ruta del archivo que desea copiar al sistema de archivos:")
         if path.exists(rutaArchivo) == False: 
@@ -174,9 +172,8 @@ def copiarArchivoASistema(sem1,sem2):
                 sem1.release()
                 continue
             rutaArchivo = chr(92).join(rutaArchivo)#Como se habia separado la cadena, se vuelve a unir con el caracter \
-            fechaCreacion = datetime.strftime(datetime.fromtimestamp(path.getctime(rutaArchivo)),formatoFecha)#Se pasa la fecha al formato adecuado
+            fechaCreacion = datetime.strftime(datetime.fromtimestamp(path.getctime(rutaArchivo)),formatoFecha)#Se pasa la fecha al formato adecuado para el directorio
             fechaModificacion = datetime.strftime(datetime.fromtimestamp(path.getmtime(rutaArchivo)),formatoFecha)
-            #Ya solo falta ver el cluster donde se va a almacenar
             clusterInicial = asignacionDeEspacioDatos(tamArchivo)
             desplazamientoDirectorio = asignacionEspacioDirectorio()
             escribirEnDirectorio(desplazamientoDirectorio,'-',nombreArchivo,tamArchivo,clusterInicial,fechaCreacion,fechaModificacion)
@@ -248,6 +245,7 @@ def asignacionEspacioDirectorio():
             imagen.seek(inicio)
         imagen.close()
     return inicio #Aqui ya encontró una entrada disponible. Esto sucede porque antes invocar a la función, se revisó que hubieran entradas libres
+
 def compactacion():
     print("COMPACTANDO ARCHIVOS1")
     inicio = numClusters + 1 #Se va a empezar a compactar desde el inicio del cluster de datos
@@ -320,8 +318,8 @@ def main(sem1,sem2,sem3,sem4):
             if menu == '1':
                 listarContenido()
             elif menu == '2': 
-                sem2.release()#Cuando se ejecuta una vez no hay problema, pero en la segunda ocasión como no se liberó el candado
-                sem1.acquire()#cuando se ejecuta por segunda vez se bloquea y secuestra la ejecución
+                sem2.release()
+                sem1.acquire()
                 #sem2.release()
             elif menu == '3': 
                 sem3.release()
@@ -347,8 +345,13 @@ def main(sem1,sem2,sem3,sem4):
     print("\nCerrando Sistema de Archivos...")
 
 #Variables Globales
-
-rutaImagen = "fiunamfs.img" #Modificar para indicar en donde se encuentra la imagen del sistema de archivos
+while True:
+    rutaImagen = input("Ingrese la ruta donde se encuentra la imagen del Sistema de Archivos: ")
+    if path.exists(rutaImagen) == False: 
+        print("\nError 5: La ruta proporcionada no existe, revisa que la hayas escrito bien.\n")
+    else:
+        limpiarPantalla()
+        break
 formatoFecha = "%Y%m%d%H%M%S" #Es el formato definido para guardar en el directorio
 formatoFechaBonita = "%Y/%m/%d %H:%M:%S" #Es el formato para imprimirse en la terminal
 espacio = " " * 5 #Solo se definió para poder imprimir con un espacio antes del contenido
@@ -367,10 +370,10 @@ espacioLibre = 0 #Indica el espacio disponible para guardar datos
 menu = '1' #Es global para cuando se finalice el programa, los hilos no muestren nada en pantalla
 
 #Hilos y semáforos
-menu = Semaphore(0)
-copiarSistema = Semaphore(0)
-copiarCompu = Semaphore(0)
-eliminar = Semaphore(0)
+menu = Semaphore(0) #Permite al hilo principal seguir la función principal
+copiarSistema = Semaphore(0) #Sirve para indicarle al hilo de la función 2 que ejecute todas sus instrucciones
+copiarCompu = Semaphore(0) #Sirve para indicarle al hilo de la función 3 que ejecute todas sus instrucciones
+eliminar = Semaphore(0) #Sirve para indicarle al hilo de la función 4 que ejecute todas sus instrucciones
 Thread(target=main,args=[menu,copiarSistema,copiarCompu,eliminar]).start()
 Thread(target=copiarArchivoACompu,args=[menu,copiarSistema]).start()
 Thread(target=copiarArchivoASistema,args=[menu,copiarCompu]).start()
