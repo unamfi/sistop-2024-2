@@ -79,6 +79,66 @@ def listado():
     # Espera que el usuario presione Enter para continuar
     input("\nIngrese 'enter' para continuar...")
 
+# Función para leer un entero desde el archivo en una posición específica
+def leerEntero(posicion, numero):
+    with open(direccionSistema, "rb") as archivo:   # Abre el archivo en modo binario de solo lectura
+        archivo.seek(posicion)                      # Mueve el puntero del archivo a la posición especificada
+        dato = archivo.read(numero)                 # Lee el número de bytes especificado desde la posición actual
+        num = struct.unpack("<I", dato)[0]          # Desempaqueta los bytes leídos en un entero (asumiendo formato little-endian)
+        return num                                  # Devuelve el entero leído
+
+# Función para leer una cadena desde el archivo en una posición específica
+def leerCadena(posicion, numero):
+    with open(direccionSistema, "rb") as archivo:   # Abre el archivo en modo binario de solo lectura
+        archivo.seek(posicion)                      # Mueve el puntero del archivo a la posición especificada
+        cadena = archivo.read(numero)               # Lee el número de bytes especificado desde la posición actual
+        string = cadena.decode("ascii").strip()     # Decodifica los bytes leídos en una cadena ASCII y elimina espacios en blanco alrededor
+        return string                               # Devuelve la cadena leída
+
+# Función para leer el contenido de un archivo desde fiunamfs.img
+def leerContenidoArchivo(cluster_inicial, tamanio):
+    with open(direccionSistema, "rb") as archivo:          # Abre el archivo en modo binario de solo lectura
+        archivo.seek(cluster_inicial * cluster)            # Mueve el puntero del archivo al inicio del cluster inicial
+        contenido = archivo.read(tamanio)                  # Lee el contenido del tamaño especificado
+        return contenido
+
+# Función para copiar un archivo desde fiunamfs.img al directorio local
+def copiarArchivo(nombre_archivo):
+    encontrado = False
+
+    # Convertir el nombre del archivo proporcionado por el usuario a su representación ASCII
+    nombre_ascii = [ord(char) for char in nombre_archivo]
+
+    # Itera sobre las entradas del directorio en bloques de 64 bytes
+    for i in range(0, cluster * 4, 64):
+        tipo_archivo = leerCadena(cluster + i, 1)   # Lee el tipo de archivo desde el cluster actual más el desplazamiento 'i' con longitud de 1 byte
+        if tipo_archivo != "/":                     # Verifica si el tipo de archivo es diferente de '/'
+            nombre = leerCadena(cluster + i + 1, 15)  # Lee el nombre del archivo desde el cluster actual más el desplazamiento 'i' más 1 con longitud 15 bytes
+
+            # Convertir el nombre del archivo del sistema de archivos a su representación ASCII
+            nombre = nombre.strip()  # Elimina los espacios en blanco al final del nombre
+            nombre_ascii_fs = [ord(char) for char in nombre]
+
+            # Comparar los nombres ASCII
+            if nombre_ascii_fs[:len(nombre_ascii)] == nombre_ascii:  # Compara los primeros len(nombre_ascii) caracteres
+                encontrado = True
+                tamanio = leerEntero(cluster + i + 16, 4)               # Lee el tamaño del archivo desde el cluster actual más el desplazamiento 'i' más 16 con longitud 4 bytes
+                cluster_inicial = leerEntero(cluster + i + 20, 4)       # Lee el número de cluster inicial del archivo desde el cluster actual más el desplazamiento 'i' más 20 con longitud 4 bytes
+                
+                # Lee el contenido del archivo
+                contenido = leerContenidoArchivo(cluster_inicial, tamanio)
+                
+                # Escribe el contenido en un archivo local
+                with open(nombre_archivo, "wb") as archivo_local:  # Abre el archivo local en modo binario de escritura
+                    archivo_local.write(contenido)
+                
+                print(f"Archivo '{nombre_archivo}' copiado exitosamente al directorio local.")
+                break
+    
+    if not encontrado:
+        print(f"No se encontró el archivo '{nombre_archivo}' en fiunamfs.img.")
+
+
 
 # Función para mostrar el menú
 def menu():
@@ -99,7 +159,11 @@ def menu():
         elif opcion == '2':
             listado()                                          #Llama a la función para listar los archivos
         elif opcion == '3':
-            a = input(print("Ingresa el nombre a copiar desde FiUunamFS"))   #Solicita al usuario el nombre del archivo a copiar desde FiUnamFS
+            # Solicitar al usuario que ingrese el nombre del archivo a copiar desde fiunamfs.img
+            nombre_archivo = input("Ingrese el nombre del archivo a copiar a su directorio local: ")
+            
+            # Llamar a la función copiarArchivo con el nombre del archivo proporcionado por el usuario
+            copiarArchivo(nombre_archivo)
         elif opcion == '4':
             b = input(print("Ingresa el nombre a eliminar de FiUnamFS"))    #Solicita al usuario el nombre del archivo a eliminar de FiUnamFS
         elif opcion == '5':
