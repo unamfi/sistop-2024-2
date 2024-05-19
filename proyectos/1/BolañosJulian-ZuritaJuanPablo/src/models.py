@@ -1,6 +1,7 @@
 import os
 import math
 import struct
+import threading
 from datetime import datetime
 
 class File():
@@ -117,30 +118,68 @@ class FiUnamFS():
             return content.decode('ascii').strip()
            
 
-    '''Retorna una lista de objetos 'File' equivalentes a los archivos (entradas)
+    '''Divide la tarea de leer el directorio en "num_td" hilos para después
+       retornar una lista de objetos 'File' equivalente a los archivos (entradas)
        contenidos en el directorio.'''
-    def getFiles(self) -> list:
+    def getFiles(self):
+
+        # Este número indica la cantidad de hilos entre la que se va a repatir la tarea
+        # Cada hilo pretende leer una parte del directorio para obtener la info de los archivos
+        num_td = [8]
 
         num_files = (self.cluster_size * self.num_clusters) // self.directory_entry_size
-        files = []
 
-        for i in range(num_files):
+        # Para que funcione bien la función, el número de hilos debe de ser divisor 
+        # del número de archivos. Debido a las especificaciones del proyecto sabemos 
+        # que 8 es un número válido. 
+        if num_files % num_td[0] == 0:
+            files = []
+            displacement = num_files // num_td[0]
+
+            mutex1 = threading.Semaphore(1)
+            barrier1 = threading.Semaphore(0)
+            mutex2 = threading.Semaphore(1)
+
+            for i in range(0,num_files,displacement):
+                threading.Thread(target = self._insertFiles, args = [i,displacement, mutex1, barrier1, num_td, files, mutex2]).start() 
+            
+            barrier1.acquire()
+            barrier1.release()
+
+            return files
+        
+        else:
+            return []
+    
+    '''Añade en una lista de objetos 'File' los archivos (entradas)
+       contenidos en el directorio. El objeto de tipo 'File' contiene 
+       todos los metadatos del archivo'''
+    def _insertFiles(self, pointer:int, displacement:int, mutex:object, barrier:object, num_td:object, data_storage:object, mutex2:object):
+
+        for i in range(pointer, pointer + displacement):
             start = self.cluster_size + (i * self.directory_entry_size)
             file_name = self._readStrFromFS(start, 15)
-            
-            if '-' in file_name:            
-                files.append(
+
+            if '-' in file_name:
+                # Debido a que data_storage es una variable que puede ser editada por muchos hilos
+                # es necesaria asegurar su región crítica
+                mutex2.acquire()
+                data_storage.append(
                     File(
                         name = file_name[1:].strip(),
                         size = self._readIntFromFS(start + 16, 4),
                         initial_cluster = self._readIntFromFS(start + 20, 4),
                         creation_date = self._readStrFromFS(start + 24, 13),
-                        update_date = self._readStrFromFS(start + 38, 13),
-                        path_directory = self.path
+                        update_date = self._readStrFromFS(start + 38, 13)
                     )
                 )
+                mutex2.release()
         
-        return files
+        mutex.acquire()
+        num_td[0] = num_td[0] - 1
+        if num_td[0] == 0:
+            barrier.release()
+        mutex.release()
     
     '''Copia un archivo de fuera del directorio 'FiUnamFS' hacia dentro de
        este mismo, requiere la ubicación del archivo en la computadora
@@ -251,7 +290,7 @@ class FiUnamFS():
             file_name = self._readStrFromFS(start + (i * self.directory_entry_size), 15)
 
             if '-' in file_name: 
-                
+
                 # Si el nombre ya existe en FiUnamFS
                 if file_name.strip('-') == new_file_name:
                     return 7
