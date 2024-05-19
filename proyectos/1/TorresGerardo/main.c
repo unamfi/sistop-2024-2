@@ -15,14 +15,17 @@ int main(int argc, char **argv)
                 switch (seleccion)
                 {
                     case '1':
-                        printf("HACE 1\n");
+                        listarContenido(*(argv + 1), tipo_maquina);
+
                     break;
 
                     case '2':
-                        printf("HACE 2\n");
+                        copiaDeFiApc(*(argv + 1), tipo_maquina);
+
                     break;
 
                     case '3':
+                        //existeArchivo("main.c");
                         printf("HACE 3\n");
                     break;
 

@@ -12,30 +12,46 @@ char seleccion = 'a';
 int littleEndian(int);
 int endian();
 void PmensajeInicial();
+void listarContenido(char *nd, int tipo_maquina);
 
-int moverACluster(int s, FILE *fp)
+int determinarCaracteresImprimibles(char str[])
 {
-    int r = 0;
-
-    if(s >= 5 && s <= 719)
+    int u = 0;
+    char p;
+    p = *(str + u);
+    while (p > 32 && p < 123)
     {
-        fseek(fp, 2048 * s, SEEK_SET);
-        r = 1;
+        u += 1;
+        p = *(str + u);
     }
+    return u;
 
-    else
-        printf("ERROR\n");
+}
 
-    return r;
+int determinaEspacioArchivo(char nA[])
+{
+    int t;
+    FILE * arch = fopen(nA,"r");
+    fseek(arch,0,SEEK_END);
+    t = ftell(arch);
+    fclose(arch);
+    return t;
+}
+
+void moverACluster(int s, FILE *fp)
+{
+    fseek(fp, 2048 * s, SEEK_SET);
 }
 
 int verificaSistema(char nd[], int tipo_maquina)
 {  
+    if(access(nd,F_OK) != 0)
+        return 0;
+    
     int i;
     char s[9],v[5],n[17];
     n[16] = '\0';
     FILE *f = fopen(nd,"r");
-
     fread(s,sizeof(char),9,f);
     
     if(strcmp(s,"FiUnamFS\0") == 0)
@@ -45,9 +61,7 @@ int verificaSistema(char nd[], int tipo_maquina)
         return 0;
 
     fseek(f,1,SEEK_CUR);
-
     fread(v,sizeof(char),5,f);
-    
     printf("VERSION: %s\n",v);
 
     if(strcmp(v,"24-2\0") != 0)
@@ -105,6 +119,8 @@ void leerSeleccion(char *s)
             printf("TECLEE UNA OPCION VALIDA\n");
             printf("PRESIONE CARACTER Y ENTER PARA CONTINUAR O t PARA TERMINAR\n");
             scanf(" %c", s);
+            if(*s == 't')
+                return;
         }
     }   
 }
@@ -125,10 +141,144 @@ int endian()
 void PmensajeInicial()
 {
     printf("\nBIENVENIDO A UNAMFS:\n\nQUE DESEA REALIZAR?\n");
-    printf("a.Listar los contenidos del directorio\n");
-    printf("b.Copiar uno de los archivos de dentro del FiUnamFS hacia tu sistema\n");
-    printf("c.Copiar un archivo de tu computadora hacia tu FiUnamFS\n");
-    printf("d.Eliminar un archivo del FiUnamFS\n");
+    printf("1.Listar los contenidos del directorio\n");
+    printf("2.Copiar uno de los archivos de dentro del FiUnamFS hacia tu sistema\n");
+    printf("3.Copiar un archivo de tu computadora hacia tu FiUnamFS\n");
+    printf("4.Eliminar un archivo del FiUnamFS\n");
+}
+
+void copiaDeFiApc(char nd[], int tipo_maquina)
+{
+    char nA[30];
+    listarContenido(nd,tipo_maquina);
+    printf("QUE ARCHIVO DESEA COPIAR A SU SISTEMA?\n");
+    scanf(" %s",nA);
+    int numThreads = 3, bandera = 0;
+    omp_set_num_threads(numThreads);
+    int i, j = 0, bArchivo, id, cluster;
+    char nombreArchivo[16];
+    FILE *fp;
+    #pragma omp parallel private(fp,i,bArchivo,nombreArchivo, id, cluster)
+    {
+        fp = fopen(nd,"r");
+        
+        nombreArchivo[15] = '\0';
+        id = omp_get_thread_num();
+        i = id;
+        while(i < 128)
+        {
+            fseek(fp,2048 + 64 * i + 1,SEEK_SET);
+            fread(nombreArchivo,sizeof(char),15,fp);
+            fread(&bArchivo,sizeof(int),1,fp);
+            fread(&cluster,sizeof(int),1,fp);
+            if(strncmp(nA,nombreArchivo,determinarCaracteresImprimibles(nombreArchivo)) == 0)
+            {
+                printf("EXISTE\n");
+                printf("COPIANDO A TU SISTEMA...\n");
+                    
+                fseek(fp,cluster * 2048,SEEK_SET);
+                char buffer[bArchivo];
+                fread(buffer,sizeof(char),bArchivo,fp);
+                FILE *nf = fopen(nombreArchivo,"wb+");
+                fwrite(buffer,sizeof(char),bArchivo,nf);
+                fclose(nf);
+                i = 1000;
+                bandera = 1;
+            }
+            i += numThreads;
+        }
+        fclose(fp);
+    }
+    if(bandera == 0)
+        printf("NO EXISTE ESE FICHERO\n");
+}
+
+void listarContenido(char nd[], int tipo_maquina)
+{
+    int numThreads = 3;
+    omp_set_num_threads(numThreads);
+    int i, j = 0, bArchivo, id;
+    char nombreArchivo[16], fechaCreacion[15], fechaMoficacion[15];
+    FILE *fp;
+    printf("|  NOMBRE_ARCHIVO |   NUM_BYTES   |  FECHA DE CREACION   |   FECHA ULTIMA MODIFICACION\n");
+    #pragma omp parallel private(fp,i,bArchivo,nombreArchivo, fechaCreacion, fechaMoficacion,id)
+    {
+        fp = fopen(nd,"r");
+        
+        nombreArchivo[15] = '\0';
+        fechaCreacion[14] = '\0';
+        fechaMoficacion[14] = '\0';
+        id = omp_get_thread_num();
+        i = id;
+        while(i < 128)
+        {
+            fseek(fp,2048 + 64 * i + 1,SEEK_SET);
+            fread(nombreArchivo,sizeof(char),15,fp);
+            fread(&bArchivo,sizeof(int),1,fp);
+            fseek(fp, 4,SEEK_CUR);
+            fread(fechaCreacion, sizeof(char),14,fp);
+            fread(fechaMoficacion, sizeof(char),14,fp);
+
+            if(tipo_maquina == BIG_ENDIAN)
+                bArchivo = littleEndian(bArchivo);
+
+            if(strcmp("##############\0",nombreArchivo) != 0)
+                printf("|  %s | %10i    |   %s     |    %s\n",nombreArchivo, bArchivo, fechaCreacion, fechaMoficacion);
+            i += numThreads;
+        }
+        fclose(fp);
+    }
+     /*FILE *fp = fopen(nd,"r");
+    moverACluster(1,fp);
+    char nombreArchivo[16], fechaCreacion[15], fechaMoficacion[15];
+    nombreArchivo[15] = '\0';
+    fechaCreacion[14] = '\0';
+    fechaMoficacion[14] = '\0';
+
+
+    printf("  # |  NOMBRE_ARCHIVO |   NUM_BYTES   |  FECHA DE CREACION   |   FECHA ULTIMA MODIFICACION\n");
+   
+    for (i = 0; i < 128; i++)
+    {
+        fseek(fp, 1,SEEK_CUR);
+        fread(nombreArchivo,sizeof(char),15,fp);
+        fread(&bArchivo,sizeof(int),1,fp);
+        fseek(fp, 4,SEEK_CUR);
+        fread(fechaCreacion, sizeof(char),14,fp);
+        fread(fechaMoficacion, sizeof(char),14,fp);
+        
+        if(tipo_maquina == BIG_ENDIAN)
+            bArchivo = littleEndian(bArchivo);
+
+        fseek(fp,12,SEEK_CUR);
+        if(strcmp("##############\0",nombreArchivo) != 0)
+        {
+            j += 1;
+
+            if( j < 10 )
+                printf("00%i.|  %s | %10i    |   %s     |    %s\n", j,nombreArchivo, bArchivo, fechaCreacion, fechaMoficacion);
+            
+            else
+            {  
+                if( j >= 10 && j < 100 )
+                    printf("0%i.|  %s | %10i    |   %s     |    %s\n", j,nombreArchivo, bArchivo, fechaCreacion, fechaMoficacion);
+                
+                else
+                    printf("%i.|  %s | %10i    |   %s     |    %s\n", j,nombreArchivo, bArchivo, fechaCreacion, fechaMoficacion);
+            }
+        }
+
+    }
+    fclose(fp);*/
+}
+
+int existeArchivo(char *fn)
+{
+    if(access(fn,F_OK) == 0)
+        return 1;
+    
+    else
+        return 0;
 }
 
 int littleEndian(int n)
