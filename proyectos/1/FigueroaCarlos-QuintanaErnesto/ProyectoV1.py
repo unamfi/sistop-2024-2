@@ -121,7 +121,7 @@ def eliminar_dir(cabezal):
         file.seek(cabezal + 52)
         file.write(b'\x00' * 12)
 
-def eliminarInfo(cabezal,tam):
+def eliminar_info(cabezal,tam):
     with open(sistema_archivos,'rb+') as file:
         file.seek(cabezal)
         file.write(b'\x00' * tam)
@@ -189,6 +189,19 @@ def copiar_archivo_a_sistema():
     else:
         print("ERROR No existe un archivo con ese nombre") 
 
+def eliminar_archivo():
+    nombre = input("Ingrese el nombre del archivo a eliminar:").rstrip().lstrip()
+    # Validamos que el archivo exista
+    if nombre in archivos:
+        informacion = archivos[nombre]
+        # Eliminamos toda información del archivo 
+        eliminar_dir(informacion['cluster_directorio'])
+        eliminar_info(informacion['cluster_inicial'] * tam_cluster,informacion['tam'])
+        print("Archivo eliminado exitosamente")
+    else: 
+        print("ERROR No existe un archivo con ese nombre")
+    guardar_info_archivos()
+
 def mostrar_menu():
     while True:
         opc=int(input("Selecciona una opcion:\n"+
@@ -203,6 +216,8 @@ def mostrar_menu():
                 listar_contenidos()
             case 2:
                 copiar_archivo_a_sistema()
+            case 4:
+                eliminar_archivo()
             case 5:
                 break
             case _:
