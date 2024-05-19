@@ -1,0 +1,7 @@
+- fiunamfs
+  - Listar Contenidos ✅
+  - Copiar uno de los archivos de dentro del FIUNAMFS hacia tu sistema
+  - Copiar un archivo de tu computadora hacia tu FIUNAMFS
+  - Eliminar un archivo del FIUNAMFS
+  - Hilos de ejecución
+  - Generar Entorno de Docker ✅

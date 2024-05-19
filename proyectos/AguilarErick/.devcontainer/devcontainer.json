@@ -1,0 +1,18 @@
+{
+	"name": "fiunamfs_devcontainer",
+	"image": "mcr.microsoft.com/devcontainers/python:1-3.10-buster",
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {}
+	},
+	"postCreateCommand": "pip install --upgrade pip;pip install --user -r requirements.txt",
+	"customizations": {
+		"vscode": {
+			// only available in vscode :(
+			"extensions": [
+				"ms-python.python",
+				"ms-python.debugpy"
+			]
+		}
+	}
+}

@@ -6,11 +6,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.pretty import pprint
 from rich.panel import Panel
-from rich.progress import track
 
-for i in track(range(12), description="Processing..."):
-    time.sleep(0.1)  # Simulate work being done
-# GLOBALS VARIABLES
 
 
 class Disc:
@@ -116,6 +112,7 @@ fileSystem = FileSystem(Disc('fiunamfs.img'))
 fileSystem.showSpecifications()
 fileSystem.ls()
 fileSystem.clean()
+
 
 
 
