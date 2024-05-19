@@ -185,12 +185,8 @@ class FiUnamFS():
     '''Copia un archivo de fuera del directorio 'FiUnamFS' hacia dentro de
        este mismo, requiere la ubicación del archivo en la computadora
        incluyendo el nombre del archivo a copiar ej: '/d:archivos/archivo.jpg'''
-    def copyFromSystem(self, path:str):
+    def copyFromSystem(self, path:str) -> int:
 
-        # Revisamos que al archivo exista
-        if not os.path.exists(path):
-            return False
-        
         # Tamaño del archivo a copiar
         new_file_size = os.path.getsize(path)
 
@@ -209,15 +205,11 @@ class FiUnamFS():
                     new_file.seek(start)
                     new_file.write(content)
                 
-                # Si se copio con éxito
-                self._insertIntoDirectory(path, initial_cluster)
-                return True
+                # Esta función devuelve el status de la copia al direcotorio 
+                return self._insertIntoDirectory(path, initial_cluster)
             except:
-                print('Error al copiar contenido.')
-                return False
-            
-        print('No existe espacio suficiente para copiar el archivo.')
-        return False
+                return 5
+        return 6
 
 
     def _searchSpace(self, new_file_size:int):
