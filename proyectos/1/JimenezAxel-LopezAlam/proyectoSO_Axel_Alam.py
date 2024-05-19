@@ -144,6 +144,25 @@ def delete_file(fs, filename):
                     return "Archivo borrado exitosamente"
             return "Archivo no encontrado"
 
+# Ejecuta tareas especificadas (listar, copiar desde/hacia FS, eliminar) en un hilo separado.
+# Esto permite realizar operaciones de I/O sin bloquear la interfaz de usuario principal.
+def threaded_task(fs, task, *args):
+    if task == "list":
+        print("\nListando archivos...")
+        print(fs.list_files())
+    elif task == "copy_from_fs":
+        filename, destination = args
+        print(f"\Copiando {filename} desde FS a {destination}...")
+        print(copy_file_from_fs(fs, filename, destination))
+    elif task == "copy_to_fs":
+        source, filename = args
+        print(f"\Copiando {source} a FS desde {filename}...")
+        print(copy_file_to_fs(fs, source, filename))
+    elif task == "delete":
+        filename = args[0]
+        print(f"\Borrando {filename}...")
+        print(delete_file(fs, filename))
+
 
 
 if __name__ == "__main__":
