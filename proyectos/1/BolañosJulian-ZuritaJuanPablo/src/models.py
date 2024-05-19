@@ -239,41 +239,53 @@ class FiUnamFS():
 
     '''Inserta dentro del directorio 'FiUnamFS' los datos de entrada del archivo
        a copiar, busca espacio disponible entre los cluster 1-4.'''
-    def _insertIntoDirectory(self, path:str, cluster:int) -> bool:
+    def _insertIntoDirectory(self, path:str, cluster:int) -> int:
 
         # Buscamos algún espacio (64 bytes) para colocar la esntrada
         num_files = (self.cluster_size * self.num_clusters) // self.directory_entry_size
         start = self.cluster_size
+
+        new_file_name =  os.path.basename(path)
         
         for i in range(num_files):   
             file_name = self._readStrFromFS(start + (i * self.directory_entry_size), 15)
-            
-            if '/' in file_name:
 
-                # Si hay espacio disponible, entences obtenemos los datos del
-                # archivo que está en la computadora
-                name = ('-' + os.path.basename(path))
+            if '-' in file_name: 
+                
+                # Si el nombre ya existe en FiUnamFS
+                if file_name.strip('-') == new_file_name:
+                    return 7
+
+            elif '/' in file_name:
+                
+                if len(new_file_name) > 14: 
+                    return 1
+            
+                if not new_file_name.isascii():
+                    return 2
+                
+                new_file_name = '-' + new_file_name
                 
                 # En el ciclo for agregamos el caracter 'espacio' para
                 # completar el tamaño indicado de bytes
-                for j in range(15 - len(name)):
-                    name = name + ' '
-                name = name.encode('utf-8')
-                
+                for _ in range(15 - len(new_file_name)):
+                    new_file_name = new_file_name + ' '
+                new_file_name = new_file_name.encode('ascii')
+
                 # Obtebenos el tamaño del archivo
                 size = struct.pack('<I', os.path.getsize(path))
                 initial_cluster = struct.pack('<I', cluster)
 
                 # Obtener la fecha de creación del archivo y formatearla
-                initial_date = datetime.fromtimestamp(os.path.getctime(path)).strftime('%Y%m%d%H%M%S').encode('utf-8')
+                initial_date = datetime.fromtimestamp(os.path.getctime(path)).strftime('%Y%m%d%H%M%S').encode('ascii')
 
                 # Obtener la fecha de última modificación del archivo y formatearla
-                update_date = datetime.fromtimestamp(os.path.getmtime(path)).strftime('%Y%m%d%H%M%S').encode('utf-8')
+                update_date = datetime.fromtimestamp(os.path.getmtime(path)).strftime('%Y%m%d%H%M%S').encode('ascii')
 
                 start = self.cluster_size + (i * self.directory_entry_size)
                 with open(self.path, 'rb+') as _FiUnamFS:
                     _FiUnamFS.seek(start, 0)
-                    _FiUnamFS.write(name)
+                    _FiUnamFS.write(new_file_name)
 
                     _FiUnamFS.seek(start + 16, 0)
                     _FiUnamFS.write(size)
@@ -287,7 +299,8 @@ class FiUnamFS():
                     _FiUnamFS.seek(start + 38, 0)
                     _FiUnamFS.write(update_date)
 
-                break
+                return 3
+        return 4
 
     
     def deleteFile(self, file_name:str) -> bool:
