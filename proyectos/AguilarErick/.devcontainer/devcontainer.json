@@ -5,8 +5,7 @@
 		"ghcr.io/devcontainers/features/git:1": {},
 		"ghcr.io/devcontainers/features/github-cli:1": {}
 	},
-	"postCreateCommand": "pip install --upgrade pip;pip install --user -r requirements.txt",
-	"postStartCommand": "pymon super_main.py",
+	"postCreateCommand": "sudo apt-get update && sudo apt-get install hexedit && pip install --upgrade pip && pip install --user -r requirements.txt",
 	"customizations": {
 		"vscode": {
 			// only available in vscode :(
