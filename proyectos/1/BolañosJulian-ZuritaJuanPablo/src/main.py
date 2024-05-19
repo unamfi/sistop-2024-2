@@ -1,8 +1,7 @@
 from models import FiUnamFS, system_validation
 
-
-if system_validation():
-    directory_path = 'D:/workspace/sistemasOp/sistop-2024-2/proyectos/1/FiUnamFS.img'
+directory_path = 'D:/workspace/sistemasOp/sistop-2024-2/proyectos/1/FiUnamFS.img'
+if system_validation(directory_path):
     fiunamfs = FiUnamFS(path = directory_path, directory_entry_size = 64)
 
     while True:
