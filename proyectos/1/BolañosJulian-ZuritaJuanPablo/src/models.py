@@ -5,13 +5,14 @@ from datetime import datetime
 
 class File():
 
-    def __init__(self, name:str, size:int, initial_cluster:int, creation_date:str, update_date:str) -> None:
+    def __init__(self, name:str, size:int, initial_cluster:int, creation_date:str, update_date:str, path_directory:str) -> None:
         self.name = name
         self.size = size
         self.initial_cluster = initial_cluster
         self.creation_date = self._formatDate(creation_date)
         self.update_date = self._formatDate(update_date)
         self.cluster_size = 2048
+        self.path_directory = path_directory
     
     def __str__(self) -> str:
         return self.name
@@ -40,7 +41,7 @@ class File():
         try:
             # Si la lectura es correcta se retorna el contenido leído 'content'
             # si presenta fallos en el proceso retorna 'None'
-            with open('fiunamfs.img', 'rb') as FiUnamFS:
+            with open(self.path_directory, 'rb') as FiUnamFS:
                 FiUnamFS.seek(start)
                 content = FiUnamFS.read(self.size + 1)
             
@@ -150,7 +151,8 @@ class FiUnamFS():
                         size = self._readIntFromFS(start + 16, 4),
                         initial_cluster = self._readIntFromFS(start + 20, 4),
                         creation_date = self._readStrFromFS(start + 24, 13),
-                        update_date = self._readStrFromFS(start + 38, 13)
+                        update_date = self._readStrFromFS(start + 38, 13),
+                        path_directory = self.path
                     )
                 )
         
