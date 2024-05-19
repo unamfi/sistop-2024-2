@@ -1,11 +1,10 @@
 import os
 import struct
-import time
 import threading
 from queue import Queue
 
+ruta_imagen = input("Ingresa la ruta en donde se encuentra el archivo img, añadiendo el nombre del archivo ---> ")
 
-ruta_imagen = "" #La ruta que se usará
 
 def verificar_superbloque(ruta):
     with open(ruta, "rb") as archivo:
