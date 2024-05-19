@@ -1,5 +1,6 @@
 from struct import pack, unpack
-import time
+import sys
+from PyInquirer import prompt
 from rich import print as richPrint
 from copy import deepcopy
 from rich.console import Console
@@ -12,7 +13,7 @@ from rich.panel import Panel
 class Disc:
     def __init__(self,filePath):
         try:
-            self.file = open(filePath, 'rb')
+            self.file = open(filePath, 'r+b')
         except:
             raise Exception('No se pudo abrir el archivo')
     def close(self):
@@ -37,16 +38,18 @@ class Disc:
 
 
 class FileData:
-    def __init__(self, bytes: bytes):
+    def __init__(self, bytes: bytes, addressInDirectory):
         if bytes.__len__() > 64:
-            raise Exception('La información del archivo no puede ser mayor a 64 bytes')
+            raise Exception('La metainformación del archivo no puede ser mayor a 64 bytes')
+        # name = ''.join([chr(b) for b in bytes[1:16] if chr(b) not in whitespace and b > 0])
         self.data = {
-            'type': bytes[0:1].decode(),
-            'name': bytes[1:16].decode(),
+            'type': bytes[0:1].decode(encoding='ascii'),
+            'name': bytes[1:16].decode(encoding='ascii'),
             'size': int(unpack('<I', bytes[16:20])[0]),
             'cluster': int(unpack('<I', bytes[20:24])[0]),
-            'date': bytes[24:38].decode(),
-            'last_modification': bytes[38:52].decode()
+            'date': bytes[24:38].decode(encoding='ascii'),
+            'last_modification': bytes[38:52].decode(encoding='ascii'),
+            'address_in_directory': addressInDirectory
         }
     def empty(self):
         return self.data['type'] == '/'
@@ -63,18 +66,20 @@ class Directory:
             raise Exception('El directorio no tiene un tamaño correcto')
         if bytes.__len__() % sizeCluster != 0:
             raise Exception('El directorio no tiene un tamaño correcto')
-        self.files = [FileData(bytes[i:i+sizeFileData]) for i in range(0, bytes.__len__(), 64)]
+        self.files = [FileData(bytes[i:i+sizeFileData],i) for i in range(0, bytes.__len__(), 64)]
 
 class FileSystem:
     def __init__(self,disc:Disc):
         self.disc = disc
         self.specifications = {
-            'system': self.disc.read(0,8).decode(),
-            'version': self.disc.read(10,4).decode(),
-            'volumen_label': self.disc.read(20,15).decode(),
+            'system': self.disc.read(0,8).decode(encoding='ascii'),
+            'version': self.disc.read(10,4).decode(encoding='ascii'),
+            'volumen_label': self.disc.read(20,15).decode(encoding='ascii'),
             'sizeCluster': int(unpack('<I', self.disc.read(40,4))[0]),
             'numClusters': int(unpack('<I', self.disc.read(45,4))[0]),
             'totalClusters': int(unpack('<I', self.disc.read(50,4))[0]),
+            'cluster_directory': 1,
+            'size_cluster_directory': 3,
             'sizeFileData': 64
         }
     def showSpecifications(self):
@@ -94,6 +99,19 @@ class FileSystem:
     def clean(self):
         if self.disc != None:
             self.disc.close()
+    def deleteFile(self, name):
+        directory = Directory(self.getClusters(1,3))
+        for file in directory.files:
+            if file.empty():
+                continue
+            fileData = file.getData()
+            if fileData['name'].strip() == name:
+                base =  fileData['address_in_directory'] + self.specifications['sizeCluster'] * self.specifications['cluster_directory']
+                print(base)
+                b = b''.join([b'\x2f',b'\x23'*15,b'\x00'*4,b'\x00'*4,b'\x30'*14,b'\x30'*14])
+                self.disc.write(base,b)
+                return
+        raise Exception('No se encontro el archivo')
     def ls(self):
         directory = Directory(self.getClusters(1,3))
         table = Table(title="Directorio")
@@ -108,53 +126,29 @@ class FileSystem:
             table.add_row(*values)
         console = Console()
         console.print(table)
-fileSystem = FileSystem(Disc('fiunamfs.img'))
-fileSystem.showSpecifications()
-fileSystem.ls()
-fileSystem.clean()
 
 
+options = {
+    "DELETE_FILE" : lambda: print('DELETE_FILE'),
+    "LIST_FILES" : lambda: print('LIST_FILES'),
+    "COPY_FILE" : lambda: print('COPY_FILE'),
+    "EXTRACT_FILE" : lambda: print('EXTRACT_FILE'),
+    "EXIT" : lambda: sys.exit(0)
+}
 
+def main_menu():
+    questions = [
+        {
+            'type': 'list',
+            'name': 'main_menu',
+            'message': 'What do you want to do?',
+            'choices': options.keys()
+        }
+    ]
 
+    answers = prompt(questions)
+    return answers['main_menu']
 
-
-
-
-
-
-
-
-
-
-# import struct
-
-# def showFile(bytes: bytes):
-#     if bytes.__len__() > 64:
-#         raise Exception('El archivo no puede ser mayor a 64 bytes')
-#     return {'type': bytes[0:1].decode(), 'name': bytes[1:16].decode(), 'size': struct.unpack('<I', bytes[16:20])[0], 'cluster': struct.unpack('<I', bytes[20:24])[0], 'date': bytes[24:38].decode(), 'last_modification': bytes[38:52].decode()}
-
-# disc = open('fiunamfs.img', 'rb')
-# print(disc.seek(0, 2))
-# # disc.seek(0)
-# # identifySystem = disc.read(8).decode()
-# # disc.seek(10)
-# # versionSystem = disc.read(4).decode()
-# # disc.seek(20)
-# # labelVolume = disc.read(15).decode()
-# # disc.seek(40)
-# # sizeCluster = struct.unpack('<I', disc.read(4))[0]
-# # disc.seek(45)
-# # numClustersByDirectory = struct.unpack('<I', disc.read(4))[0]
-# # disc.seek(50)
-# # totalClusters = struct.unpack('<I', disc.read(4))[0]
-# # print({'system' : identifySystem, 'version' : versionSystem, 'label' : labelVolume, 'sizeCluster' : sizeCluster, 'numClusters' : numClustersByDirectory, 'totalClusters' : totalClusters})
-
-
-# # for i in range(sizeCluster*1, sizeCluster*numClustersByDirectory,64):
-# #     disc.seek(i)
-# #     file = showFile(disc.read(64))
-# #     if file['type'] == '/':
-# #         continue
-# #     print(f"{file['name']} {file['size']} {file['date']} {file['last_modification']}")
-
-# # disc.close()
+while True:
+    choice = main_menu()
+    options[choice]()

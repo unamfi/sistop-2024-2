@@ -5,3 +5,4 @@
   - Eliminar un archivo del FIUNAMFS
   - Hilos de ejecución
   - Generar Entorno de Docker ✅
+  - Menu interactivo ✅
