@@ -1,3 +1,8 @@
+import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
+from tkinter import filedialog
+from tkinter import scrolledtext
 import threading
 import struct
 import os
@@ -16,7 +21,6 @@ NUMERO_ENTRADAS_DIRECTORIO = 16
 FIUNAMFS_SIGNATURE = b"FiUnamFS"
 VERSION_IMPLEMENTACION = "24-2"
 NOMBRE_FIUNAMFS_IMG = "fiunamfs.img"
-# NOMBRE_FIUNAMFS_IMG = "FiiUnamFS.img"
 NOMBRE_ARCHIVO_DIRECTORIO = "directorio"
 
 # Definir estructuras de datos
@@ -196,42 +200,151 @@ def eliminar_archivo_fiunamfs(img_file, nombre_archivo_fiunamfs):
 def eliminar_archivo_hilo(img_file, nombre_archivo_fiunamfs):
     eliminar_archivo_fiunamfs(nombre_archivo_fiunamfs)
 
-# Función principal
-def main():
-    # Abrir el archivo de imagen FiUnamFS
-    with open(NOMBRE_FIUNAMFS_IMG, "rb") as img_file:
 
-        nombre_archivo_local = "haciaFiunam.txt"
-        nombre_archivo_fiunamfs = "haciaFiunam.txt"
-        
+# Implementación de la interfaz de usuario
+class InterfazUsuario:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Interfaz Micro Sistema de Archivos")
+        self.root.geometry("800x500")
 
-        # Crear hilos de ejecución
-        hilo_listar = HiloOperacion("listar", img_file)
-        hilo_copiar = HiloOperacion("copiar_desde", img_file, "logo.png")
+        self.tabControl = ttk.Notebook(root)
 
-        # En la función principal, después de crear el hilo para la operación de copia desde FiUnamFS
-        
-        # Iniciar hilos
-        hilo_listar.start()
-        hilo_copiar.start()
+        self.tabEliminar = ttk.Frame(self.tabControl)
+        self.tabCopiarAr = ttk.Frame(self.tabControl)
+
+        # Pestañas de eliminación y copiado
+        self.tabControl.add(self.tabEliminar, text="Eliminar")
+        self.tabControl.add(self.tabCopiarAr, text="Copiar Archivos")
+
+        self.tabControl.pack(expand=1, fill="both")
+
+        # Inicialización de los hilos de copiado y eliminación
+        self.init_eliminar_tab()
+        self.init_copiarAr_tab()
 
 
-        # Esperar a que los hilos terminen
-        hilo_listar.join()
-        hilo_copiar.join()
-        
+        # Iniciar el hilo para listar contenido en la pestaña de eliminar
+        self.hilo_listar_eliminar = threading.Thread(target=self.hilo_listar_eliminar_func)
+        self.hilo_listar_eliminar.start()
 
-    with open(NOMBRE_FIUNAMFS_IMG, "r+b") as img_file:
-        hilo_eliminar = HiloOperacion("eliminar", img_file, "mensaje.jpg")
-        hilo_copiar_hacia_fiunamfs = HiloOperacion("copiar_hacia", img_file, nombre_archivo_local, nombre_archivo_fiunamfs)
-        # Iniciar el hilo para eliminar el archivo
-        hilo_eliminar.start()
-        hilo_copiar_hacia_fiunamfs.start()
-        # Esperar a que el hilo de eliminación termine antes de continuar
-        hilo_eliminar.join()
-        hilo_copiar_hacia_fiunamfs.join()  # Esperar a que el hilo termine antes de continuar
+        # Inicia el hilo para lsitar contenido en la pestaña de copiar Archivos
+        self.hilo_listar_copiar_ar = threading.Thread(target=self.hilo_listar_copiarAr_func)
+        self.hilo_listar_copiar_ar.start()
+
+
+    # Pestaña de eliminación
+    def init_eliminar_tab(self):
+        label = ttk.Label(self.tabEliminar, text="Ingrese el nombre del archivo a eliminar del micro sistema externo:")
+        label.pack()
+
+        self.entry_eliminar = ttk.Entry(self.tabEliminar)
+        self.entry_eliminar.pack()
+
+        self.txtListarContenidoEliminar = scrolledtext.ScrolledText(self.tabEliminar, width=60, height=20)
+        self.txtListarContenidoEliminar.pack(pady=10)
+
+        button_eliminar = ttk.Button(self.tabEliminar, text="Eliminar", command=self.eliminar_thread)
+        button_eliminar.pack()
+
+        button_actualizar = ttk.Button(self.tabEliminar, text="Actualizar", command=self.actualizar_listado_eliminar)
+        button_actualizar.pack()
+
+    # Pestaña de copiado al sistema local
+    def init_copiarAr_tab(self):
+        label = ttk.Label(self.tabCopiarAr, text="Ingrese el nombre del archivo que desea copiar a su ordenador")
+        label.pack()
+
+        self.entry_copiarAr = ttk.Entry(self.tabCopiarAr)
+        self.entry_copiarAr.pack()
+
+        self.txtListarContenidoCopiarAr = scrolledtext.ScrolledText(self.tabCopiarAr, width=60, height=20)
+        self.txtListarContenidoCopiarAr.pack(pady=10)
+
+        button_copiar = ttk.Button(self.tabCopiarAr, text="Copiar", command=self.copiarAr_thread)
+        button_copiar.pack()
+
+        button_actualizar = ttk.Button(self.tabCopiarAr, text="Actualizar", command=self.actualizar_listado_copiarAr)
+        button_actualizar.pack()
 
     
+
+    # Hilo de copiado
+    def copiarAr_thread(self):
+        nombre_archivo = self.entry_copiarAr.get()
+        hilo_copiarAr = threading.Thread(target=self.hilo_copiarAr_func, args=(nombre_archivo,))
+        hilo_copiarAr.start()
+
+    # Funcionalidad de hilo de copiado
+    def hilo_copiarAr_func(self, nombre_archivo):
+        try:
+            carpeta_localSO = os.path.join(os.getcwd(), "LocalSO")
+            nombre_archivo_local = os.path.join(carpeta_localSO, nombre_archivo)
+            if os.path.exists(nombre_archivo_local):
+                messagebox.showwarning("Copiar", f"El archivo {nombre_archivo} ya existe en la carpeta 'LocalSO'.")
+                return
+            with open(NOMBRE_FIUNAMFS_IMG, "r+b") as img_file:
+                copiar_desde_fiunamfs(img_file, nombre_archivo)
+                messagebox.showinfo("Copiar", f"El archivo {nombre_archivo} ha sido copiado a la carpeta 'LocalSO'.")
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+
+    # Hilo de eliminación
+    def eliminar_thread(self):
+        nombre_archivo = self.entry_eliminar.get()
+        hilo_eliminar = threading.Thread(target=self.hilo_eliminar_func, args=(nombre_archivo,))
+        hilo_eliminar.start()
+
+    #Funcionamiento del hilo de eliminación
+    def hilo_eliminar_func(self, nombre_archivo):
+        try:
+            with open(NOMBRE_FIUNAMFS_IMG, "r+b") as img_file:
+                resultado = eliminar_archivo_fiunamfs(img_file, nombre_archivo)
+                if resultado == "eliminado":
+                    messagebox.showinfo("Eliminar", f"El archivo {nombre_archivo} ha sido eliminado correctamente.")
+                elif resultado == "ya_eliminado":
+                    messagebox.showinfo("Eliminar", f"El archivo {nombre_archivo} ya ha sido eliminado anteriormente.")
+                elif resultado == "no_encontrado":
+                    messagebox.showwarning("Eliminar", f"El archivo {nombre_archivo} no se encontró en el directorio.")
+                self.actualizar_listado_eliminar()  # Actualizar la lista 
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+
+    # Recuadro de despliegue del listado para la pestaña de eliminación
+    def hilo_listar_eliminar_func(self):
+        try:
+            with open(NOMBRE_FIUNAMFS_IMG, "rb") as img_file:
+                contenido = listar_contenido_directorio(img_file)
+                self.txtListarContenidoEliminar.delete('1.0', tk.END)
+                self.txtListarContenidoEliminar.insert(tk.END, contenido)
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    # Recuadro de despliegue del listado para la pestaña de copiado
+    def hilo_listar_copiarAr_func(self):
+        try:
+            with open(NOMBRE_FIUNAMFS_IMG, "rb") as img_file:
+                contenido = listar_contenido_directorio(img_file)
+                self.txtListarContenidoCopiarAr.delete('1.0', tk.END)
+                self.txtListarContenidoCopiarAr.insert(tk.END, contenido)
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    # Actualización del listado en la pestaña de eliminación
+    def actualizar_listado_eliminar(self):
+        self.hilo_listar_eliminar_func()
+
+    # Actualización del listado en la pestaña de eliminación
+    def actualizar_listado_copiarAr(self):
+        self.hilo_listar_copiarAr_func()
+
+
+def main():
+    root = tk.Tk()
+    interfaz = InterfazUsuario(root)
+    root.mainloop()
 
 if __name__ == "__main__":
     main()
