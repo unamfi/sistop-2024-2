@@ -1,17 +1,21 @@
 import threading
 import struct
+import queue
 
 class FiUnamFS:
     # Definición de constantes del sistema de archivos
     SECTOR_SIZE = 512
     CLUSTER_SIZE = 4 * SECTOR_SIZE
     VOLUME_SIZE = 1440 * 1024  # 1440 KB
+    FILE_ENTRY_SIZE = 64
 
     def __init__(self, disk_file):
         # Inicialización de variables y lectura del superbloque
         self.disk_file = disk_file
         self.superblock = self.read_superblock()
         self.lock = threading.Lock()  # Lock para sincronización de hilos
+        self.command_queue = queue.Queue()  # Cola de comandos para gestionar operaciones
+        self.is_running = True  # Bandera para controlar la ejecución de los hilos
 
     def read_sector(self, sector_number):
         # Lectura de un sector específico del archivo de disco
@@ -68,10 +72,8 @@ class FiUnamFS:
             if not file_name or file_name == "---------------" or file_name.startswith('.'):
                 continue
     
-            file_size = struct.unpack('<I', entry[16:20])[0]
-            cluster_start = struct.unpack('<I', entry[20:24])[0]
-            creation_time = entry[24:38].decode().strip()
-            modification_time = entry[38:52].decode().strip()
+            file_size, cluster_start = struct.unpack('<I', entry[16:20])[0], struct.unpack('<I', entry[20:24])[0]
+            creation_time, modification_time = entry[24:38].decode().strip(), entry[38:52].decode().strip()
     
             if file_size > 0 and cluster_start > 0 and creation_time and modification_time:
                 print(f"ARCHIVO: {file_name}, TAMAÑO: {file_size}, "
@@ -105,35 +107,63 @@ class FiUnamFS:
         self.mark_file_deleted(entry_index)
         self.release_clusters(filename)
 
-def main():
-    # Función principal para la interacción con el usuario
-    fiunamfs = FiUnamFS('fiunamfs.img')
+    def get_user_commands(self):
+        # Obtiene comandos del usuario y los pone en la cola de comandos
+        while self.is_running:
+            print("\nOpciones disponibles:")
+            print("1. Listar los contenidos del directorio")
+            print("2. Copiar un archivo dentro del FiUnamFS hacia el sistema")
+            print("3. Copiar un archivo de la computadora hacia el FiUnamFS")
+            print("4. Eliminar un archivo del FiUnamFS")
+            print("5. Salir del programa")
 
-    while True:
-        print("\nOpciones disponibles:")
-        print("1. Listar los contenidos del directorio")
-        print("2. Copiar un archivo dentro del FiUnamFS hacia el sistema")
-        print("3. Copiar un archivo de la computadora hacia el FiUnamFS")
-        print("4. Eliminar un archivo del FiUnamFS")
-        print("5. Salir del programa")
+            command = input("\nElegir opción (1,2,3,4 o 5): ")
+            if command == "5":
+                self.is_running = False
+                self.command_queue.put(("exit", None))
+                break
 
-        command = input("\nElegir opción (1,2,3,4 o 5): ")
-        if command == "1":
-            fiunamfs.list_contents()
-        elif command == "2":
-            file_name = input("Ingrese el nombre del archivo ")
-            fiunamfs.copy_file_to_system(file_name)
-        elif command == "3":
-            local_file = input("Ingrese el nombre del archivo ")
-            fiunamfs.copy_file_to_fiunamfs(local_file)
-        elif command == "4":
-            file_name = input("Ingrese el nombre del archivo ")
-            fiunamfs.delete_file(file_name)
-        elif command == "5":
-            break
-        else:
-            print("Opción no válida")      
+            args = None
+            if command in ("2", "3", "4"):
+                file_name = input("Ingrese el nombre del archivo: ")
+                args = (command, file_name)
+            elif command not in ("1", "5"):
+                print("Opción no válida")
+                continue
+
+            self.command_queue.put(args)
+
+    def process_commands(self):
+        # Procesa los comandos encolados, asegurando sincronización con lock
+        while self.is_running:
+            command_args = self.command_queue.get()
+            if command_args is None:
+                self.list_contents()
+            else:
+                command, args = command_args
+                with self.lock:
+                    if command == "1":
+                        self.list_contents()
+                    elif command == "2":
+                        self.copy_file_to_system(args)
+                    elif command == "3":
+                        self.copy_file_to_fiunamfs(args)
+                    elif command == "4":
+                        self.delete_file(args)
+
+            self.command_queue.task_done()
+
+    def main(self):
+        # Inicializa y gestiona hilos para obtener y procesar comandos
+        producer_thread = threading.Thread(target=self.get_user_commands)
+        producer_thread.start()
+
+        consumer_thread = threading.Thread(target=self.process_commands)
+        consumer_thread.start()
+
+        producer_thread.join()
+        consumer_thread.join()
 
 if __name__ == "__main__":
-    main()
-
+    fiunamfs = FiUnamFS('fiunamfs.img')
+    fiunamfs.main()
