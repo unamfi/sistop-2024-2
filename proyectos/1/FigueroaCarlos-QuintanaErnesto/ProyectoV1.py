@@ -3,7 +3,7 @@ import struct
 from time import sleep
 from datetime import *
 from math import ceil
-# Ruta del sistema de archivos
+#Ruta del sistema de archivos
 sistema_archivos = "fiunamfs.img"
 
 def clear():
@@ -13,12 +13,12 @@ def leer_superbloque():
     global sistema_archivos
     with open(sistema_archivos, 'rb') as file:
         file.seek(0)
-        # Leer el primer cluster que es el superbloque
+        #Leer el primer cluster que es el superbloque
         superbloque = file.read(1024)
-        # Extraer información del superbloque
+        #Extraer información del superbloque
         nombre = superbloque[0:8].decode().strip('\x00')
         version = superbloque[10:15].decode().strip('\x00')
-        # Revisar validez del archivo 
+        #Revisar validez del archivo 
         if nombre != "FiUnamFS":
             raise ValueError("El sistema de archivos no es FiUnamFS")
         if version != "24-2":
@@ -27,12 +27,12 @@ def leer_superbloque():
 
 def leer_enteros(cabezal,tam):
     global sistema_archivos
-    # Abrir el sistema de archivos
+    #Abrir el sistema de archivos
     with open(sistema_archivos,'rb') as file:
-        # Ubicar el cabezal
+        #Ubicar el cabezal
         file.seek(cabezal)
         contenido = file.read(tam)
-        # Usamos unpack para la representación en 32 bits
+        #Usamos unpack para la representación en 32 bits
         contenido, *resto = struct.unpack('<I',contenido)
         return contenido
 
@@ -40,7 +40,7 @@ def leer_ascii(cabezal,tam):
     global sistema_archivos
     with open(sistema_archivos,'rb') as file:
         file.seek(cabezal)
-        # Leemos la información y la decodificamos en Latin-1 -> ASCII 8 bits
+        #Leemos la información y la decodificamos en Latin-1 -> ASCII 8 bits
         contenido = file.read(tam).decode('Latin-1')
         return contenido
     
@@ -49,7 +49,7 @@ def leer_info(cabezal,tam):
     global sistema_archivos
     with open(sistema_archivos,'rb') as file:
         file.seek(cabezal)
-        # Leemos la información
+        #Leemos la información
         contenido = file.read(tam)
         return contenido
     
@@ -57,14 +57,14 @@ def escribir_ascii(cabezal,contenido):
     global sistema_archivos
     with open(sistema_archivos,'rb+') as file:
         file.seek(cabezal)
-        # Escribir el contenido
+        #Escribir el contenido
         file.write(contenido.encode('Latin-1'))
 
 def escribir_enteros(cabezal,contenido):
     global sistema_archivos
     with open(sistema_archivos,'rb+') as file:
         file.seek(cabezal)
-        # Usamos pack para la representación en 32 bits
+        #Usamos pack para la representación en 32 bits
         file.write(struct.pack('<I',contenido))
 
 #Variables locales con la información del sistema de archivos
@@ -104,7 +104,7 @@ def escribir_info(cabezal,contenido):
     with open(sistema_archivos,'rb+') as file:
         file.seek(cabezal)
         file.write(contenido)
-    guardarInformacionArchivos()
+    guardar_info_archivos()
 
 #Elimina el un directorio del sistema de archivos
 def eliminar_dir(cabezal):
@@ -128,8 +128,8 @@ def eliminar_info(cabezal,tam):
 
 
 def guardar_info_archivos():
-    # Se mostrarán únicamente los archivos que tienen un nombre específico
-    # Se deberá de recorrer el directorio
+    #Se mostrarán únicamente los archivos que tienen un nombre específico
+    #Se deberá de recorrer el directorio
     cabezal = inicio_dir
     global num_entradas
     global archivos
@@ -140,10 +140,10 @@ def guardar_info_archivos():
         archivo = {}
         with open(sistema_archivos,'rb') as file:
             file.seek(cabezal)
-            # Comprueba si la entrada tiene algun contenido o esta vacia
+            #Comprueba si la entrada tiene algun contenido o esta vacia
             entrada = leer_ascii(cabezal,1)
             if entrada == '-':
-                # Lee la informacion del archivo por partes
+                #Lee la informacion del archivo por partes
                 archivo['nombre'] = leer_ascii(cabezal + 1, 14) #Nombre 
                 archivo['tam'] = leer_enteros(cabezal + 16, 4) # Tamaño
                 archivo['cluster_inicial'] = leer_enteros(cabezal + 20, 4) #Tamanio del cluster
@@ -155,7 +155,7 @@ def guardar_info_archivos():
                 archivo['fecha_modificacion'] = cadena_formateada #fecha de modificacion del archivo
                 archivo['cluster_directorio'] = cabezal
 
-                # Se guarda la informacion recabada de los archivos
+                #Se guarda la informacion recabada de los archivos
                 archivos[archivo['nombre'].rstrip()] = archivo
                 cabezal += 64
                 num_entradas -= 1
@@ -164,23 +164,23 @@ def guardar_info_archivos():
                 #Es ignorado y deja avanzar el cabezal
                 entradas_libres.append(cabezal)
                 cabezal += 64
-# Listar los elementos del directorio
+#Listar los elementos del directorio
 def listar_contenidos():
     print("Archivos:")
-    # Recorremos los archivos, sólo se mostrarán los que tengan nombre
+    #Recorremos los archivos, sólo se mostrarán los que tengan nombre
     for i,archivo in enumerate(archivos.items()):
         print(f"{i:>5}- {archivo[0]:<14}|{archivo[1]['tam']:<10}|{archivo[1]['fecha_creacion']}|{archivo[1]['fecha_modificacion']}")
 
 def copiar_archivo_a_sistema():
     ruta = input("Escribe el directorio dónde se guardará el archivo").rstrip().lstrip()
     nombre = input("Ingrese el nombre del archivo a copiar:").rstrip().lstrip()
-    # Validamos que el archivo exista en FIunamfs
+    #Validamos que el archivo exista en FIunamfs
     if nombre in archivos:
-        # Si no hay archivos con el mismo nombre en la ruta, copiamos el archivo
+        #Si no existen archivos con el mismo nombre en la ubicación especificada, procedemos a copiar el archivo
         if (os.path.exists(ruta + "/" + nombre) == False):
-            # Guardamos el contenido del archivo en una variable
+            #Almacenamos el contenido del archivo en una variable
             contenido = leer_info(archivos[nombre]['cluster_inicial'] * tam_cluster,archivos[nombre]['tam'])
-            # Creamos y escribimos un archivo, en la ruta seleccionada, con la información obtenida
+            #Generamos y escribimos un archivo en la ruta especificada con la información recopilada
             with open(ruta + "/" + nombre,'wb') as archivo:
                 archivo.write(contenido)
             print("Archivo guardado con éxito")
@@ -202,6 +202,80 @@ def eliminar_archivo():
         print("ERROR No existe un archivo con ese nombre")
     guardar_info_archivos()
 
+
+def copiar_archivo_a_FiUnamFs():
+    #Verificar que el directorio tenga entradas libres
+    if (len(archivos) == num_entradas): 
+        print("ERROR","No se puede agregar más archivos al directorio")
+        return
+    else:
+        archivo_sistema = input('Escriba la ruta del archivo que sera copiado: ')
+        #Es necesario validar la ruta y la restricción de tamaño
+        if os.path.exists(archivo_sistema):
+            try:
+                with open(archivo_sistema,"rb") as file:
+                    nombre = os.path.basename(archivo_sistema)
+                    #Que el nombre del archivo no exceda los 14 caracteres.
+                    if len(nombre) > 14:
+                        print("ERROR","El nombre del archivo es demasiado largo para el sistema.")
+                        return
+                    #El archivo no puede superar los (716 * tam_cluster)
+                    tam = os.path.getsize(archivo_sistema)
+                    if tam > (cluster_totales - num_clusterDir - 1) * tam_cluster:
+                        print("ERROR","El tamaño del archivo es demasiado grande para el sistema.")
+                        return
+                    
+                    fecha_modificacion = str(datetime.fromtimestamp(os.path.getmtime(archivo_sistema)))[0:19].replace("-","").replace(" ","").replace(":","")
+                    fecha_creacion = str(datetime.fromtimestamp(os.path.getctime(archivo_sistema)))[0:19].replace("-","").replace(" ","").replace(":","")
+                    # En este punto, ya se dispone de la información.Es necesario analizar si hay suficiente espacio para la asignación de memoria.
+                    cluster_inicial = asignar_espacio(tam)
+                    if cluster_inicial == False: 
+                        print("ERROR","No hay suficiente espacio de almacenamiento para el archivo seleccionado")
+                        return
+                    else:
+                        #Se escribe el archivo 
+                        contenido = file.read()
+                        #Se escribe en el espacio para archivos.También hay que actualizar el directorio
+                        escribir_dir(nombre,tam,cluster_inicial,fecha_modificacion,fecha_creacion)
+                        escribir_info(cluster_inicial,contenido)
+                        print("Aviso","Archivo copiado exitósamente")
+            except:
+                print("ERROR","No fue posible abrir el archivo")
+                return
+        else:
+            print("ERROR","No se encontró la ruta")
+            return
+
+def asignar_espacio(tam):
+    cluster_necesarios = ceil(tam/tam_cluster)
+    almacenamiento = []
+    #Comienza por el cluster siguiente al directorio
+    cluster = 5 
+    for archivo in archivos.items():
+        almacenamiento.append((archivo[1]['cluster_inicial'],archivo[1]['cluster_inicial'] + ceil(archivo[1]['tam'] / tam_cluster)))
+    almacenamiento.sort()
+    while(cluster < 720):
+        #Si el cabezal se encuentra con un clúster que ya está en uso, lo pasa por alto
+        if len(almacenamiento) != 0 and cluster == almacenamiento[0][0]: 
+            cluster = almacenamiento[0][1] + 1
+            #Se saca el cluster
+            almacenamiento.pop(0) 
+        else:
+            #Colisiona con otro archivo
+            if len(almacenamiento) != 0 and (cluster + cluster_necesarios > almacenamiento[0][0]): 
+                cluster = almacenamiento[0][1] + 1
+                almacenamiento.pop(0)
+            #Se puede almacenar el archivo
+            else: 
+                return cluster * tam_cluster
+        #Se puede almacenar el archivo despues de los demas
+        if len(almacenamiento) == 0 and (cluster + cluster_necesarios) < 720:
+            return cluster * tam_cluster
+        else:
+            return False 
+            
+    return False
+
 def mostrar_menu():
     while True:
         opc=int(input("Selecciona una opcion:\n"+
@@ -215,6 +289,8 @@ def mostrar_menu():
             case 1:
                 listar_contenidos()
             case 2:
+                copiar_archivo_a_FiUnamFs()
+            case 3:
                 copiar_archivo_a_sistema()
             case 4:
                 eliminar_archivo()
