@@ -1,6 +1,8 @@
 import os
 import struct
 import threading
+import tkinter as tk #FAVOR DE QUE AL CORRER EL PROGRAMA, AMPLIAR LA INTERFAZ A PANTALLA COMPLETA PARA VISUALIZAR LAS OPCIONES
+from tkinter import filedialog, messagebox, simpledialog #INTERFAZ GRAFICA
 
 TAMANO_CLUSTER = 1024
 TAMANO_ENTRADA = 64
@@ -9,20 +11,23 @@ DIRECTORIO_TAMANO = 4 * TAMANO_CLUSTER  # 4 clusters para el directorio
 MAXIMO_CLUSTERS = 1440 // 4  # Asumiendo que el tamaño total es 1440KB
 
 lock = threading.Lock()
-
+#PRIMER CPOMMIT
 def leer_superbloque(fiunamfs_img):
+    resultado = ""
     with open(fiunamfs_img, 'rb') as f:
         f.seek(0)
         nombre_fs = f.read(8).decode('ascii').strip()
         f.seek(10)
         version = f.read(5).decode('ascii').rstrip('\x00').strip()
-        print(f"Nombre FS leído: {nombre_fs}, Versión leída: {version}")
+        resultado += f"Nombre FS leído: {nombre_fs}, Versión leída: {version}\n"
         if nombre_fs != "FiUnamFS" or version.replace('-', '.') != "24.2":
-            print("Valores no coinciden, se esperaba FiUnamFS y 24.2")
+            resultado += "Valores no coinciden, se esperaba FiUnamFS y 24.2\n"
         else:
-            print("Superbloque válido") 
-
+            resultado += "Superbloque válido\n"
+    return resultado
+#SEGUNDO COMMIT
 def listar_directorio(fiunamfs_img):
+    resultado = ""
     with open(fiunamfs_img, 'rb') as f:
         f.seek(DIRECTORIO_INICIO)
         for _ in range(DIRECTORIO_TAMANO // TAMANO_ENTRADA):
@@ -34,11 +39,12 @@ def listar_directorio(fiunamfs_img):
                 cluster_ini = struct.unpack('<I', entrada[20:24])[0]
                 fecha_creacion = entrada[24:38].decode('ascii')
                 fecha_modificacion = entrada[38:52].decode('ascii')
-                print(f"Tipo: {tipo_archivo}, Nombre: {nombre}, Tamaño: {tam_archivo}, Cluster inicial: {cluster_ini}, Creación: {fecha_creacion}, Modificación: {fecha_modificacion}")
-
+                resultado += f"Tipo: {tipo_archivo}, Nombre: {nombre}, Tamaño: {tam_archivo}, Cluster inicial: {cluster_ini}, Creación: {fecha_creacion}, Modificación: {fecha_modificacion}\n"
+    return resultado
+#TERCER COMMIT
 def copiar_a_sistema(fiunamfs_img, nombre_archivo, destino):
     with lock:
-        print("Adquiriendo candado (Lock) para copiar a sistema...")
+        app.lock_label.config(text="Estado del Lock: Adquirido (Copiar a sistema)")
     with open(fiunamfs_img, 'rb') as f:
         f.seek(DIRECTORIO_INICIO)
         for _ in range(DIRECTORIO_TAMANO // TAMANO_ENTRADA):
@@ -59,7 +65,7 @@ def copiar_a_sistema(fiunamfs_img, nombre_archivo, destino):
 
 def copiar_a_fiunamfs(fiunamfs_img, archivo_origen, nombre_destino):
     with lock:
-        print("Adquiriendo candado (Lock) para copiar a FiUnamFS...")
+        app.lock_label.config(text="Estado del Lock: Adquirido (Copiar a FiUnamFS)")
     with open(fiunamfs_img, 'r+b') as f:
         tam_origen = os.path.getsize(archivo_origen)
         cluster_libre = 5
@@ -89,10 +95,10 @@ def copiar_a_fiunamfs(fiunamfs_img, archivo_origen, nombre_destino):
             f.write(b'-' + nombre_destino.ljust(15).encode('ascii'))
             f.write(struct.pack('<I', tam_origen))
             f.write(struct.pack('<I', cluster_libre))
-
+#CUARTO COMMIT
 def eliminar_archivo(fiunamfs_img, nombre_archivo):
     with lock:
-        print("Adquiriendo candado (Lock) para eliminar archivo...")
+        app.lock_label.config(text="Estado del Lock: Adquirido (Eliminar archivo)")
     with open(fiunamfs_img, 'r+b') as f:
         f.seek(DIRECTORIO_INICIO)
         for _ in range(DIRECTORIO_TAMANO // TAMANO_ENTRADA):
@@ -102,49 +108,75 @@ def eliminar_archivo(fiunamfs_img, nombre_archivo):
             if nombre.rstrip('\x00').strip() == nombre_archivo.rstrip('\x00').strip():
                 f.seek(posicion)
                 f.write(b'/' + b' ' * 15)
-                print("Archivo eliminado")
                 return
+#INTERFAZ GRAFICA, QUINTPO COMMIT
+class Application(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Sistema de Archivos FiUnamFS")
+        self.geometry("800x500")  # Ajustar tamaño de ventana
 
-def menu_principal():
-    while True:
-        print("\nMenú Principal - Sistema de Archivos FiUnamFS")
-        print("1. Leer el superbloque")
-        print("2. Listar directorio")
-        print("3. Copiar archivo de FiUnamFS a sistema")
-        print("4. Copiar archivo de sistema a FiUnamFS")
-        print("5. Eliminar archivo de FiUnamFS")
-        print("6. Salir")
-        opcion = input("Selecciona una opción: ")
-        
-        if opcion == '1':
-            leer_superbloque(fiunamfs_img)
-        elif opcion == '2':
-            listar_directorio(fiunamfs_img)
-        elif opcion == '3':
-            nombre_archivo = input("Ingresa el nombre del archivo en FiUnamFS: ")
-            destino = input("Ingresa la ruta de destino en el sistema (deja en blanco para la carpeta actual): ")
-            if not destino:
-                destino = os.path.join(os.getcwd(), nombre_archivo)  
+        # Configuración inicial
+        self.fiunamfs_img = r"fiunamfs.img"  # Cambia la ruta por la ubicación de tu archivo .img
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.resultado_texto = tk.Text(self, height=30, width=100)  # Ajustar el tamaño del cuadro de texto
+        self.resultado_texto.pack(fill=tk.BOTH, expand=True)  # Hacer que el cuadro de texto se expanda
+
+        self.lock_label = tk.Label(self, text="Estado del Lock: Desbloqueado")
+        self.lock_label.pack()
+
+        tk.Button(self, text="Leer el superbloque", command=self.leer_superbloque).pack(fill=tk.X, pady=5)
+        tk.Button(self, text="Listar directorio", command=self.listar_directorio).pack(fill=tk.X, pady=5)
+        tk.Button(self, text="Copiar archivo de FiUnamFS a sistema", command=self.copiar_a_sistema).pack(fill=tk.X, pady=5)
+        tk.Button(self, text="Copiar archivo de sistema a FiUnamFS", command=self.copiar_a_fiunamfs).pack(fill=tk.X, pady=5)
+        tk.Button(self, text="Eliminar archivo de FiUnamFS", command=self.eliminar_archivo).pack(fill=tk.X, pady=5)
+        tk.Button(self, text="Salir", command=self.quit).pack(fill=tk.X, pady=5)
+
+    def leer_superbloque(self):
+        resultado = leer_superbloque(self.fiunamfs_img)
+        self.mostrar_resultado(resultado)
+
+    def listar_directorio(self):
+        resultado = listar_directorio(self.fiunamfs_img)
+        self.mostrar_resultado(resultado)
+
+    def mostrar_resultado(self, resultado):
+        self.resultado_texto.delete(1.0, tk.END)  # Limpiar el contenido anterior
+        self.resultado_texto.insert(tk.END, resultado)
+
+    def copiar_a_sistema(self):
+        nombre_archivo = simpledialog.askstring("Nombre del archivo", "Ingresa el nombre del archivo en FiUnamFS:")
+        if nombre_archivo:
+            destino = filedialog.asksaveasfilename(initialfile=nombre_archivo)
+            if destino:
+                try:
+                    copiar_a_sistema(self.fiunamfs_img, nombre_archivo, destino)
+                    messagebox.showinfo("Éxito", f"Archivo copiado con éxito a {destino}")
+                except Exception as e:
+                    messagebox.showerror("Error", f"Error al copiar el archivo: {e}")
+
+    def copiar_a_fiunamfs(self):
+        origen = filedialog.askopenfilename(title="Selecciona el archivo a copiar")
+        if origen:
+            nombre_destino = simpledialog.askstring("Nombre del archivo", "Ingresa el nombre del archivo en FiUnamFS:")
             try:
-                copiar_a_sistema(fiunamfs_img, nombre_archivo, destino)
-                print("Archivo copiado con éxito a", destino)
+                copiar_a_fiunamfs(self.fiunamfs_img, origen, nombre_destino)
+                messagebox.showinfo("Éxito", "Archivo copiado con éxito a FiUnamFS")
             except Exception as e:
-                print("Error al copiar el archivo:", e)
-        elif opcion == '4':
-            origen = input("Ingresa la ruta del archivo en el sistema: ")
-            nombre_destino = input("Ingresa el nombre del archivo en FiUnamFS: ")
-            copiar_a_fiunamfs(fiunamfs_img, origen, nombre_destino)
-        elif opcion == '5':
-            nombre_archivo = input("Ingresa el nombre del archivo a eliminar de FiUnamFS: ")
-            eliminar_archivo(fiunamfs_img, nombre_archivo)
-        elif opcion == '6':
-            print("Saliendo del programa.")
-            break
-        else:
-            print("Opción no válida. Por favor, intenta de nuevo.")
+                messagebox.showerror("Error", f"Error al copiar el archivo: {e}")
 
-# Configuración inicial
-fiunamfs_img = r"C:\Users\migue\Downloads\PROYECTOSYS\fiunamfs.img"  # Cambia la ruta por la ubicación de tu archivo .img
+    def eliminar_archivo(self):
+        nombre_archivo = simpledialog.askstring("Nombre del archivo", "Ingresa el nombre del archivo a eliminar de FiUnamFS:")
+        if nombre_archivo:
+            try:
+                eliminar_archivo(self.fiunamfs_img, nombre_archivo)
+                messagebox.showinfo("Éxito", "Archivo eliminado con éxito")
+            except Exception as e:
+                messagebox.showerror("Error", f"Error al eliminar el archivo: {e}")
 
-# Ejecutar el menú principal
-menu_principal()
+if __name__ == "__main__":
+    app = Application()
+    app.mainloop()
