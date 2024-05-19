@@ -1,26 +1,25 @@
-import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
-from tkinter import filedialog
-from tkinter import scrolledtext
-import threading
-import struct
-import os
-
+import tkinter as tk  # Importa el módulo tkinter para crear interfaces gráficas
+from tkinter import ttk  # Importa ttk de tkinter para usar widgets modernos
+from tkinter import messagebox  # Importa messagebox de tkinter para mostrar mensajes emergentes
+from tkinter import filedialog  # Importa filedialog de tkinter para abrir y guardar archivos
+from tkinter import scrolledtext  # Importa scrolledtext de tkinter para crear cuadros de texto con desplazamiento
+import threading  # Importa threading para trabajar con hilos
+import struct  # Importa struct para manejar datos binarios
+import os  # Importa os para interactuar con el sistema operativo
 
 # Definiendo constantes a emplear
-SUPERBLOQUE_SIZE = 64
-ENTRADA_DIRECTORIO_SIZE = 64
-NUM_SECTORES_ENTRADA_DIRECTORIO = 1
-CLUSTER_SIZE = 512
-NUM_SECTORES_POR_CLUSTER = 4
-DIRECTORIO_CLUSTER_INICIAL = 1
-NUMERO_SECTORES_SUPERBLOQUE = 1
-NUMERO_SECTORES_ENTRADA_DIRECTORIO = 4
-NUMERO_ENTRADAS_DIRECTORIO = 16
-FIUNAMFS_SIGNATURE = b"FiUnamFS"
-VERSION_IMPLEMENTACION = "24-2"
-NOMBRE_FIUNAMFS_IMG = "fiunamfs.img"
+SUPERBLOQUE_SIZE = 64  # Tamaño del superbloque en bytes
+ENTRADA_DIRECTORIO_SIZE = 64  # Tamaño de una entrada de directorio en bytes
+NUM_SECTORES_ENTRADA_DIRECTORIO = 1  # Número de sectores por entrada de directorio
+CLUSTER_SIZE = 512  # Tamaño de un cluster en bytes
+NUM_SECTORES_POR_CLUSTER = 4  # Número de sectores por cluster
+DIRECTORIO_CLUSTER_INICIAL = 1  # Cluster inicial del directorio
+NUMERO_SECTORES_SUPERBLOQUE = 1  # Número de sectores del superbloque
+NUMERO_SECTORES_ENTRADA_DIRECTORIO = 4  # Número de sectores por entrada de directorio
+NUMERO_ENTRADAS_DIRECTORIO = 16  # Número de entradas de directorio
+FIUNAMFS_SIGNATURE = b"FiUnamFS"  # Firma del sistema de archivos FiUnamFS
+VERSION_IMPLEMENTACION = "24-2"  # Versión de implementación del sistema de archivos
+NOMBRE_FIUNAMFS_IMG = "fiunamfs.img"  # Nombre de la imagen del sistema de archivos
 NOMBRE_ARCHIVO_DIRECTORIO = "directorio"
 
 # Definir estructuras de datos
@@ -34,7 +33,7 @@ class EntradaDirectorio:
         self.fecha_modificacion = fecha_modificacion
 
     def to_bytes(self):
-        # Convertir la entrada del directorio a bytes
+        # Convierte la entrada del directorio a bytes
         tipo_archivo_bytes = self.tipo_archivo.encode("ascii")
         nombre_archivo_bytes = self.nombre_archivo.encode("ascii").ljust(15, b"\0")
         tamano_archivo_bytes = struct.pack("<I", self.tamano_archivo)
@@ -45,6 +44,7 @@ class EntradaDirectorio:
 
     @classmethod
     def from_bytes(cls, data):
+        # Crea una instancia de EntradaDirectorio a partir de bytes
         if len(data) < 52:
             print(f"Longitud de los datos: {len(data)}")
             raise ValueError("Los datos de entrada no tienen la longitud esperada.")
@@ -57,29 +57,32 @@ class EntradaDirectorio:
         return cls(tipo_archivo, nombre_archivo, tamano_archivo, cluster_inicial, fecha_creacion, fecha_modificacion)
 
 
-# Definir funciones auxiliares
+# Se definen funciones auxiliares
 def leer_superbloque():
+    # Lectura el superbloque del sistema de archivos
     with open(NOMBRE_FIUNAMFS_IMG, "rb") as img_file:
         superbloque_data = img_file.read(SUPERBLOQUE_SIZE)
         if superbloque_data[:8] != FIUNAMFS_SIGNATURE:
             raise Exception("No es un sistema de archivos FiUnamFS válido.")
         if superbloque_data[10:14].decode("ascii") != VERSION_IMPLEMENTACION:
             raise Exception("Versión de implementación incorrecta.")
+        
         etiqueta_volumen = superbloque_data[20:36].decode("ascii").strip()
         tamano_cluster = struct.pack("<I", superbloque_data[40:44])[0]
         num_clusters_directorio = struct.pack("<I", superbloque_data[45:49])[0]
         num_clusters_total = struct.pack("<I", superbloque_data[50:54])[0]
         return etiqueta_volumen, tamano_cluster, num_clusters_directorio, num_clusters_total
 
-
+# Define la clase para operaciones en hilos
 class HiloOperacion(threading.Thread):
     def __init__(self, operacion, img_file, *args):
         threading.Thread.__init__(self)
-        self.operacion = operacion
-        self.img_file = img_file
-        self.args = args
+        self.operacion = operacion # Tipo de operación a realizar
+        self.img_file = img_file # Archivo de imagen del sistema de archivos
+        self.args = args # Argumentos adicionales para la operación
 
     def run(self):
+        # Ejecuta la operación correspondiente
         if self.operacion == "listar":
             listar_contenido_directorio(self.img_file)
         elif self.operacion == "copiar_desde":
@@ -87,11 +90,6 @@ class HiloOperacion(threading.Thread):
                 copiar_desde_fiunamfs(self.img_file, *self.args)
             else:
                 print("Número incorrecto de argumentos para la operación 'copiar_desde'.")
-        elif self.operacion == "copiar_hacia":
-            if len(self.args) == 2:
-                copiar_hacia_fiunamfs(self.img_file, *self.args)
-            else:
-                print("Número incorrecto de argumentos para la operación 'copiar_hacia'.")
 
         elif self.operacion == "eliminar":
             nombre_archivo_fiunamfs = self.args[0]
@@ -100,6 +98,7 @@ class HiloOperacion(threading.Thread):
 
 
 def listar_contenido_directorio(img_file):
+    # Lista el contenido del directorio en el sistema de archivos
     contenido = ""
     img_file.seek(CLUSTER_SIZE * NUM_SECTORES_POR_CLUSTER * DIRECTORIO_CLUSTER_INICIAL)
     directorio_data = img_file.read(CLUSTER_SIZE * NUM_SECTORES_ENTRADA_DIRECTORIO * NUMERO_ENTRADAS_DIRECTORIO)
@@ -114,36 +113,9 @@ def listar_contenido_directorio(img_file):
         contenido += f"Nombre: {entrada.nombre_archivo}, Tamaño: {entrada.tamano_archivo},\nCluster inicial: {entrada.cluster_inicial}, Fecha de Creación: {entrada.fecha_creacion}, Fecha de Modificación: {entrada.fecha_modificacion}\n\n"
     return contenido
 
-
-def copiar_hacia_fiunamfs(img_file, nombre_archivo_local, nombre_archivo_fiunamfs):
-    with open(nombre_archivo_local, "rb") as local_file:
-        contenido = local_file.read()
-        img_file.seek(0, os.SEEK_END)
-        img_file.write(contenido)
-
-    img_file.seek(CLUSTER_SIZE * NUM_SECTORES_POR_CLUSTER * DIRECTORIO_CLUSTER_INICIAL)
-    directorio_data = img_file.read(CLUSTER_SIZE * NUM_SECTORES_ENTRADA_DIRECTORIO)
-    espacio_encontrado = False
-    for i in range(NUMERO_ENTRADAS_DIRECTORIO):
-        entrada_data = directorio_data[i * ENTRADA_DIRECTORIO_SIZE: (i + 1) * ENTRADA_DIRECTORIO_SIZE]
-        entrada = EntradaDirectorio.from_bytes(entrada_data)
-        if entrada.tipo_archivo == "\0":
-            espacio_encontrado = True
-            break
-
-    if not espacio_encontrado:
-        print("No hay espacio disponible en el directorio FiUnamFS para copiar el archivo.")
-        return
-
-    entrada_nueva = EntradaDirectorio("-", nombre_archivo_fiunamfs, len(contenido), 0, "20240508131756", "20240508131756")
-    directorio_data = directorio_data[:i * ENTRADA_DIRECTORIO_SIZE] + entrada_nueva.to_bytes() + directorio_data[(i + 1) * ENTRADA_DIRECTORIO_SIZE:]
-    img_file.seek(CLUSTER_SIZE * NUM_SECTORES_POR_CLUSTER * DIRECTORIO_CLUSTER_INICIAL)
-    img_file.write(directorio_data)
-
-    print(f"Se ha copiado {nombre_archivo_local} al disco FiUnamFS con el nombre {nombre_archivo_fiunamfs}.")
-
-
 def copiar_desde_fiunamfs(img_file, nombre_archivo_fiunamfs):
+    # Copia un archivo desde el sistema de archivos fiunamfs
+
     # Ruta de la carpeta "LocalSO" dentro de la carpeta actual del proyecto
     carpeta_localSO = os.path.join(os.getcwd(), "LocalSO")
 
@@ -172,6 +144,7 @@ def copiar_desde_fiunamfs(img_file, nombre_archivo_fiunamfs):
 
 
 def eliminar_archivo_fiunamfs(img_file, nombre_archivo_fiunamfs):
+    # Elimina un archivo del sistema de archivos fiunamfs
     img_file.seek(CLUSTER_SIZE * NUM_SECTORES_POR_CLUSTER * DIRECTORIO_CLUSTER_INICIAL)
     directorio_data = img_file.read(CLUSTER_SIZE * NUM_SECTORES_ENTRADA_DIRECTORIO * NUMERO_ENTRADAS_DIRECTORIO)
 
