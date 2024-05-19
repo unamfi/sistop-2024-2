@@ -164,8 +164,50 @@ def threaded_task(fs, task, *args):
         print(delete_file(fs, filename))
 
 
+def main_menu(fs):
+    # Presenta un menú continuo que permite al usuario interactuar con el sistema FiUnamFS a través de varias opciones.
+    # Utiliza hilos para gestionar las operaciones sin bloquear la interacción del usuario con el menú.
+    while True:
+        print("\nMenu:")
+        print("Nota: El formato para pasar la ruta debe ser C:\\Users\\YourUsername\\Desktop--ComoEjemplo\\Carpeta\\nombreArchivo.terminacion")
+        print("1. Listar los contenidos del directorio")
+        print("2. Copiar un archivo del FiUnamFS a tu sistema")
+        print("3. Copiar un archivo de tu computadora al FiUnamFS")
+        print("4. Eliminar un archivo del FiUnamFS")
+        print("5. Salir")
+        choice = input("Ingrese su elección: ")
+
+        if choice == '1':
+            thread = Thread(target=threaded_task, args=(fs, "list"))
+            thread.start()
+            thread.join()
+        elif choice == '2':
+            filename = input("Ingrese el nombre del archivo a copiar del FiUnamFS: ")
+            destination = input("Ingrese la ruta de destino en su sistema: ")
+            thread = Thread(target=threaded_task, args=(fs, "copy_from_fs", filename, destination))
+            thread.start()
+            thread.join()
+        elif choice == '3':
+            source = input("Ingrese la ruta del archivo en su sistema para copiar al FiUnamFS: ")
+            filename = input("Ingrese el nombre bajo el cual guardar el archivo en el FiUnamFS: ")
+            thread = Thread(target=threaded_task, args=(fs, "copy_to_fs", source, filename))
+            thread.start()
+            thread.join()
+        elif choice == '4':
+            filename = input("Ingrese el nombre del archivo a eliminar del FiUnamFS: ")
+            thread = Thread(target=threaded_task, args=(fs, "delete", filename))
+            thread.start()
+            thread.join()
+        elif choice == '5':
+            print("Saliendo...")
+            break
+        else:
+            print("Opción no válida. Por favor intente de nuevo.")
+
 
 if __name__ == "__main__":
     ##El path depende del sistema, para este caso se utilizó WINDOWS
     fs = FiUnamFS(r'C:\Users\AlamLR\Desktop\proyectoSO\fiunamfs.img')
     fs.validate_fs()
+    main_menu(fs)
+
