@@ -9,4 +9,4 @@ fi
 tag="sisop_$current_commit:v$autoIncrement"
 docker build -t $tag -f Dockerfile.prod .
 clear
-docker run --rm $tag
+docker run -it --rm $tag
