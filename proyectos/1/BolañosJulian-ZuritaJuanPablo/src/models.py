@@ -343,7 +343,7 @@ class FiUnamFS():
         return 4
 
     
-    def deleteFile(self, file_name:str) -> bool:
+    def deleteFile(self, file_name:str) -> int:
 
         # Validamos que el archivo exista en 'FiUnamFS'.
         files_in_directory = self.getFiles()
@@ -364,12 +364,12 @@ class FiUnamFS():
                                 _FiUnamFS.seek(start + (i * self.directory_entry_size))
                                 _FiUnamFS.write('/##############'.encode('utf-8'))
                             
-                            return True
+                            return 1
                         except:
-                            return False
+                            return 2
         
         # Si el archivo a eliminar no existe en el directorio
-        return False
+        return 3
 
 
 def system_validation(path:str) -> bool:

@@ -112,7 +112,14 @@ def _eliminarArchivo(semaphore1, semaphore2):
 
         print('\n\t\t|Eliminar archivo de FiUnamFS|\n')
         file_name = input('Ingresa el nombre de archivo a eliminar: ')
-        fiunamfs.deleteFile(file_name)
+        status = fiunamfs.deleteFile(file_name)
+
+        if status == 1:
+            print(f'\n{file_name} se eliminó correctamente.')
+        elif status == 2: 
+            print('\nNo se pudo eliminar el archivo.')
+        elif status == 3: 
+            print(f'\nEl archivo {file_name} no está en FiUnamFS')
 
         semaphore1.release()
 
