@@ -1,3 +1,5 @@
+from math import ceil
+from datetime import datetime
 from struct import pack, unpack
 import sys
 from PyInquirer import prompt
@@ -82,6 +84,20 @@ class FileSystem:
             'size_cluster_directory': 3,
             'sizeFileData': 64
         }
+        spec = self.specifications
+        if spec['version'] != '24-2':
+            raise Exception('La versión del sistema de archivos no es compatible')
+        if spec['system'] != 'FiUnamFS':
+            raise Exception('El sistema de archivos no es compatible')
+        
+        self.preprocessToShowFields = {
+            'name': lambda name : name.rstrip().rstrip('\x00').strip() if name != None else '',
+            'size': lambda size: f"{str(ceil(size//1024))}(kB)" if size > 1024 else f"{size}[B]",
+            'cluster': lambda cluster:f"#{cluster}" if cluster != None else '',
+            'date': lambda date: datetime.strptime(date,"%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S"),
+            'address_in_directory': lambda address: f"{address}",
+            'last_modification': lambda last_mod : datetime.strptime(last_mod,"%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
+        }
     def showSpecifications(self):
         richPrint(Panel(renderable="[cyan bold italic]Alumno: [/cyan bold italic][cyan]Aguilar Martínez Erick Yair[/cyan]\n[cyan bold italic]Materia: [/cyan bold italic][cyan]Sistemas Operativos[/cyan]\n[cyan bold italic]Semestre: [/cyan bold italic][cyan]2024-2[/cyan]\n[cyan bold italic]Profesor: [/cyan bold italic][cyan]Ing. Gunnar Eyal Wolf Iszaevich[/cyan]",title="FileSystem [red]FIUNAMFS", expand=True))
         pprint(self.specifications,expand_all=True)
@@ -99,38 +115,64 @@ class FileSystem:
     def clean(self):
         if self.disc != None:
             self.disc.close()
+    def getFiles(self):
+        return Directory(self.getClusters(1,3)).files
     def deleteFile(self, name):
-        directory = Directory(self.getClusters(1,3))
-        for file in directory.files:
+        files = self.getFiles()
+        for file in files:
             if file.empty():
                 continue
             fileData = file.getData()
-            if fileData['name'].strip() == name:
+            if fileData['name'] == name:
                 base =  fileData['address_in_directory'] + self.specifications['sizeCluster'] * self.specifications['cluster_directory']
-                print(base)
                 b = b''.join([b'\x2f',b'\x23'*15,b'\x00'*4,b'\x00'*4,b'\x30'*14,b'\x30'*14])
                 self.disc.write(base,b)
                 return
         raise Exception('No se encontro el archivo')
     def ls(self):
-        directory = Directory(self.getClusters(1,3))
+        files = self.getFiles()
         table = Table(title="Directorio")
-        for column in directory.files[0].getData().keys():
-            if column == 'type':
+        aviableColumns = self.preprocessToShowFields.keys()
+        for column in files[0].getData().keys():
+            if column not in aviableColumns:
                 continue
             table.add_column(column)
-        for file in directory.files:
+        for file in files:
             if file.empty():
                 continue
-            values = [str(v) for v in list(file.getData().values())[1:]]
+            values = [self.preprocessToShowFields[pair[0]](pair[1]) for pair in list(file.getData().items()) if pair[0] in aviableColumns]
             table.add_row(*values)
         console = Console()
         console.print(table)
 
 
+
+fileSystem = FileSystem(Disc('fiunamfs.img'))
+class Menu:
+    def __init__(self, fileSystem: FileSystem):
+        self.fileSystem = fileSystem
+    def deleteFile(self):
+        files = [file for file in self.fileSystem.getFiles() if not file.empty()]
+        if files.__len__() == 0:
+            return richPrint(Panel("No hay archivos para eliminar",title="Sin archivos",expand=False))
+        cleaned_files = [(i+1, file.getData()['name'].rstrip('\x00').strip()) for i, file in enumerate(files)]
+        questions = [
+            {
+                'type': 'list',
+                'name': 'file',
+                'message': 'Choose a file to delete',
+                'choices': [f"{i}){name}" for i, name in cleaned_files]
+            }
+        ]
+        fileToDelete = prompt(questions)['file']
+        index = int(fileToDelete[0]) - 1
+        name = files[index].getData()['name']
+        self.fileSystem.deleteFile(name)
+    
+menu = Menu(fileSystem)
 options = {
-    "DELETE_FILE" : lambda: print('DELETE_FILE'),
-    "LIST_FILES" : lambda: print('LIST_FILES'),
+    "DELETE_FILE" : menu.deleteFile,
+    "LIST_FILES" : lambda: fileSystem.ls(),
     "COPY_FILE" : lambda: print('COPY_FILE'),
     "EXTRACT_FILE" : lambda: print('EXTRACT_FILE'),
     "EXIT" : lambda: sys.exit(0)
@@ -145,7 +187,6 @@ def main_menu():
             'choices': options.keys()
         }
     ]
-
     answers = prompt(questions)
     return answers['main_menu']
 
