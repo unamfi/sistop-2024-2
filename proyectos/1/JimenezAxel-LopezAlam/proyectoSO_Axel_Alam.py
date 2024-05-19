@@ -21,6 +21,21 @@ class FiUnamFS:
         version = struct.unpack('5s', self.superblock[10:15])[0].decode('ascii').strip('\x00')
         if name != 'FiUnamFS' or version != '24-2':
             raise ValueError("Sistema de archivos no compatible o corrupto")
+    
+     
+    def list_files(self):
+        # Lista los archivos en el directorio principal del FiUnamFS, excluyendo entradas vacías y no utilizadas.
+        # Lee las entradas del directorio después de saltar el superbloque.
+        with self.lock:
+            with open(self.filepath, 'r+b') as f:
+                f.seek(1024)  # Posicionarse al inicio del directorio
+                entries = []
+                for _ in range(64):
+                    entry = f.read(64)
+                    filename = entry[1:16].decode('ascii', 'ignore').replace('\x00', ' ').strip()
+                    if filename and filename != '###############':  # Filtrar entradas vacías y marcadas como no utilizadas
+                        entries.append(filename)
+        return entries
 
 if __name__ == "__main__":
     ##El path depende del sistema, para este caso se utilizó WINDOWS
