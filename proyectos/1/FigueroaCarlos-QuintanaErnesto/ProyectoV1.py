@@ -5,8 +5,11 @@ from datetime import *
 from math import ceil
 import tkinter as tk
 from tkinter import messagebox, filedialog, simpledialog
+from threading import Thread, Lock
 #Ruta del sistema de archivos
 sistema_archivos = "fiunamfs.img"
+#Lista de datos de los archivos a imprimir
+archivo_sist=[]
 
 def clear():
     os.system('clear')
@@ -26,6 +29,11 @@ def leer_superbloque():
         if version != "24-2":
             raise ValueError("Versión del sistema de archivos no compatible")
 
+def salir_programa():
+    global root
+    #Esperamos 0.2s para permitir el guardado de la información de los archivos
+    sleep(0.2)
+    root.quit()
 
 def leer_enteros(cabezal,tam):
     global sistema_archivos
@@ -106,7 +114,6 @@ def escribir_info(cabezal,contenido):
     with open(sistema_archivos,'rb+') as file:
         file.seek(cabezal)
         file.write(contenido)
-    guardar_info_archivos()
 
 #Elimina el un directorio del sistema de archivos
 def eliminar_dir(cabezal):
@@ -130,50 +137,72 @@ def eliminar_info(cabezal,tam):
 
 
 def guardar_info_archivos():
-    #Se mostrarán únicamente los archivos que tienen un nombre específico
-    #Se deberá de recorrer el directorio
-    cabezal = inicio_dir
-    global num_entradas
-    global archivos
-    archivos.clear()
-    num_entradas = 128
-    #Guarda la informacion de los archivos en el diccionario 'archivos'
-    while(cabezal != fin_dir):
-        archivo = {}
-        with open(sistema_archivos,'rb') as file:
-            file.seek(cabezal)
-            #Comprueba si la entrada tiene algun contenido o esta vacia
-            entrada = leer_ascii(cabezal,1)
-            if entrada == '-':
-                #Lee la informacion del archivo por partes
-                archivo['nombre'] = leer_ascii(cabezal + 1, 14) #Nombre 
-                archivo['tam'] = leer_enteros(cabezal + 16, 4) # Tamaño
-                archivo['cluster_inicial'] = leer_enteros(cabezal + 20, 4) #Tamanio del cluster
-                fecha_objeto = datetime.strptime(leer_ascii(cabezal + 24, 13), "%Y%m%d%H%M%S")
-                cadena_formateada = fecha_objeto.strftime("%Y-%m-%d %H:%M:%S")
-                archivo['fecha_creacion'] = cadena_formateada #fecha de creación del archivo
-                fecha_objeto = datetime.strptime(leer_ascii(cabezal + 38, 13), "%Y%m%d%H%M%S")
-                cadena_formateada = fecha_objeto.strftime("%Y-%m-%d %H:%M:%S")
-                archivo['fecha_modificacion'] = cadena_formateada #fecha de modificacion del archivo
-                archivo['cluster_directorio'] = cabezal
+    """
+        Se mostrarán únicamente los archivos que tienen un nombre específico
+        Se deberá de recorrer el directorio
+        Ya que es un hilo, guardará constantemente los datos
+    """
+    while True:
+        cabezal = inicio_dir
+        global num_entradas
+        global archivos
+        archivos.clear()
+        num_entradas = 128
+        #Guarda la informacion de los archivos en el diccionario 'archivos'
+        while(cabezal != fin_dir):
+            archivo = {}
+            with open(sistema_archivos,'rb') as file:
+                file.seek(cabezal)
+                #Comprueba si la entrada tiene algun contenido o esta vacia
+                entrada = leer_ascii(cabezal,1)
+                if entrada == '-':
+                    #Lee la informacion del archivo por partes
+                    archivo['nombre'] = leer_ascii(cabezal + 1, 14) #Nombre 
+                    archivo['tam'] = leer_enteros(cabezal + 16, 4) # Tamaño
+                    archivo['cluster_inicial'] = leer_enteros(cabezal + 20, 4) #Tamanio del cluster
+                    fecha_objeto = datetime.strptime(leer_ascii(cabezal + 24, 13), "%Y%m%d%H%M%S")
+                    cadena_formateada = fecha_objeto.strftime("%Y-%m-%d %H:%M:%S")
+                    archivo['fecha_c'] = cadena_formateada #fecha de creación del archivo
+                    fecha_objeto = datetime.strptime(leer_ascii(cabezal + 38, 13), "%Y%m%d%H%M%S")
+                    cadena_formateada = fecha_objeto.strftime("%Y-%m-%d %H:%M:%S")
+                    archivo['fecha_m'] = cadena_formateada #fecha de modificacion del archivo
+                    archivo['cluster_directorio'] = cabezal
+                    #Se guarda la informacion recabada de los archivos
+                    archivos[archivo['nombre'].rstrip()] = archivo
+                    cabezal += 64
+                    num_entradas -= 1
+                    pass
+                else:
+                    #Es ignorado y deja avanzar el cabezal
+                    entradas_libres.append(cabezal)
+                    cabezal += 64
+        #Los datos se guardan cada 0.1 segundos
+        sleep(.1)
 
-                #Se guarda la informacion recabada de los archivos
-                archivos[archivo['nombre'].rstrip()] = archivo
-                cabezal += 64
-                num_entradas -= 1
-                pass
-            else:
-                #Es ignorado y deja avanzar el cabezal
-                entradas_libres.append(cabezal)
-                cabezal += 64
-#Listar los elementos del directorio
+def cargar_contenidos():
+    # Se cargarán los archivos que tienen un nombre
+    global buffer_archivos
+    global archivo_sist
+    buffer_archivos.acquire()
+    while True:
+        #Limpiamos la lista para que se borren los archivos que hayan sido eliminados
+        archivo_sist.clear()
+        #Guardamos los datos de los archivos en una lista
+        for archivo in archivos.items():
+            archivo_sist.append(f"-{archivo[0]:<14}|{archivo[1]['tam']:<10}|{archivo[1]['fecha_m']}|{archivo[1]['fecha_m']}")
+        #Permitimos que otro proceso (que modifique la lista) tome el candado durante una ventana de 1s
+        buffer_archivos.release()
+        sleep(1)
+        buffer_archivos.acquire()
+
+#Lista los contenidos del directorio
 def listar_contenidos():
-    archivo_sist=[]
-    #Recorremos los archivos, sólo se mostrarán los que tengan nombre
-    for i,archivo in enumerate(archivos.items()):
-        archivo_sist.append(f"{i:>5}- {archivo[0]:<14}|{archivo[1]['tam']:<10}|{archivo[1]['fecha_creacion']}|{archivo[1]['fecha_modificacion']}")
-    mssbx= "\n".join(repr(item) for item in archivo_sist)  
+    global archivo_sist, buffer_archivos
+    buffer_archivos.acquire()
+    #Damos formato a la cadena a imprimir
+    mssbx= "\n".join(repr(item) for item in archivo_sist)
     messagebox.showinfo("Archivos",mssbx)
+    buffer_archivos.release()
 
 def copiar_archivo_a_sistema():
     ruta = filedialog.askdirectory()
@@ -196,24 +225,32 @@ def copiar_archivo_a_sistema():
         messagebox.showinfo("ERROR","No existe un archivo con ese nombre") 
 
 def eliminar_archivo():
+    global buffer_archivos
+    #Tomamos el candado para evitar conflictos, lo liberamos al salir de la función
+    buffer_archivos.acquire()
     nombre = simpledialog.askstring("Eliminar archivo", "Ingrese el nombre del archivo a eliminar:")
-    nombre.rstrip().lstrip()
     # Validamos que el archivo exista
     if nombre in archivos:
         informacion = archivos[nombre]
         # Eliminamos toda información del archivo 
         eliminar_dir(informacion['cluster_directorio'])
         eliminar_info(informacion['cluster_inicial'] * tam_cluster,informacion['tam'])
+        buffer_archivos.release()
         messagebox.showinfo("Aviso","Archivo eliminado exitosamente")
-    else: 
-         messagebox.showinfo("ERROR","No existe un archivo con ese nombre")
-    guardar_info_archivos()
+        return
+    else:
+        buffer_archivos.release()
+        messagebox.showinfo("ERROR","No existe un archivo con ese nombre")
+        return
 
 
 def copiar_archivo_a_FiUnamFs():
     #Verificar que el directorio tenga entradas libres
+    global buffer_archivos
+    buffer_archivos.acquire()
     if (len(archivos) == num_entradas): 
         messagebox.showinfo("ERROR","No se puede agregar más archivos al directorio")
+        buffer_archivos.release()
         return
     else:
         archivo_sistema = filedialog.askopenfilename()
@@ -225,11 +262,13 @@ def copiar_archivo_a_FiUnamFs():
                     #Que el nombre del archivo no exceda los 14 caracteres.
                     if len(nombre) > 14:
                         messagebox.showinfo("ERROR","El nombre del archivo es demasiado largo para el sistema.")
+                        buffer_archivos.release()
                         return
                     #El archivo no puede superar los (716 * tam_cluster)
                     tam = os.path.getsize(archivo_sistema)
                     if tam > (cluster_totales - num_clusterDir - 1) * tam_cluster:
                         messagebox.showinfo("ERROR","El tamaño del archivo es demasiado grande para el sistema.")
+                        buffer_archivos.release()
                         return
                     
                     fecha_modificacion = str(datetime.fromtimestamp(os.path.getmtime(archivo_sistema)))[0:19].replace("-","").replace(" ","").replace(":","")
@@ -238,6 +277,7 @@ def copiar_archivo_a_FiUnamFs():
                     cluster_inicial = asignar_espacio(tam)
                     if cluster_inicial == False: 
                         messagebox.showinfo("ERROR","No hay suficiente espacio de almacenamiento para el archivo seleccionado")
+                        buffer_archivos.release()
                         return
                     else:
                         #Se escribe el archivo 
@@ -246,11 +286,15 @@ def copiar_archivo_a_FiUnamFs():
                         escribir_dir(nombre,tam,cluster_inicial,fecha_modificacion,fecha_creacion)
                         escribir_info(cluster_inicial,contenido)
                         messagebox.showinfo("Aviso","Archivo copiado exitósamente")
+                        buffer_archivos.release()
+                        return
             except:
                 messagebox.showinfo("ERROR","No fue posible abrir el archivo")
+                buffer_archivos.release()
                 return
         else:
             messagebox.showinfo("ERROR","No se encontró la ruta")
+            buffer_archivos.release()
             return
 
 def asignar_espacio(tam):
@@ -306,5 +350,14 @@ def mostrar_menu():
 
     root.mainloop()
 
-guardar_info_archivos()
+# INICIO
+#Hilo para guardar la información de los archivos
+Thread(target=guardar_info_archivos,daemon=True).start()
+buffer_archivos=Lock()
+#Hilo para cargar la información de los archivos para imprimir
+Thread(target=cargar_contenidos, daemon=True).start()
+#Variable de control (Evita que se modifique el diccionario de archivos mientras se lee)
+
+#Permite cargar los datos antes de desplegar el menu
+sleep(1)
 mostrar_menu()
