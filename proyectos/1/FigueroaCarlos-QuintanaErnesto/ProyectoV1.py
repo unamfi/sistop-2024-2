@@ -171,6 +171,24 @@ def listar_contenidos():
     for i,archivo in enumerate(archivos.items()):
         print(f"{i:>5}- {archivo[0]:<14}|{archivo[1]['tam']:<10}|{archivo[1]['fecha_creacion']}|{archivo[1]['fecha_modificacion']}")
 
+def copiar_archivo_a_sistema():
+    ruta = input("Escribe el directorio dónde se guardará el archivo").rstrip().lstrip()
+    nombre = input("Ingrese el nombre del archivo a copiar:").rstrip().lstrip()
+    # Validamos que el archivo exista en FIunamfs
+    if nombre in archivos:
+        # Si no hay archivos con el mismo nombre en la ruta, copiamos el archivo
+        if (os.path.exists(ruta + "/" + nombre) == False):
+            # Guardamos el contenido del archivo en una variable
+            contenido = leer_info(archivos[nombre]['cluster_inicial'] * tam_cluster,archivos[nombre]['tam'])
+            # Creamos y escribimos un archivo, en la ruta seleccionada, con la información obtenida
+            with open(ruta + "/" + nombre,'wb') as archivo:
+                archivo.write(contenido)
+            print("Archivo guardado con éxito")
+        else:
+            print("ERROR Un archivo del mismo nombre está en el directorio.") 
+    else:
+        print("ERROR No existe un archivo con ese nombre") 
+
 def mostrar_menu():
     while True:
         opc=int(input("Selecciona una opcion:\n"+
@@ -183,6 +201,8 @@ def mostrar_menu():
         match opc:
             case 1:
                 listar_contenidos()
+            case 2:
+                copiar_archivo_a_sistema()
             case 5:
                 break
             case _:
