@@ -31,14 +31,15 @@ class FiUnamFS:
 
     def read_superblock(self):
         # Lectura del superbloque para obtener información del sistema de archivos
-        superblock_data = self.read_sector(0)
-        identifier = superblock_data[0:9].decode('ascii').strip('\x00')
-        version = superblock_data[10:15].decode('ascii').strip('\x00')
+        superblock_data = self.read_sector(0)  # Leer el primer sector donde se encuentra el superbloque
+        identifier = superblock_data[0:9].decode('ascii').strip('\x00')  # Identificador del sistema de archivos
+        version = superblock_data[10:15].decode('ascii').strip('\x00')  # Versión del sistema de archivos
         if identifier != "FiUnamFS":
             raise Exception("El sistema de archivos no es FiUnamFS")
         if version != "24-2":
             raise Exception("La versión del sistema de archivos no es compatible")
 
+        # Extraer información del superbloque
         volume_label = superblock_data[20:36].decode('ascii')
         cluster_size = struct.unpack('<I', superblock_data[40:44])[0]
         directory_clusters = struct.unpack('<I', superblock_data[45:49])[0]
@@ -52,7 +53,7 @@ class FiUnamFS:
             'cluster_size': cluster_size,
             'directory_clusters': directory_clusters,
             'total_clusters': total_clusters,
-            'direc_inicio': direc_inicio,
+            'direc_inicio': direc_inicio, 
             'direct_size': direct_size,
             'entrada_direc_size': entrada_direc_size
         }
@@ -61,51 +62,88 @@ class FiUnamFS:
         # Listado de los contenidos del directorio del sistema de archivos
         directory_data = b""
         for i in range(self.superblock['directory_clusters']):
-            directory_data += self.read_sector(i + 1)
+            directory_data += self.read_sector(i + 1)  # Leer todos los sectores del directorio
     
-        entry_size = 64
+        entry_size = 64  # Tamaño de cada entrada de directorio
         for i in range(0, len(directory_data), entry_size):
             entry = directory_data[i:i + entry_size]
             file_name = entry[1:15].decode().strip()
     
-            # Sirve para no mostrar los que no tengan nombre
+            # Filtrar entradas vacías o no válidas
             if not file_name or file_name == "---------------" or file_name.startswith('.'):
                 continue
     
+            # Extraer información del archivo
             file_size, cluster_start = struct.unpack('<I', entry[16:20])[0], struct.unpack('<I', entry[20:24])[0]
             creation_time, modification_time = entry[24:38].decode().strip(), entry[38:52].decode().strip()
     
             if file_size > 0 and cluster_start > 0 and creation_time and modification_time:
+                # Mostrar información del archivo
                 print(f"ARCHIVO: {file_name}, TAMAÑO: {file_size}, "
                       f"CLUSTER INICIAL: {cluster_start}, "
                       f"FECHA CREACION: {creation_time}, "
                       f"FECHA MODIFICACION: {modification_time}\n")
 
-    def copy_file_to_system(self, filename):
+    def copy_file_to_system(self, filename, destination_path):
         # Copia un archivo desde el sistema de archivos FiUnamFS al sistema local
-        file_data = self.read_file(filename)
-        with open(filename, 'wb') as f:
-            f.write(file_data)
+        print(f"Copiando {filename} a {destination_path}...")
+        direc_inicio = self.superblock['direc_inicio']
+        direct_size = self.superblock['direct_size']
+        entrada_direc_size = self.superblock['entrada_direc_size']
+        cluster_size = self.superblock['cluster_size']
+        
+        with open(self.disk_file, 'rb') as f:
+            f.seek(direc_inicio)  # Mover a la posición del inicio del directorio
+            directory_data = f.read(direct_size)
+            encontrado = False
+            
+            for i in range(0, direct_size, entrada_direc_size):
+                entrada = directory_data[i:i + entrada_direc_size]
+                nombre_archivo = entrada[1:15].decode().strip()
+                tamano_archivo, cluster_start = struct.unpack('<I', entrada[16:20])[0], struct.unpack('<I', entrada[20:24])[0]
+
+                if nombre_archivo == filename and tamano_archivo > 0:
+                    encontrado = True
+                    break
+            if not encontrado:
+                print(f"Archivo '{filename}' no encontrado en FiUnamFS")
+                return
+            start_point = cluster_start * cluster_size  # Calcular el punto de inicio del archivo
+            f.seek(start_point)
+            datos_archivo = f.read(tamano_archivo)
+            
+            # Escribir los datos del archivo en el destino del sistema local
+            with open(destination_path, 'wb') as archivo:
+                archivo.write(datos_archivo)
+            
+            print(f"Archivo '{filename}' copiado exitosamente a '{destination_path}'.")
 
     def copy_file_to_fiunamfs(self, filename):
         # Copia un archivo desde el sistema local al sistema de archivos FiUnamFS
-        with open(filename, 'rb') as f:
-            file_data = f.read()
-
-        free_cluster = self.find_free_cluster()
+        free_cluster = self.find_free_cluster()  # Encontrar un cluster libre
         if free_cluster is None:
             raise Exception("No hay clusters disponibles")
 
-        self.write_file(filename, file_data, free_cluster)
+        # Lógica para escribir el archivo en el sistema de archivos FiUnamFS
 
     def delete_file(self, filename):
         # Elimina un archivo del sistema de archivos FiUnamFS
-        entry_index = self.find_file_entry(filename)
-        if entry_index is None:
-            raise Exception(f"Archivo '{filename}' no encontrado")
-
-        self.mark_file_deleted(entry_index)
-        self.release_clusters(filename)
+        direc_inicio = self.superblock['direc_inicio']
+        entrada_direc_size = self.superblock['entrada_direc_size']
+        cluster_size = self.CLUSTER_SIZE
+        with open(self.disk_file, 'r+b') as f:
+            f.seek(direc_inicio)  # Mover a la posición del inicio del directorio
+            for _ in range(cluster_size // entrada_direc_size):
+                posicion = f.tell()  # Guardar la posición actual
+                entrada = f.read(entrada_direc_size)
+                nombre = entrada[1:16].decode('ascii').rstrip()
+                if nombre.rstrip('\x00').strip() == filename.rstrip('\x00').strip():
+                    f.seek(posicion)
+                    # Marcar la entrada como eliminada
+                    f.write(b'/' + b' ' * 15)
+                    print("Archivo eliminado de FiUnamFS")
+                    return
+        print("Archivo no encontrado en FiUnamFS")
 
     def get_user_commands(self):
         # Obtiene comandos del usuario y los pone en la cola de comandos
@@ -126,12 +164,16 @@ class FiUnamFS:
             args = None
             if command in ("2", "3", "4"):
                 file_name = input("Ingrese el nombre del archivo: ")
-                args = (command, file_name)
+                if command == "2":
+                    destination_path = input("Ingrese la ruta de destino en su sistema (incluyendo el nombre del archivo): ")
+                    args = (file_name, destination_path)
+                else:
+                    args = (file_name,)
             elif command not in ("1", "5"):
                 print("Opción no válida")
                 continue
 
-            self.command_queue.put(args)
+            self.command_queue.put((command, args))
 
     def process_commands(self):
         # Procesa los comandos encolados, asegurando sincronización con lock
@@ -141,15 +183,17 @@ class FiUnamFS:
                 self.list_contents()
             else:
                 command, args = command_args
-                with self.lock:
+                with self.lock:  # Asegura que solo un hilo ejecute el bloque de código a la vez
                     if command == "1":
                         self.list_contents()
                     elif command == "2":
-                        self.copy_file_to_system(args)
+                        filename, destination_path = args
+                        self.copy_file_to_system(filename, destination_path)
                     elif command == "3":
                         self.copy_file_to_fiunamfs(args)
                     elif command == "4":
-                        self.delete_file(args)
+                        filename, = args
+                        self.delete_file(filename)
 
             self.command_queue.task_done()
 
@@ -167,3 +211,4 @@ class FiUnamFS:
 if __name__ == "__main__":
     fiunamfs = FiUnamFS('fiunamfs.img')
     fiunamfs.main()
+
