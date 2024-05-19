@@ -115,23 +115,7 @@ class FiUnamFS():
             fs.seek(start)
             content = fs.read(reading_size)
             return content.decode('ascii').strip()
-        
-    ''' 'readDirectory' retorna un dato de tipo <str> o bien <int> decimal según 
-        lo que encuentre en el directorio mediante una lectura en modo binario a 
-        partir una posición y desplazamiento definidos. '''
-    # def _readDirectory(self, start:int, reading_size:int):
-
-    #     with open(self.path, 'rb') as _FiUnamFS:
-    #         _FiUnamFS.seek(start)
-    #         content = _FiUnamFS.read(reading_size)
-
-    #     try:
-    #         c, = struct.unpack('<I', content)
-    #         return c
-        
-    #     except:
-    #         return content.decode('ascii')
-    
+           
 
     '''Retorna una lista de objetos 'File' equivalentes a los archivos (entradas)
        contenidos en el directorio.'''
