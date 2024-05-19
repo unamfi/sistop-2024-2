@@ -170,7 +170,8 @@ class FiUnamFS():
                         size = self._readIntFromFS(start + 16, 4),
                         initial_cluster = self._readIntFromFS(start + 20, 4),
                         creation_date = self._readStrFromFS(start + 24, 13),
-                        update_date = self._readStrFromFS(start + 38, 13)
+                        update_date = self._readStrFromFS(start + 38, 13),
+                        path_directory = self.path
                     )
                 )
                 mutex2.release()
