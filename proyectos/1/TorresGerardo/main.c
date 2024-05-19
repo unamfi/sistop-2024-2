@@ -25,8 +25,7 @@ int main(int argc, char **argv)
                     break;
 
                     case '3':
-                        //existeArchivo("main.c");
-                        printf("HACE 3\n");
+                        copiaDePCaFI(*(argv + 1), tipo_maquina);
                     break;
 
                     case '4':

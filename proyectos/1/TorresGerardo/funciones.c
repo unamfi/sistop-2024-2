@@ -4,6 +4,7 @@
 #include <dirent.h>//para leer directorio
 #include <time.h>//para obtener la hora
 #include <string.h>//para comparar cadenas
+#include <math.h>
 #define LITTLE_ENDIAN 0
 #define BIG_ENDIAN    1
 #define TERMINAR_PROGRAMA 't'
@@ -13,6 +14,9 @@ int littleEndian(int);
 int endian();
 void PmensajeInicial();
 void listarContenido(char *nd, int tipo_maquina);
+void mostrarDirectorioExterno();
+void printHora(char *h);
+int escribirEnDirectorio(char nd[], int tipo_maquina, char nA[], int bytes,int clusterInicial);
 
 int determinarCaracteresImprimibles(char str[])
 {
@@ -31,7 +35,7 @@ int determinarCaracteresImprimibles(char str[])
 int determinaEspacioArchivo(char nA[])
 {
     int t;
-    FILE * arch = fopen(nA,"r");
+    FILE * arch = fopen(nA,"rb");
     fseek(arch,0,SEEK_END);
     t = ftell(arch);
     fclose(arch);
@@ -51,7 +55,7 @@ int verificaSistema(char nd[], int tipo_maquina)
     int i;
     char s[9],v[5],n[17];
     n[16] = '\0';
-    FILE *f = fopen(nd,"r");
+    FILE *f = fopen(nd,"rb");
     fread(s,sizeof(char),9,f);
     
     if(strcmp(s,"FiUnamFS\0") == 0)
@@ -155,12 +159,12 @@ void copiaDeFiApc(char nd[], int tipo_maquina)
     scanf(" %s",nA);
     int numThreads = 3, bandera = 0;
     omp_set_num_threads(numThreads);
-    int i, j = 0, bArchivo, id, cluster;
+    int i, bArchivo, id, cluster;
     char nombreArchivo[16];
     FILE *fp;
     #pragma omp parallel private(fp,i,bArchivo,nombreArchivo, id, cluster)
     {
-        fp = fopen(nd,"r");
+        fp = fopen(nd,"rb");
         
         nombreArchivo[15] = '\0';
         id = omp_get_thread_num();
@@ -171,6 +175,13 @@ void copiaDeFiApc(char nd[], int tipo_maquina)
             fread(nombreArchivo,sizeof(char),15,fp);
             fread(&bArchivo,sizeof(int),1,fp);
             fread(&cluster,sizeof(int),1,fp);
+
+            if(tipo_maquina == BIG_ENDIAN)
+            {
+                bArchivo = littleEndian(bArchivo);
+                cluster = littleEndian(cluster);
+            }
+                
             if(strncmp(nA,nombreArchivo,determinarCaracteresImprimibles(nombreArchivo)) == 0)
             {
                 printf("EXISTE\n");
@@ -193,6 +204,162 @@ void copiaDeFiApc(char nd[], int tipo_maquina)
         printf("NO EXISTE ESE FICHERO\n");
 }
 
+void copiaDePCaFI(char nd[], int tipo_maquina)
+{
+    mostrarDirectorioExterno();
+    int i = 0,j = 0,k = 0,bArchivo, bytes,cluster,uc, memoria,e,bandera1 = 0 ,bandera2;
+    char nombreArchivo[16],nA[16];
+    printf("QUE ARCHIVO QUIERE PASAR A FIUNAMFS?\n");
+    scanf(" %s",nA);
+    if(access(nA,F_OK) != 0)
+    {
+        printf("NO EXISTE ESE FICHERO\n");
+        return;
+    }
+    FILE *f = fopen(nA,"rb");
+    fseek(f,0,SEEK_END);
+    bArchivo = ftell(f);
+    bytes = bArchivo;
+    fclose(f);
+    memoria = bArchivo / 2048;
+    FILE *fp = fopen(nd,"rb");
+    nombreArchivo[15] = '\0';
+    nA[15] = '\0';
+
+    int intervalos[128][2],libres[128][2];
+
+    while(i < 128)
+    {
+        fseek(fp,2048 + 64 * i + 1,SEEK_SET);
+        fread(nombreArchivo,sizeof(char),15,fp);
+        fread(&bArchivo,sizeof(int),1,fp);
+        fread(&cluster,sizeof(int),1,fp);
+
+        if(tipo_maquina == BIG_ENDIAN)
+        {
+            bArchivo = littleEndian(bArchivo);
+            cluster = littleEndian(cluster);
+        }
+        if(bArchivo > 0)
+        {
+            printf("%i \n",bArchivo);
+            uc = cluster + (bArchivo / 2048);
+            intervalos[j][0] = cluster;
+            intervalos[j][1] = uc;   
+            j += 1;
+        }
+        i += 1;
+    }
+    fclose(fp);
+
+    if(j > 0)
+    {
+        i = 5;
+        j = 0;
+        libres[k][0] = i;
+        while(i < 720)
+        {
+            if(i == intervalos[j][0])
+            {
+                if( ( i - 1) - libres[k][0] < 0)
+                {
+                    i = intervalos[j][1] + 1;
+                    libres[k][0] = i;
+                }
+
+                else
+                {
+                    libres[k][1] = i - 1;
+                    if(intervalos[j][1] + 1 < 720)
+                    {  
+                        k += 1;
+                        i = intervalos[j][1] + 1;
+                    }
+                }
+                j++;
+            }
+
+            else
+            {
+                i++;
+                if(i == 720)
+                    libres[k][1] = i - 1;
+            }
+                
+        } 
+        for (i = 0; i <= k; i++)
+        {
+            e = libres[i][1] - libres[i][0];
+            if(e >= memoria)
+            {
+                bandera1 = 1;
+                break;
+            }
+            
+        }
+    }
+    
+    if(bandera1 != 1)
+    {
+        printf("NO ES POSIBLE GUARDAR EN FIUNAMFS\n");
+        return;
+    }
+    printf("%i \n",bytes);
+    if(escribirEnDirectorio(nd,tipo_maquina,nA, bytes, libres[i][0]) == 1)
+    {
+        char buffer[bytes];
+        FILE *f = fopen(nA,"rb");
+        fread(buffer,sizeof(char),bytes,f);
+        fclose(f);
+        fp = fopen(nd,"rb+");
+        fseek(fp,2048 * libres[i][0],SEEK_SET);
+        fwrite(buffer,sizeof(char),bytes,fp);
+        fclose(fp);
+        return;
+    }
+    
+    printf("NO ES POSIBLE GUARDAR EN FIUNAMFS\n");
+}
+int escribirEnDirectorio(char nd[], int tipo_maquina, char nA[], int bytes,int clusterInicial)
+{
+    int i = 0;
+    FILE *fp = fopen(nd,"rb+");
+    char libre = 0;
+    nA[15] = '\0';
+    char fechaCreacion[15];
+    char fechaMoficacion[15];
+    printHora(fechaCreacion);
+    printHora(fechaMoficacion);
+
+    while(i < 128 && libre != '/')
+    {
+        fseek(fp,2048 + 64 * i,SEEK_SET);
+        fread(&libre,sizeof(char),1,fp);
+        i += 1;
+    }
+
+    if(i == 128)
+        return 0;
+
+    fseek(fp,2048 + 64 * (i - 1),SEEK_SET);
+    libre = '-';
+    fwrite(&libre,sizeof(char),1,fp);
+    fwrite(nA,sizeof(char),15,fp);
+
+    if(tipo_maquina == BIG_ENDIAN)
+    {
+        bytes = littleEndian(bytes);
+        clusterInicial = littleEndian(clusterInicial);
+    }
+
+    fwrite(&bytes,sizeof(int),1,fp);
+    fwrite(&clusterInicial,sizeof(int),1,fp);
+    fwrite(fechaCreacion, sizeof(char),14,fp);
+    fwrite(fechaMoficacion, sizeof(char),14,fp);
+    fclose(fp);
+    return 1;
+}
+
 void listarContenido(char nd[], int tipo_maquina)
 {
     int numThreads = 3;
@@ -203,7 +370,7 @@ void listarContenido(char nd[], int tipo_maquina)
     printf("|  NOMBRE_ARCHIVO |   NUM_BYTES   |  FECHA DE CREACION   |   FECHA ULTIMA MODIFICACION\n");
     #pragma omp parallel private(fp,i,bArchivo,nombreArchivo, fechaCreacion, fechaMoficacion,id)
     {
-        fp = fopen(nd,"r");
+        fp = fopen(nd,"rb");
         
         nombreArchivo[15] = '\0';
         fechaCreacion[14] = '\0';
@@ -272,15 +439,6 @@ void listarContenido(char nd[], int tipo_maquina)
     fclose(fp);*/
 }
 
-int existeArchivo(char *fn)
-{
-    if(access(fn,F_OK) == 0)
-        return 1;
-    
-    else
-        return 0;
-}
-
 int littleEndian(int n)
 {
     int b[4],r = 0, i = 1;
@@ -310,11 +468,21 @@ void mostrarDirectorioExterno(void)
     
     printf("CONTENIDO DE sistop-2024-2|proyectos|1|TorresGerardo:\n");
     dir = opendir(".");
-
+    printf("        NOMBRE  |    NUM_BYTES\n");
     while ((archivo = readdir(dir)) != 0) 
     {
         if(*(archivo->d_name) != '.')
-            printf("\n%s\n", archivo->d_name);
+        {
+            char name[16];
+            name[15] = 0;
+            strcpy(name, archivo->d_name);
+            FILE *f = fopen(archivo->d_name, "rb");
+            fseek(f,0,SEEK_END);
+
+            printf("%15s | %10i\n", name, ftell(f));
+            fclose(f);
+        }
+       
     }
 
     closedir(dir);
