@@ -40,6 +40,56 @@ def obtener_superbloque(ruta):
             "total_clusters": total_clusters
         }
 
+def listar_archivos(ruta, cola):
+    superblock = obtener_superbloque(ruta) #Primero que nada obtenemos el superbloque 
+
+    if superblock: 
+        with open(ruta, "rb") as archivo: #leemos la ruta del img
+            archivo.seek(superblock["tamaño_cluster"])
+            archivos = []
+            for _ in range(superblock["clusters_directorio"]): #Por cada directorio que tengamos, lo vamos a leer para después mostrar su información
+                entrada = archivo.read(64) #información de cada cluster
+                tipo, nombre, tamaño, cluster_inicial, creacion, modificacion, _ = struct.unpack("<c15sI3s14s14s13s", entrada) #información específica
+
+                nombre = nombre.decode("ascii").rstrip(chr(0))
+                if nombre != "###############":
+                    archivos.append((nombre, tamaño, int.from_bytes(cluster_inicial, 'little')))
+            cola.put(archivos)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def listar_archivos_thread(ruta, cola):
+    print("Listando archivos...")
+    listar_archivos(ruta, cola)
+
+def copiar_a_fiunamfs_thread(nombre_archivo, ruta_img, cola):
+    print(f"Copiando {nombre_archivo} a FiUnamFS...")
+    copiar_a_fiunamfs(nombre_archivo, ruta_img, cola)
+
+
+
+
+
 
 
 
