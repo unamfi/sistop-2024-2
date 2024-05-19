@@ -43,7 +43,7 @@ def _copiarACompuLocal(semaphore1, semaphore2):
         file_name = input('Nombre de archivo a copiar: ')
         path = input('Ingresa la dirección destino: ')
 
-        files_in_directory = fiunamfs.divideGetFile()
+        files_in_directory = fiunamfs.getFiles()
         for i in range(len(files_in_directory)):
             if file_name == files_in_directory[i].name:
                 if files_in_directory[i].copyToSystem(path):
