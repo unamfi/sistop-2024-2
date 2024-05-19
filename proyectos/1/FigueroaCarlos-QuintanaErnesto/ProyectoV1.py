@@ -3,6 +3,8 @@ import struct
 from time import sleep
 from datetime import *
 from math import ceil
+import tkinter as tk
+from tkinter import messagebox, filedialog, simpledialog
 #Ruta del sistema de archivos
 sistema_archivos = "fiunamfs.img"
 
@@ -166,14 +168,18 @@ def guardar_info_archivos():
                 cabezal += 64
 #Listar los elementos del directorio
 def listar_contenidos():
-    print("Archivos:")
+    archivo_sist=[]
     #Recorremos los archivos, sólo se mostrarán los que tengan nombre
     for i,archivo in enumerate(archivos.items()):
-        print(f"{i:>5}- {archivo[0]:<14}|{archivo[1]['tam']:<10}|{archivo[1]['fecha_creacion']}|{archivo[1]['fecha_modificacion']}")
+        archivo_sist.append(f"{i:>5}- {archivo[0]:<14}|{archivo[1]['tam']:<10}|{archivo[1]['fecha_creacion']}|{archivo[1]['fecha_modificacion']}")
+    mssbx= "\n".join(repr(item) for item in archivo_sist)  
+    messagebox.showinfo("Archivos",mssbx)
 
 def copiar_archivo_a_sistema():
-    ruta = input("Escribe el directorio dónde se guardará el archivo").rstrip().lstrip()
-    nombre = input("Ingrese el nombre del archivo a copiar:").rstrip().lstrip()
+    ruta = filedialog.askdirectory()
+    ruta.rstrip().lstrip()
+    nombre = simpledialog.askstring("Copiar archivo", "Ingrese el nombre del archivo a copiar:")
+    nombre.rstrip().lstrip()
     #Validamos que el archivo exista en FIunamfs
     if nombre in archivos:
         #Si no existen archivos con el mismo nombre en la ubicación especificada, procedemos a copiar el archivo
@@ -183,33 +189,34 @@ def copiar_archivo_a_sistema():
             #Generamos y escribimos un archivo en la ruta especificada con la información recopilada
             with open(ruta + "/" + nombre,'wb') as archivo:
                 archivo.write(contenido)
-            print("Archivo guardado con éxito")
+            messagebox.showinfo("Aviso","Archivo guardado con éxito")
         else:
-            print("ERROR Un archivo del mismo nombre está en el directorio.") 
+            messagebox.showinfo("ERROR","Un archivo del mismo nombre está en el directorio") 
     else:
-        print("ERROR No existe un archivo con ese nombre") 
+        messagebox.showinfo("ERROR","No existe un archivo con ese nombre") 
 
 def eliminar_archivo():
-    nombre = input("Ingrese el nombre del archivo a eliminar:").rstrip().lstrip()
+    nombre = simpledialog.askstring("Eliminar archivo", "Ingrese el nombre del archivo a eliminar:")
+    nombre.rstrip().lstrip()
     # Validamos que el archivo exista
     if nombre in archivos:
         informacion = archivos[nombre]
         # Eliminamos toda información del archivo 
         eliminar_dir(informacion['cluster_directorio'])
         eliminar_info(informacion['cluster_inicial'] * tam_cluster,informacion['tam'])
-        print("Archivo eliminado exitosamente")
+        messagebox.showinfo("Aviso","Archivo eliminado exitosamente")
     else: 
-        print("ERROR No existe un archivo con ese nombre")
+         messagebox.showinfo("ERROR","No existe un archivo con ese nombre")
     guardar_info_archivos()
 
 
 def copiar_archivo_a_FiUnamFs():
     #Verificar que el directorio tenga entradas libres
     if (len(archivos) == num_entradas): 
-        print("ERROR","No se puede agregar más archivos al directorio")
+        messagebox.showinfo("ERROR","No se puede agregar más archivos al directorio")
         return
     else:
-        archivo_sistema = input('Escriba la ruta del archivo que sera copiado: ')
+        archivo_sistema = filedialog.askopenfilename()
         #Es necesario validar la ruta y la restricción de tamaño
         if os.path.exists(archivo_sistema):
             try:
@@ -217,12 +224,12 @@ def copiar_archivo_a_FiUnamFs():
                     nombre = os.path.basename(archivo_sistema)
                     #Que el nombre del archivo no exceda los 14 caracteres.
                     if len(nombre) > 14:
-                        print("ERROR","El nombre del archivo es demasiado largo para el sistema.")
+                        messagebox.showinfo("ERROR","El nombre del archivo es demasiado largo para el sistema.")
                         return
                     #El archivo no puede superar los (716 * tam_cluster)
                     tam = os.path.getsize(archivo_sistema)
                     if tam > (cluster_totales - num_clusterDir - 1) * tam_cluster:
-                        print("ERROR","El tamaño del archivo es demasiado grande para el sistema.")
+                        messagebox.showinfo("ERROR","El tamaño del archivo es demasiado grande para el sistema.")
                         return
                     
                     fecha_modificacion = str(datetime.fromtimestamp(os.path.getmtime(archivo_sistema)))[0:19].replace("-","").replace(" ","").replace(":","")
@@ -230,7 +237,7 @@ def copiar_archivo_a_FiUnamFs():
                     # En este punto, ya se dispone de la información.Es necesario analizar si hay suficiente espacio para la asignación de memoria.
                     cluster_inicial = asignar_espacio(tam)
                     if cluster_inicial == False: 
-                        print("ERROR","No hay suficiente espacio de almacenamiento para el archivo seleccionado")
+                        messagebox.showinfo("ERROR","No hay suficiente espacio de almacenamiento para el archivo seleccionado")
                         return
                     else:
                         #Se escribe el archivo 
@@ -238,12 +245,12 @@ def copiar_archivo_a_FiUnamFs():
                         #Se escribe en el espacio para archivos.También hay que actualizar el directorio
                         escribir_dir(nombre,tam,cluster_inicial,fecha_modificacion,fecha_creacion)
                         escribir_info(cluster_inicial,contenido)
-                        print("Aviso","Archivo copiado exitósamente")
+                        messagebox.showinfo("Aviso","Archivo copiado exitósamente")
             except:
-                print("ERROR","No fue posible abrir el archivo")
+                messagebox.showinfo("ERROR","No fue posible abrir el archivo")
                 return
         else:
-            print("ERROR","No se encontró la ruta")
+            messagebox.showinfo("ERROR","No se encontró la ruta")
             return
 
 def asignar_espacio(tam):
@@ -277,27 +284,27 @@ def asignar_espacio(tam):
     return False
 
 def mostrar_menu():
-    while True:
-        opc=int(input("Selecciona una opcion:\n"+
-            "1.-listar contenidos\n"+
-            "2.-Copiar de sistema a FIUNAMFS\n"+
-            "3.-Copiar de FIUNAMFS a sistema\n"+
-            "4.-Eliminar archivo\n"+
-            "5.-Salir\n"))
-        #Switch de python, se necesita mínimo Python 3
-        match opc:
-            case 1:
-                listar_contenidos()
-            case 2:
-                copiar_archivo_a_FiUnamFs()
-            case 3:
-                copiar_archivo_a_sistema()
-            case 4:
-                eliminar_archivo()
-            case 5:
-                break
-            case _:
-                print("opción inválida")
+    root = tk.Tk()
+    root.title("Sistema de Archivos FIUNAMFS")
+    root.geometry("400x400")
+
+    # Crear botones para cada operación
+    btn_listar_contenidos = tk.Button(root, text="Listar contenidos", command=listar_contenidos)
+    btn_listar_contenidos.pack(pady=10)
+
+    btn_copiar_a_fiunamfs = tk.Button(root, text="Copiar archivo del sistema a FIUNAMFS", command=copiar_archivo_a_FiUnamFs)
+    btn_copiar_a_fiunamfs.pack(pady=10)
+
+    btn_copiar_a_sistema = tk.Button(root, text="Copiar archivo de FIUNAMFS al sistema", command=copiar_archivo_a_sistema)
+    btn_copiar_a_sistema.pack(pady=10)
+
+    btn_eliminar_archivo = tk.Button(root, text="Eliminar archivo de FIUNAMFS", command=eliminar_archivo)
+    btn_eliminar_archivo.pack(pady=10)
+
+    btn_salir = tk.Button(root, text="Salir", command=root.quit)
+    btn_salir.pack(pady=10)
+
+    root.mainloop()
 
 guardar_info_archivos()
 mostrar_menu()
