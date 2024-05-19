@@ -16,7 +16,7 @@ def _listarContenido(semaphore1, semaphore2):
 
         if option == '5' : break
 
-        files_in_directory = fiunamfs.divideGetFile()
+        files_in_directory = fiunamfs.getFiles()
         print('\n\t\t|Archivos en FiUnamFS|\n')
         i = 1
         for file in files_in_directory:
