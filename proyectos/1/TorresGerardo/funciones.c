@@ -150,12 +150,43 @@ void PmensajeInicial()
     printf("3.Copiar un archivo de tu computadora hacia tu FiUnamFS\n");
     printf("4.Eliminar un archivo del FiUnamFS\n");
 }
+void borrar(char nd[])
+{
+    char nA[30],nombreArchivo[16];
+    listarContenido(nd,tipo_maquina);
+    printf("QUE ARCHIVO DESEA BORRAR DE FIUNAMFS??\n");
+    scanf(" %s",nA);
+    int i = 0, bArchivo, id, bandera = 0;
+    FILE *fp;
+    fp = fopen(nd,"rb+");
+    
+    while(i < 128)
+    {
+        fseek(fp,2048 + 64 * i + 1,SEEK_SET);
+        fread(nombreArchivo,sizeof(char),15,fp);
+                
+        if(strncmp(nA,nombreArchivo,determinarCaracteresImprimibles(nombreArchivo)) == 0)
+        {
+            printf("EXISTE\n");
+            printf("BORRANDO DE FIUNAMFS...\n");
+            fseek(fp,2048 + 64 * i,SEEK_SET);
+            fwrite("/###############",sizeof(char),15,fp);
+            bandera = 1;
+            i = 1000;       
+        }
+        i += 1;
+    }
+    if(bandera == 0)
+        printf("NO EXISTE ESE FICHERO\n");
+    
+    fclose(fp);    
+}
 
 void copiaDeFiApc(char nd[], int tipo_maquina)
 {
     char nA[30];
     listarContenido(nd,tipo_maquina);
-    printf("QUE ARCHIVO DESEA COPIAR A SU SISTEMA?\n");
+    printf("QUE ARCHIVO DESEA COPIAR DE FIUNAM A SU SISTEMA?\n");
     scanf(" %s",nA);
     int numThreads = 3, bandera = 0;
     omp_set_num_threads(numThreads);
@@ -225,12 +256,14 @@ void copiaDePCaFI(char nd[], int tipo_maquina)
     FILE *fp = fopen(nd,"rb");
     nombreArchivo[15] = '\0';
     nA[15] = '\0';
+    char libre = 0;
 
     int intervalos[128][2],libres[128][2];
 
     while(i < 128)
     {
-        fseek(fp,2048 + 64 * i + 1,SEEK_SET);
+        fseek(fp,2048 + 64 * i,SEEK_SET);
+        fread(&libre,1,1,fp);
         fread(nombreArchivo,sizeof(char),15,fp);
         fread(&bArchivo,sizeof(int),1,fp);
         fread(&cluster,sizeof(int),1,fp);
@@ -240,9 +273,8 @@ void copiaDePCaFI(char nd[], int tipo_maquina)
             bArchivo = littleEndian(bArchivo);
             cluster = littleEndian(cluster);
         }
-        if(bArchivo > 0)
+        if(strncmp(&libre,"/",1) == 0)
         {
-            printf("%i \n",bArchivo);
             uc = cluster + (bArchivo / 2048);
             intervalos[j][0] = cluster;
             intervalos[j][1] = uc;   
@@ -389,7 +421,7 @@ void listarContenido(char nd[], int tipo_maquina)
             if(tipo_maquina == BIG_ENDIAN)
                 bArchivo = littleEndian(bArchivo);
 
-            if(strcmp("##############\0",nombreArchivo) != 0)
+            if(strncmp("##############",nombreArchivo,14) != 0)
                 printf("|  %s | %10i    |   %s     |    %s\n",nombreArchivo, bArchivo, fechaCreacion, fechaMoficacion);
             i += numThreads;
         }

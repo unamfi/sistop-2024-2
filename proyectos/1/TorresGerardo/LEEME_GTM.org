@@ -22,3 +22,21 @@ Para compilar con GCC un archivo C que contiene directivas o funciones de openMP
 gcc archivo.c -fopenmp -o ejecutable.exe
 
 #+END_SRC
+
+Para que el programa inicie hay que probar el siguiente comando:
+
+#+BEGIN_SRC yaml
+
+ejecutable.exe fiunamfs.img
+
+#+END_SRC
+
+Debido al requisito de almacenar los enteros en little endian, cada que se lee o se escribe un entero en el pseudodispositivo se hace una conversión de big endian a Little endian. Ya que si el sistema donde trabajamos es big endian, así se guardarán los enteros en el sistema.
+
+El respaldo bibliográfico del proyecto es el siguiente:
+
+#+BEGIN_SRC yaml
+
+[](https://developer.ibm.com/articles/au-endianc/)
+
+#+END_SRC

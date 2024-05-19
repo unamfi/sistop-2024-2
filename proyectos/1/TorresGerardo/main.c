@@ -29,7 +29,7 @@ int main(int argc, char **argv)
                     break;
 
                     case '4':
-                        printf("HACE 4\n");
+                        borrar(*(argv + 1));
                     break;
                 }
                 /*char nh[15];
