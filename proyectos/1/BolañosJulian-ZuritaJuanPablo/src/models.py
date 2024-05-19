@@ -78,14 +78,14 @@ class File():
 
 class FiUnamFS():
 
-    def __init__(self, path:str, directory_entry_size:int) -> None:
+    def __init__(self, path:str, directory_entry_size:int):
         self.path = path
-        self.system_name = self._readDirectory(0, 8)
-        self.version = self._readDirectory(10, 4)
-        self.volumen_label = self._readDirectory(20, 15)
-        self.cluster_size = self._readDirectory(40, 4)
-        self.num_clusters = self._readDirectory(45, 4)
-        self.num_total_clusters = self._readDirectory(50, 4)
+        self.system_name = self._readStrFromFS(0,8)
+        self.version = self._readStrFromFS(10, 4)
+        self.volumen_label = self._readStrFromFS(20, 15)
+        self.cluster_size = self._readIntFromFS(40, 4)
+        self.num_clusters = self._readIntFromFS(45, 4)
+        self.num_total_clusters = self._readIntFromFS(50, 4)
         self.directory_entry_size = directory_entry_size
     
     def __str__(self) -> str:
@@ -100,22 +100,36 @@ class FiUnamFS():
               f'Num Total de Clusters: {self.num_total_clusters}'
             )
     
+    def _readIntFromFS(self, start:int, reading_size:int):
+           
+        with open(self.path, 'rb') as fs:
+            fs.seek(start)
+            content = fs.read(reading_size)
+            c, = struct.unpack('<I', content)
+            return c
+       
+    def _readStrFromFS(self, start:int, reading_size:int):
 
+        with open(self.path, 'rb') as fs:
+            fs.seek(start)
+            content = fs.read(reading_size)
+            return content.decode('ascii').strip()
+        
     ''' 'readDirectory' retorna un dato de tipo <str> o bien <int> decimal según 
         lo que encuentre en el directorio mediante una lectura en modo binario a 
         partir una posición y desplazamiento definidos. '''
-    def _readDirectory(self, start:int, reading_size:int):
+    # def _readDirectory(self, start:int, reading_size:int):
 
-        with open(self.path, 'rb') as _FiUnamFS:
-            _FiUnamFS.seek(start)
-            content = _FiUnamFS.read(reading_size)
+    #     with open(self.path, 'rb') as _FiUnamFS:
+    #         _FiUnamFS.seek(start)
+    #         content = _FiUnamFS.read(reading_size)
 
-        try:
-            c, = struct.unpack('<I', content)
-            return c
+    #     try:
+    #         c, = struct.unpack('<I', content)
+    #         return c
         
-        except:
-            return content.decode('ascii')
+    #     except:
+    #         return content.decode('ascii')
     
 
     '''Retorna una lista de objetos 'File' equivalentes a los archivos (entradas)
@@ -123,20 +137,20 @@ class FiUnamFS():
     def getFiles(self) -> list:
 
         num_files = (self.cluster_size * self.num_clusters) // self.directory_entry_size
-        start = self.cluster_size
         files = []
 
         for i in range(num_files):
-            file_name = self._readDirectory(start + (i * self.directory_entry_size), 15+1)
+            start = self.cluster_size + (i * self.directory_entry_size)
+            file_name = self._readStrFromFS(start, 15)
             
             if '-' in file_name:            
                 files.append(
                     File(
                         name = file_name[1:].strip(),
-                        size = self._readDirectory(start + (i * self.directory_entry_size) + 16, 4),
-                        initial_cluster = self._readDirectory(start + (i * self.directory_entry_size) + 20, 4),
-                        creation_date = self._readDirectory(start + (i * self.directory_entry_size) + 24, 14),
-                        update_date = self._readDirectory(start + (i * self.directory_entry_size) + 38, 14)
+                        size = self._readIntFromFS(start + 16, 4),
+                        initial_cluster = self._readIntFromFS(start + 20, 4),
+                        creation_date = self._readStrFromFS(start + 24, 13),
+                        update_date = self._readStrFromFS(start + 38, 13)
                     )
                 )
         
@@ -147,13 +161,17 @@ class FiUnamFS():
        incluyendo el nombre del archivo a copiar ej: '/d:archivos/archivo.jpg'''
     def copyFromSystem(self, path:str):
 
+        # Revisamos que al archivo exista
+        if not os.path.exists(path):
+            return False
+        
         # Tamaño del archivo a copiar
         new_file_size = os.path.getsize(path)
 
         # Obtenemos el cluster inicial de donde se comenzará a
         # alamacenar el contenido del archivo a copiar.
         initial_cluster = self._searchSpace(new_file_size)
-        print(f'se pego en cluster inicial = {initial_cluster}')
+
         if initial_cluster != None:
             # Movemos nuestro 'apuntador' a donde inicia el cluster obtenido
             # (cluster inicial * tamaño de cluster)
@@ -242,13 +260,21 @@ class FiUnamFS():
         start = self.cluster_size
         
         for i in range(num_files):   
-            file_name = self._readDirectory(start + (i * self.directory_entry_size), 15)
+            file_name = self._readStrFromFS(start + (i * self.directory_entry_size), 15)
             
             if '/' in file_name:
 
                 # Si hay espacio disponible, entences obtenemos los datos del
                 # archivo que está en la computadora
-                name = ('-' + os.path.basename(path)).encode('utf-8')
+                name = ('-' + os.path.basename(path))
+                
+                # En el ciclo for agregamos el caracter 'espacio' para
+                # completar el tamaño indicado de bytes
+                for j in range(15 - len(name)):
+                    name = name + ' '
+                name = name.encode('utf-8')
+                
+                # Obtebenos el tamaño del archivo
                 size = struct.pack('<I', os.path.getsize(path))
                 initial_cluster = struct.pack('<I', cluster)
 
@@ -276,4 +302,53 @@ class FiUnamFS():
                     _FiUnamFS.write(update_date)
 
                 break
-            
+
+    
+    def deleteFile(self, file_name:str) -> bool:
+
+        # Validamos que el archivo exista en 'FiUnamFS'.
+        files_in_directory = self.getFiles()
+        for file in files_in_directory:
+            if file.name == file_name:
+                
+                num_files = (self.cluster_size * self.num_clusters) // self.directory_entry_size
+                start = self.cluster_size
+
+                # Eliminamos la entrada de cada archivo
+                for i in range(num_files):
+                    file_to_delete = self._readStrFromFS(start + (i * self.directory_entry_size), 15)
+
+                    if file_name == file_to_delete[1:].strip():
+                        
+                        try:
+                            with open(self.path, 'rb+') as _FiUnamFS:
+                                _FiUnamFS.seek(start + (i * self.directory_entry_size))
+                                _FiUnamFS.write('/##############'.encode('utf-8'))
+                            
+                            return True
+                        except:
+                            return False
+        
+        # Si el archivo a eliminar no existe en el directorio
+        return False
+
+
+def system_validation(path:str) -> bool:
+
+    with open(path, 'rb') as fs:
+        fs.seek(0)
+        content = fs.read(8)
+        system_name = content.decode('ascii')
+
+        if system_name == 'FiUnamFS':
+
+            fs.seek(10)
+            content = fs.read(4)
+            version = content.decode('ascii')
+
+            if version == '24-2':
+                return True
+            else:
+                return False
+        else:
+            return False
