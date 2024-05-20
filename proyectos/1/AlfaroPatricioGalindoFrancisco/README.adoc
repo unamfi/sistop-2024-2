@@ -65,9 +65,57 @@ Dentro de la función encontrarLibre del tipo FileSystem se lanza una goroutine 
 
 == Requisitos de compilación y ejecución
 
-Para poder compilar este programa es necesario cobtar con Go. en caso de no tenerlo instalado, se puede obtener a través de la siguiente URL: https://go.dev/doc/install[Download and Install] nota: se desarrolló con la versión 1.22.
-Una vez se cuente con Go instalado, coloque la imagen de FiUnamFS en la misma carpeta donde se encuentre el programa. 
-Dirijase a la ruta donde se encuentra el programa dentro de la terminal y ejecute el siguiente comando: "Go run main.go".
+Para poder compilar este programa es necesario cobtar con Go. en caso de no tenerlo instalado y de que el sistema operativo de su elección no tenga un paquete disponible, se puede obtener https://go.dev/doc/install[aquí] (el progrma se desarrolló con la versión 1.22).
+
+Con Go instalado, puede compilarse el programa con el comando `go build
+main.go`. Ejecutar el programa (`./main`) no debería mostrar ninguna salida.
 
 == Uso
 
+FiUnamFSReader es un programa de CLI, para conocer cómo interactuar con el programa, puede ejecutarse (`./main -h`) para mostrar un menú de ayuda.
+
+Las opciones aceptadas por el programa son:
+
+* `d`: Para eliminar el archivo con el nombre indicado.
+* `f`: Para indicar del archivo de la imagen FiUnamFS.
+* `i`: *Toggle* para mostrar información del sistema de archivos
+* `l`: *Toggle* para listar archivos en el sistema FiUnamFS.
+* Subcomandos
+** `import`        Importa un archivo desde FiUnamFS al sistema.
+*** `i`: Archivo de origen
+*** `o`: Archivo de destino
+** `export`        Exporta un archivo desde el sistema a FiUnamFS.
+*** 
+*** `i`: Archivo de origen
+*** `o`: Archivo de destino
+
+=== Ejemplos
+
+Ejecute
+
+----
+go run main.go -f fiunamfs.img -l
+----
+
+Para listar todos los archivos del sistema FIUNAMFS:
+
+----
+Archivos:
+Nombre          Tamaño                  Creado                          Modificado
+├─ que9.png        1393 bytes           2024-05-19 22:58:44             2024-05-19 22:58:44
+├─ README.org     31222 bytes           2024-05-08 13:17:56             2024-05-08 13:17:56
+├─ que.png         1393 bytes           2024-05-19 22:56:38             2024-05-19 22:56:38
+├─ logo.png      126423 bytes           2024-05-08 13:17:56             2024-05-08 13:17:56
+├─ que2.png        1393 bytes           2024-05-19 22:58:38             2024-05-19 22:58:38
+├─ que4.png        1393 bytes           2024-05-19 22:58:39             2024-05-19 22:58:39
+├─ mensaje.jpg   254484 bytes           2024-05-08 13:17:56             2024-05-08 13:17:56
+├─ que6.png        1393 bytes           2024-05-19 22:58:42             2024-05-19 22:58:42
+----
+
+También
+
+----
+go run main.go export -f fiunamfs.img -i que.png -o test.png
+----
+
+Para que el archivo `que.png` de la imagen sea guardado en el sistema bajo el nombre `test.png`.
