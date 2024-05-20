@@ -9,4 +9,4 @@ fi
 tag="sisop_$current_commit:v$autoIncrement"
 name="sisop_$current_commit$(date +%Y%m%d%H%M%S)"
 docker build -t $tag -f Dockerfile.prod .
-docker run --name $name -it $tag
+docker run --name $name -v ./files:/app -it $tag

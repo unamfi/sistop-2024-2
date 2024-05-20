@@ -29,6 +29,7 @@ import os
 import time as t
 import threading
 import sys
+import atexit
 from copy import deepcopy
 from datetime import datetime
 from math import ceil
@@ -425,7 +426,7 @@ options = {
     "LIST_FILES" : menu.listFiles,
     "COPY_FILE" : menu.copyFile,
     "EXTRACT_FILE" : menu.extracFile,
-    "EXIT" : lambda: sys.exit(0)
+    "EXIT" : lambda : sys.exit(0)
 }
 question = [{
     'type': 'list',
@@ -440,6 +441,15 @@ modify_event = threading.Event()
 read_event = threading.Event()
 stop_flag = threading.Event()
 
+def cleanup():
+    stop_flag.set()
+    modify_event.set()
+    read_event.set()
+
+    modifier_thread.join()
+    reader_thread.join()
+
+atexit.register(cleanup)
 def menuCLI():
     global option
     while not stop_flag.is_set():
@@ -472,10 +482,4 @@ try:
     while True:
         t.sleep(1)
 except KeyboardInterrupt:
-    stop_flag.set()
-    modify_event.set()
-    read_event.set()
-
-    modifier_thread.join()
-    reader_thread.join()
-    print("Hilos detenidos.")
+    sys.exit(0)

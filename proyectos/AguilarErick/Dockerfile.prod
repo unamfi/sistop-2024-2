@@ -7,4 +7,5 @@ FROM base AS source
 COPY . .
 FROM dependencies AS prod
 COPY --from=source /app .
+VOLUME /app
 CMD ["python", "super_main.py"]
