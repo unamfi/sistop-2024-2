@@ -1,22 +1,22 @@
 #                                   Floppy Disk
-#                       .---------------------------------.           
-#                       |  .---------------------------.  |           
-#                       |[]|                           |[]|           
-#                       |  |                           |  |           
-#                       |  |                           |  |           
-#                       |  |                           |  |           
-#                       |  |                           |  |           
-#                       |  |                           |  |           
-#                       |  |                           |  |           
-#                       |  |                           |  |           
-#                       |  |                           |  |           
-#                       |  `---------------------------'  |           
-#                       |      __________________ _____   |           
-#                       |     |   ___            |     |  |           
-#                       |     |  |   |           |     |  |           
-#                       |     |  |   |           |     |  |           
-#                       |     |  |   |           |     |  |           
-#                       |     |  |___|           |     |  |           
+#                       .---------------------------------.
+#                       |  .---------------------------.  |
+#                       |[]|                           |[]|
+#                       |  |                           |  |
+#                       |  |                           |  |
+#                       |  |                           |  |
+#                       |  |                           |  |
+#                       |  |                           |  |
+#                       |  |                           |  |
+#                       |  |                           |  |
+#                       |  |                           |  |
+#                       |  `---------------------------'  |
+#                       |      __________________ _____   |
+#                       |     |   ___            |     |  |
+#                       |     |  |   |           |     |  |
+#                       |     |  |   |           |     |  |
+#                       |     |  |   |           |     |  |
+#                       |     |  |___|           |     |  |
 #                       \_____|__________________|_____|__|
 #
 # Art by David Palmer https://www.asciiart.eu/computers/floppies
@@ -26,6 +26,9 @@
 
 # Description: This program is a simple file system that allows the user to list, delete, copy and extract files from a floppy disk image.
 import os
+import time as t
+import random
+import threading
 import sys
 from copy import deepcopy
 from datetime import datetime
@@ -198,7 +201,7 @@ class FileSystemFiUNAMFS:
             raise Exception('La versión del sistema de archivos no es compatible')
         if spec['system'] != 'FiUnamFS':
             raise Exception('El sistema de archivos no es compatible')
-        
+
         self.preprocessToShowFields = {
             'name': lambda name : name.rstrip().rstrip('\x00').strip() if name != None else '',
             'size': lambda size: f"{size}(B)",
@@ -416,8 +419,6 @@ class Menu:
         adress = files[index].getData()['address_in_directory']
         self.fileSystem.extractFile(adress)
 
-
-
 fileSystem = FileSystemFiUNAMFS(Disc('fiunamfs.img'))
 menu = Menu(fileSystem)
 options = {
@@ -427,14 +428,55 @@ options = {
     "EXTRACT_FILE" : menu.extracFile,
     "EXIT" : lambda: sys.exit(0)
 }
-while True:
-    questions = [
-        {
-            'type': 'list',
-            'name': 'main_menu',
-            'message': 'What do you want to do?',
-            'choices': options.keys()
-        }
-    ]
-    choice = prompt(questions)['main_menu']
-    options[choice]()
+question = [{
+    'type': 'list',
+    'name': 'action',
+    'message': 'Choose an option',
+    'choices': options.keys()
+}]
+
+option = None
+
+modify_event = threading.Event()
+read_event = threading.Event()
+stop_flag = threading.Event()
+
+def menuCLI():
+    global option
+    while not stop_flag.is_set():
+        modify_event.wait()
+        modify_event.clear()
+        if stop_flag.is_set():
+            break
+        option = prompt(question)['action']
+        read_event.set()
+
+def executeOption():
+    while not stop_flag.is_set():
+        read_event.wait()
+        read_event.clear()
+        if stop_flag.is_set():
+            break
+        options[option]()
+        modify_event.set()
+
+
+modify_event.set()
+
+modifier_thread = threading.Thread(target=menuCLI)
+reader_thread = threading.Thread(target=executeOption)
+
+modifier_thread.start()
+reader_thread.start()
+
+try:
+    while True:
+        t.sleep(1)
+except KeyboardInterrupt:
+    stop_flag.set()
+    modify_event.set()
+    read_event.set()
+
+    modifier_thread.join()
+    reader_thread.join()
+    print("Hilos detenidos.")
