@@ -3,7 +3,6 @@
 import os
 import struct
 import datetime
-from time import sleep
 from threading import Thread, Semaphore, Barrier, Lock
 from prettytable import PrettyTable
 
@@ -14,22 +13,31 @@ etiqueta_volumen = ""
 tamano_cluster_bytes = 0
 num_clusters_dir = 0
 num_clusters_total = 0
-mutex_archivo = Lock()
 directorio = []
 cluster_set = set()
+menu = 0
+
+def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
+def prLightPurple(skk): print("\033[94m {}\033[00m" .format(skk))
+def prGreen(skk): print("\033[92m {}\033[00m" .format(skk))
 
 def show_menu():
+    prLightPurple("--------------------------------------------------")
+    prRed("Menú de opciones")
+    prLightPurple("--------------------------------------------------")
+    print()
+    print("Ingrese el número de la acción que desea realizar:")
     print("1. Listar los contenidos del directorio")
     print("2. Copiar un archivo de FiUnamFS hacia el sistema de archivos local")
     print("3. Copiar un archivo del sistema de archivos local hacia FiUnamFS")
     print("4. Eliminar un archivo de FiUnamFS")
     print("5. Salir")
+    print()
     try:
         option = int(input("Seleccione una opción: "))
         if option < 1 or option > 5:
             print("Error: Opción no válida. Por favor, seleccione una opción entre 1 y 5.")
             return show_menu()
-        # Exito
         return option
     except ValueError:
         print("Error: Entrada no válida. Por favor, ingrese un número.")
@@ -42,14 +50,12 @@ def obtener_FiUnamFS():
     directorio_fisico = os.path.dirname(os.path.abspath(__file__))
     # Revisar si existe un archivo llamado fiunamfs.img 
     ruta_FiUnamFS = os.path.join(directorio_fisico, "fiunamfs.img")
-    print(ruta_FiUnamFS)
     try:
         if not os.path.exists(ruta_FiUnamFS):
             print("Ingrese la ruta relativa del sistema de archivos FiUnamFS: ")
             ruta_FiUnamFS = input()
             ruta_FiUnamFS = os.path.join(directorio_fisico, ruta_FiUnamFS)
             if not os.path.exists(ruta_FiUnamFS):
-                print(ruta_FiUnamFS)
                 print("Error: El archivo no existe.")
                 return obtener_FiUnamFS()
         return True
@@ -60,91 +66,73 @@ def obtener_FiUnamFS():
 def leer_numero(posicion):
     global ruta_FiUnamFS
     # Leer el archivo
-    mutex_archivo.acquire()
     try:
         with open(ruta_FiUnamFS, "rb") as f:
             f.seek(posicion)
             numero = struct.unpack('<I', f.read(4))
-        mutex_archivo.release()
         return numero[0]
     except PermissionError:
         print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-        mutex_archivo.release()
         return False
     
 def escribir_numero(posicion, numero):
     global ruta_FiUnamFS
     # Escribir en el archivo
-    mutex_archivo.acquire()
     try:
         with open(ruta_FiUnamFS, "r+b") as f:
             f.seek(posicion)
             f.write(struct.pack('<I', numero))
-        mutex_archivo.release()
         return True
     except PermissionError:
         print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-        mutex_archivo.release()
         return False
     
 def leer_ascii8(posicion, longitud):
     global ruta_FiUnamFS
     # Leer el archivo
-    mutex_archivo.acquire()
     try:
         with open(ruta_FiUnamFS, "rb") as f:
             f.seek(posicion)
             caracteres = f.read(longitud).decode('latin-1')
-        mutex_archivo.release()
         return caracteres
     except PermissionError:
         print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-        mutex_archivo.release()
         return False
     
 def escribir_ascii8(posicion, cadena):
     global ruta_FiUnamFS
     # Escribir en el archivo
-    mutex_archivo.acquire()
     try:
         with open(ruta_FiUnamFS, "r+b") as f:
             f.seek(posicion)
             f.write(bytearray(cadena, 'latin-1'))
-        mutex_archivo.release()
         return True
     except PermissionError:
         print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-        mutex_archivo.release()
         return False
     
 def leer_ascii7(posicion, longitud):
     global ruta_FiUnamFS
     # Leer el archivo
-    mutex_archivo.acquire()
     try:
         with open(ruta_FiUnamFS, "rb") as f:
             f.seek(posicion)
             caracteres = f.read(longitud).decode('ascii')
-        mutex_archivo.release()
         return caracteres
     except PermissionError:
         print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-        mutex_archivo.release()
         return False
 
 def escribir_ascii7(posicion, cadena):
     global ruta_FiUnamFS
     # Escribir en el archivo
-    mutex_archivo.acquire()
     try:
         with open(ruta_FiUnamFS, "r+b") as f:
             f.seek(posicion)
             f.write(bytearray(cadena, 'ascii'))
-        mutex_archivo.release()
         return True
     except PermissionError:
         print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-        mutex_archivo.release()
         return False
 
 def validar_FiUnamFS():
@@ -175,10 +163,6 @@ def validar_FiUnamFS():
     tamano_cluster_bytes = leer_numero(40)
     num_clusters_dir = leer_numero(45)
     num_clusters_total = leer_numero(50)
-    print(etiqueta_volumen)
-    print(tamano_cluster_bytes)
-    print(num_clusters_dir)
-    print(num_clusters_total)
     print("Sistema de archivos FiUnamFS cargado exitosamente.")
     
 def formato_fecha(fecha):
@@ -221,6 +205,8 @@ def leer_directorio(show=True):
         if tipo_archivo == "-":
             nombre_archivo = leer_ascii7(i + 1, 15)
             nombre_archivo = nombre_archivo.replace("#", "")
+            dot = nombre_archivo.find(".")
+            nombre_archivo = nombre_archivo[:dot] + "." + nombre_archivo[dot+1:dot+4]
             tam_bytes = leer_numero(i + 16)
             cluster_ini = leer_numero(i + 20)
             creacion = leer_ascii8(i + 24, 14)
@@ -236,7 +222,7 @@ def leer_directorio(show=True):
 def buscar_archivo(nombre_archivo):
     global directorio
     for archivo in directorio:
-        if archivo.nombre_archivo[0:len(nombre_archivo)] == nombre_archivo:
+        if archivo.nombre_archivo == nombre_archivo:
             return archivo
     return None
 
@@ -248,18 +234,15 @@ def fiunamfs_to_local(nombre_archivo, ruta_local):
     cluster_actual = archivo.cluster_ini
     tam_bytes = archivo.tam_bytes
     archivo_local = os.path.join(directorio_fisico, ruta_local)
-    mutex_archivo.acquire()
     try:
         with open(ruta_FiUnamFS, "rb") as f:
             f.seek(cluster_actual * tamano_cluster_bytes)
             info = f.read(tam_bytes)
         with open(archivo_local, "wb") as f:
             f.write(info)
-        mutex_archivo.release()
         return True
     except PermissionError:
         print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-        mutex_archivo.release()
         return False
 
 def encontrar_contiguo(tam_bytes):
@@ -288,7 +271,6 @@ def local_to_fiunamfs(ruta_local, nombre_archivo):
     if cluster_ini == -1:
         print("Error: No hay suficiente espacio contiguo en el sistema de archivos FiUnamFS.")
         return False
-    mutex_archivo.acquire()
     try:
         with open(ruta_FiUnamFS, "r+b") as f:
             f.seek(cluster_ini * tamano_cluster_bytes)
@@ -310,12 +292,10 @@ def local_to_fiunamfs(ruta_local, nombre_archivo):
                 escribir_ascii8(i + 24, creacion)
                 escribir_ascii8(i + 38, modificacion)
                 break
-        mutex_archivo.release()
         leer_directorio(False)
         return True
     except PermissionError:
         print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-        mutex_archivo.release()
         return False
 
 def eliminar_archivo(nombre_archivo):
@@ -325,17 +305,37 @@ def eliminar_archivo(nombre_archivo):
         print("Error: El archivo no existe.")
         return False
     print("Borrando archivo...")
-    print(archivo.pos)
     escribir_ascii8(archivo.pos, "/")
     escribir_ascii7(archivo.pos+1, "###############")
     leer_directorio(False)
 
 # Función principal
 if __name__ == "__main__":
-    print("Bienvenido al sistema de archivos FiUnamFS")
-    print("El programa solo funciona en Linux.")
+    print()
+    prGreen("Bienvenido al sistema de archivos FiUnamFS")
+    print()
     print("Por favor, siga las instrucciones para continuar.")
-    print("--------------------------------------------------")
+    prLightPurple("--------------------------------------------------")
     obtener_FiUnamFS()
     validar_FiUnamFS()
-    pass
+    while menu != 5:
+        menu = show_menu()
+        if menu == 1:
+            leer_directorio()
+        elif menu == 2:
+            print("Ingrese el nombre del archivo que desea copiar: ")
+            nombre_archivo = input()
+            print("Ingrese la ruta relativa donde desea guardar el archivo: ")
+            ruta_local = input()
+            fiunamfs_to_local(nombre_archivo, ruta_local)
+        elif menu == 3:
+            print("Ingrese la ruta relativa del archivo que desea copiar: ")
+            ruta_local = input()
+            print("Ingrese el nombre del archivo en FiUnamFS: ")
+            nombre_archivo = input()
+            local_to_fiunamfs(ruta_local, nombre_archivo)
+        elif menu == 4:
+            print("Ingrese el nombre del archivo que desea eliminar: ")
+            nombre_archivo = input()
+            eliminar_archivo(nombre_archivo)
+    print("Saliendo del programa...")
