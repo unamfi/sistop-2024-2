@@ -1,11 +1,12 @@
-# (Micro) sistema de archivos multihilos
-By Julian Bolaños y Juan Pablo Zurita
+* (Micro) sistema de archivos multihilos
+  By Julian Bolaños y Juan Pablo Zurita
 
-## Para Ejecutar
-Es importante que antes de ejecutar el archivo se modifique la variable 'directory_path' con la ruta del archivo 'fiunamfs.img'. Esto lo pudes hacer en el archivo main.py.
-```python
+** Para Ejecutar
+Es importante que antes de ejecutar el archivo se modifique la variable 'directory_path' con la ruta del archivo 'fiunamfs.img'. Esto lo puedes hacer en el archivo main.py.
+
+#+BEGIN_SRC python
 directory_path = '/fiunamfs.img'
 try:
     if system_validation(directory_path):
         fiunamfs = FiUnamFS(path = directory_path, directory_entry_size = 64)
-```
+#+END_SRC
