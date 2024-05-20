@@ -1,23 +1,68 @@
-from math import ceil
+#                                   Floppy Disk
+#                       .---------------------------------.           
+#                       |  .---------------------------.  |           
+#                       |[]|                           |[]|           
+#                       |  |                           |  |           
+#                       |  |                           |  |           
+#                       |  |                           |  |           
+#                       |  |                           |  |           
+#                       |  |                           |  |           
+#                       |  |                           |  |           
+#                       |  |                           |  |           
+#                       |  |                           |  |           
+#                       |  `---------------------------'  |           
+#                       |      __________________ _____   |           
+#                       |     |   ___            |     |  |           
+#                       |     |  |   |           |     |  |           
+#                       |     |  |   |           |     |  |           
+#                       |     |  |   |           |     |  |           
+#                       |     |  |___|           |     |  |           
+#                       \_____|__________________|_____|__|
+#
+# Art by David Palmer https://www.asciiart.eu/computers/floppies
+
+# Author: Erick Aguilar
+# Date: 2024-05
+
+# Description: This program is a simple file system that allows the user to list, delete, copy and extract files from a floppy disk image.
 import os
-from datetime import datetime
-from struct import pack, unpack
 import sys
+from copy import deepcopy
+from datetime import datetime
+from math import ceil
+from struct import pack, unpack
+
+# Third party libraries, remember to install them with pip install -r requirements.txt
 from PyInquirer import prompt
 from rich import print as richPrint
-from copy import deepcopy
 from rich.console import Console
-from rich.table import Table
-from rich.pretty import pprint
 from rich.panel import Panel
+from rich.pretty import pprint
+from rich.table import Table
+
 class Disc:
-    def __init__(self,filePath):
+    """
+    Represents a disc object that provides read and write operations on a file.
+
+    Attributes:
+        file (file object): The file object associated with the disc.
+
+    Methods:
+        __init__(self, filePath): Initializes the Disc object with the specified file path.
+        close(self): Closes the file associated with the disc.
+        write(self, start, bytes): Writes the specified bytes to the file starting from the given index.
+        read(self, start, numBytes): Reads the specified number of bytes from the file starting from the given index.
+    """
+
+    def __init__(self, filePath):
         try:
             self.file = open(filePath, 'r+b')
         except:
             raise Exception('No se pudo abrir el archivo')
+
     def close(self):
         self.file.close()
+
     def write(self, start, bytes):
         if start < 0:
             raise Exception('No se puede escribir un archivo con un indice negativo')
@@ -36,8 +81,14 @@ class Disc:
         self.file.seek(start)
         return self.file.read(numBytes)
 
-
 class FileData:
+    """
+    Represents the metadata of a file.
+
+    Attributes:
+        data (dict): A dictionary containing the metadata of the file.
+    """
+
     def __init__(self, bytes: bytes, addressInDirectory):
         if bytes.__len__() > 64:
             raise Exception('La metainformación del archivo no puede ser mayor a 64 bytes')
@@ -51,24 +102,65 @@ class FileData:
             'last_modification': bytes[38:52].decode(encoding='ascii'),
             'address_in_directory': addressInDirectory
         }
+
     def empty(self):
         return self.data['type'] == '/'
+
     def __str__(self):
         return f"{self.data['name']} {self.data['size']} {self.data['date']} {self.data['last_modification']}"
+
     def __repr__(self):
         return self.__str__()
+
     def getData(self):
         return deepcopy(self.data)
 
 class Directory:
-    def __init__(self, bytes: bytes,sizeFileData=64,sizeCluster=2048):
+    """
+    Represents a directory in a file system.
+
+    Attributes:
+        files (list): A list of FileData objects representing the files in the directory.
+
+    Args:
+        bytes (bytes): This variable represents the bytes of the directory data. In this implementation, these data are stored in the #0 cluster, which has a capacity of 2048 bytes.
+        sizeFileData (int, optional): The size of each file data in bytes. Defaults to 64.
+        sizeCluster (int, optional): The size of each cluster in bytes. Defaults to 2048.
+
+    Raises:
+        Exception: If the directory size is not correct based on the given sizeFileData and sizeCluster.
+
+    """
+
+    def __init__(self, bytes: bytes, sizeFileData=64, sizeCluster=2048):
         if bytes.__len__() % sizeFileData != 0:
             raise Exception('El directorio no tiene un tamaño correcto')
         if bytes.__len__() % sizeCluster != 0:
             raise Exception('El directorio no tiene un tamaño correcto')
-        self.files = [FileData(bytes[i:i+sizeFileData],i) for i in range(0, bytes.__len__(), 64)]
+        self.files = [FileData(bytes[i:i+sizeFileData], i) for i in range(0, bytes.__len__(), 64)]
 
 class FileSystemFiUNAMFS:
+    """
+        Represents a file system implementation for FiUNAMFS.
+
+        Attributes:
+            disc (Disc): The underlying disk object.
+            specifications (dict): A dictionary containing the specifications of the file system.
+            preprocessToShowFields (dict): A dictionary mapping field names to preprocessing functions for displaying file information.
+
+        Methods:
+            bitMap(self) -> list: Returns the bitmap of the file system.
+            __init__(self, disc: Disc): Initializes a new instance of the FileSystemFiUNAMFS class.
+            getCluster(self, numCluster) -> bytes: Returns the content of a specific cluster.
+            getClusters(self, startCluster, numClusters) -> bytes: Returns the concatenated content of multiple clusters.
+            clean(self): Closes the disk object.
+            getFiles(self) -> list: Returns a list of files in the file system.
+            findEmptyClusters(self) -> list: Finds and returns a list of empty cluster segments in the file system.
+            extractFile(self, adreesToAllocateInDirectory): Extracts a file from the file system.
+            copyInside(self, absPath): Copies a file from the host system into the file system.
+            deleteFile(self, name): Deletes a file from the file system.
+            ls(self): Lists the files in the file system.
+    """
     def bitMap(self):
         bitMap = [1,1,1,1]
         previous = 4
@@ -84,6 +176,7 @@ class FileSystemFiUNAMFS:
                 previous = cluster + numClusters
         bitMap += [0] * (self.specifications['totalClusters'] - previous)
         return bitMap
+
     def __init__(self,disc:Disc):
         self.disc = disc
 
@@ -115,6 +208,7 @@ class FileSystemFiUNAMFS:
             'last_modification': lambda last_mod : datetime.strptime(last_mod,"%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S"),
             'end_cluster': lambda end_cluster: f"#{end_cluster}"
         }
+
     def getCluster(self, numCluster):
         if numCluster < 0:
             raise Exception('No se puede leer un cluster con un indice negativo')
@@ -122,13 +216,17 @@ class FileSystemFiUNAMFS:
             raise Exception('No se puede leer un cluster con un indice mayor al total de clusters')
         position = self.specifications['sizeCluster'] * numCluster
         return self.disc.read(position, self.specifications['sizeCluster'])
+
     def getClusters(self, startCluster, numClusters):
         return  bytes(sum([list(self.getCluster(startCluster + i)) for i in range(numClusters)], []))
+
     def clean(self):
         if self.disc != None:
             self.disc.close()
+
     def getFiles(self):
         return Directory(self.getClusters(1,3)).files
+
     def findEmptyClusters(self):
         bitMap = self.specifications['bitMap']
         segments = []
@@ -146,6 +244,7 @@ class FileSystemFiUNAMFS:
         if start is not None:
             segments.append((start, length))
         return segments
+
     def extractFile(self, adreesToAllocateInDirectory):
         file = [file for file in self.getFiles() if file.getData()['address_in_directory'] == adreesToAllocateInDirectory]
         if file.__len__() == 0:
@@ -159,6 +258,7 @@ class FileSystemFiUNAMFS:
         print(content.__len__())
         with open(name,'wb') as f:
             f.write(content)
+
     def copyInside(self, absPath):
         files = sorted(self.getFiles(),key= lambda file: file.getData()['address_in_directory'])
         date = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -186,6 +286,7 @@ class FileSystemFiUNAMFS:
         self.disc.write(base,binaryContent)
         for i in range(cluster,cluster + numClusters):
             self.specifications['bitMap'][i] = 1
+
     def deleteFile(self, name):
         files = self.getFiles()
         for file in files:
@@ -200,6 +301,7 @@ class FileSystemFiUNAMFS:
                     self.specifications['bitMap'][i] = 0
                 return
         raise Exception('No se encontro el archivo')
+
     def ls(self):
         files = [file for file in self.getFiles() if file.empty() == False]
         if files.__len__() == 0:
@@ -216,17 +318,26 @@ class FileSystemFiUNAMFS:
         console = Console()
         console.print(table)
 
-
-
-fileSystem = FileSystemFiUNAMFS(Disc('fiunamfs.img'))
 class Menu:
+    """
+    Represents a menu for interacting with a file system.
+
+    Args:
+        fileSystem (FileSystemFiUNAMFS): The file system object to interact with.
+
+    Attributes:
+        fileSystem (FileSystemFiUNAMFS): The file system object to interact with.
+    """
+
     def __init__(self, fileSystem: FileSystemFiUNAMFS):
         self.fileSystem = fileSystem
         richPrint(Panel(renderable="[cyan bold italic]Alumno: [/cyan bold italic][cyan]Aguilar Martínez Erick Yair[/cyan]\n[cyan bold italic]Materia: [/cyan bold italic][cyan]Sistemas Operativos[/cyan]\n[cyan bold italic]Semestre: [/cyan bold italic][cyan]2024-2[/cyan]\n[cyan bold italic]Profesor: [/cyan bold italic][cyan]Ing. Gunnar Eyal Wolf Iszaevich[/cyan]",title="FileSystem [red]FIUNAMFS", expand=True))
         pprint(self.fileSystem.specifications,expand_all=False,max_length=20)
         input("Presiona cualquier ENTER para continuar...")
+
     def listFiles(self):
         return self.fileSystem.ls()
+
     def deleteFile(self):
         files = [file for file in self.fileSystem.getFiles() if not file.empty()]
         if files.__len__() == 0:
@@ -244,6 +355,7 @@ class Menu:
         index = int(fileToDelete[0]) - 1
         name = files[index].getData()['name']
         self.fileSystem.deleteFile(name)
+
     def copyFile(self):
         def getParentDirectory(filePath):
             return os.path.dirname(filePath)
@@ -285,6 +397,7 @@ class Menu:
                 continue
         absPath = os.path.join(base,selectedFile)
         self.fileSystem.copyInside(absPath)
+
     def extracFile(self):
         files = [file for file in self.fileSystem.getFiles() if not file.empty()]
         if files.__len__() == 0:
@@ -303,6 +416,9 @@ class Menu:
         adress = files[index].getData()['address_in_directory']
         self.fileSystem.extractFile(adress)
 
+
+
+fileSystem = FileSystemFiUNAMFS(Disc('fiunamfs.img'))
 menu = Menu(fileSystem)
 options = {
     "DELETE_FILE" : menu.deleteFile,
@@ -311,7 +427,7 @@ options = {
     "EXTRACT_FILE" : menu.extracFile,
     "EXIT" : lambda: sys.exit(0)
 }
-def main_menu():
+while True:
     questions = [
         {
             'type': 'list',
@@ -320,8 +436,5 @@ def main_menu():
             'choices': options.keys()
         }
     ]
-    answers = prompt(questions)
-    return answers['main_menu']
-while True:
-    choice = main_menu()
+    choice = prompt(questions)['main_menu']
     options[choice]()
