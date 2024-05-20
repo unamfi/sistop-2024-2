@@ -1,3 +1,44 @@
+"""
+Autor(es): Chong Hernandez Samuel
+Proyecto: (Micro) Sistema de archivos
+Materia: Sistemas Operativos
+Lenguaje de programación: Python
+Editor de texto: nano
+Fecha: 19/05/2024
+
+Este programa implementa un sistema de archivos FIUnamFS con funcionalidades básicas como listar archivos, copiar archivos dentro y fuera del sistema de archivos, eliminar archivos, con dos hilos de ejecución operando concurrentemente.
+
+Estrategia utilizada:
+- Se emplea concurrencia mediante la biblioteca threading de Python para ejecutar dos hilos de manera concurrente.
+- Un hilo monitorea el estado del sistema de archivos y actualiza periódicamente la cola de mensajes con el mapa de almacenamiento.
+- El otro hilo maneja las operaciones del usuario a través de un menú interactivo.
+- Se utiliza un evento para sincronizar la terminación del hilo de monitoreo cuando el usuario decide salir del programa.
+- El hilo de monitoreo está constantemente monitoreando el sistema de archivos y enviando actualizaciones a la cola cada n segundos. Mientras tanto, el hilo del menú está esperando las entradas del usuario. 
+  Cuando el usuario decide salir del programa (opcion == "5"), establecemos el evento para indicar al hilo de monitoreo que debe detenerse.
+- Utilizamos una cola (q) para enviar copias del mapa de almacenamiento desde el hilo de monitoreo al hilo del menú. También utilizamos un evento (event) para indicar al hilo de monitoreo 
+  que debe detenerse cuando el usuario decide salir del programa.
+- Por lo tanto, la cola y el evento se utilizan para la comunicación entre los dos hilos y para sincronizar su comportamiento. 
+  El hilo del menú espera a que el usuario realice una acción o decida salir, mientras que el hilo de monitoreo sigue ejecutándose hasta que se establece el evento.
+
+
+El programa utiliza la clase FIUnamFS para representar el sistema de archivos, con métodos para realizar operaciones como listar archivos, copiar archivos dentro y fuera del sistema de archivos, y eliminar archivos.
+
+Funciones importantes:
+- fs._mostrar_directorio(): Lista los archivos en el directorio. Utiliza un bucle para recorrer la lista de archivos y muestra sus nombres y tamaños.
+- fs._copiar_archivo(nombre_copia, ruta_nueva): Copia un archivo del sistema de archivos a una ubicación externa.  
+  Verifica si el archivo existe en el directorio, abre el archivo de destino en modo escritura binaria y copia los datos del archivo del sistema de archivos al archivo de destino.
+- fs.borrar_archivo(nombre_archivo): Elimina un archivo del sistema de archivos. 
+  Verifica si el archivo existe en el directorio, lo elimina de la lista de archivos, marca la entrada correspondiente en el directorio como eliminada y marca los clusters correspondientes como libres.
+- fs.copiar_archivo_a_sistema(ruta_archivo): Copia un archivo de la computadora al sistema de archivos. 
+Verifica si el archivo existe en la computadora, si ya existe en el sistema de archivos, encuentra espacio disponible en el sistema de archivos para escribir el archivo, y escribe el contenido del archivo en el sistema de archivos.
+
+
+Interfaz de usuario:
+- El programa muestra un menú interactivo donde el usuario puede seleccionar las opciones disponibles.
+- Las opciones del menú se presentan de forma clara y sencilla para facilitar la interacción.
+- Se proporcionan mensajes informativos durante la ejecución para guiar al usuario sobre el estado de las operaciones.
+
+"""
 import threading 
 import queue 
 import struct
@@ -205,7 +246,7 @@ def main():
 
     def monitor():
         while not evento.is_set():
-            # Monitorear el estado del sistema de archivos cada 5 segundos
+            # Monitorear el estado del sistema de archivos cada n segundos
             print("Monitorizando el sistema de archivos...")
             cola.put(fs.storage_map.copy())
             evento.wait(60)
