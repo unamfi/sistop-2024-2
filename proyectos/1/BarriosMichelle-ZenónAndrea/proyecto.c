@@ -138,6 +138,37 @@ void listar_archivos(const char *fiunamfs_img_path, uint32_t directorio_inicio, 
     free(directorio);
     fclose(file);
 }
+
+void listar_nombres_archivos(const char *fiunamfs_img_path, uint32_t directorio_inicio, uint32_t directorio_tamano, uint32_t entrada_directorio_tamano)
+{
+    FILE *file = fopen(fiunamfs_img_path, "rb");
+    if (!file)
+    {
+        perror("No se pudo abrir el archivo");
+        exit(EXIT_FAILURE);
+    }
+
+    fseek(file, directorio_inicio, SEEK_SET);
+    uint8_t *directorio = malloc(directorio_tamano);
+    fread(directorio, 1, directorio_tamano, file);
+
+    for (uint32_t i = 0; i < directorio_tamano; i += entrada_directorio_tamano)
+    {
+        uint8_t *entrada = directorio + i;
+        char nombre_archivo[15];
+        memcpy(nombre_archivo, entrada + 1, 14);
+        nombre_archivo[14] = '\0';
+
+        if (strlen(nombre_archivo) > 0 && strcmp(nombre_archivo, "--------------") != 0 && strcmp(nombre_archivo, "..............") != 0)
+        {
+            printf("%s\n", nombre_archivo);
+        }
+    }
+
+    free(directorio);
+    fclose(file);
+}
+
 void limpiarPantallaE()
 {
     printf("\nPresione Enter para continuar...");
