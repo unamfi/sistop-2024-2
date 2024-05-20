@@ -20,6 +20,7 @@ class gestorArchivos:
         self.longitudNombre = 15
         self.longitudInicial = 4
         self.clusterInicial = 4
+        self.evento_copia_completada = threading.Event()
 
 
 # OPCIÓN 1) Listar archivos del disco
@@ -79,9 +80,14 @@ class gestorArchivos:
             print("\033[1;31m" + "ERROR: El archivo no existe")
 
 
-# OPCIÓN 5) 'Cortar' y pegar un archivo de FiUnamFS al sistema [PENDIENTE]
+# OPCIÓN 5) 'Cortar' y pegar un archivo de FiUnamFS al sistema
     def corta(self, nombre, destino):
-        print("PENDIENTE")
+        # Copiar el archivo
+        self.extraccion(nombre, destino)
+        # Borrar el archivo de FiUnamFS
+        self.borrar(nombre)
+        # Establecer el evento para indicar que la copia ha sido completada
+        self.evento_copia_completada.set()
 
 
 # VISTA AL USUARIO
@@ -141,7 +147,15 @@ class gestorArchivos:
 
             # Para la OPCIÓN 5: 'Cortar' y pegar un archivo de FiUnamFS al sistema
                 elif entradaRecibida[0] == 'corta':
-                    print("PENDIENTE")
+                    if len(entradaRecibida)!=3:
+                        print("\033[1;31m" + "ERROR: Faltó escribir el nombre del archivo y/o la ruta de destino\n")
+                    else:
+                        print("\033[1;32m" + "PROCESO INICIADO: Cortando y pegando archivo de FiunamFS al sistema...\n")
+                        # Crear un hilo para realizar la operación de cortar y pegar
+                        threading.Thread(target=self.corta, args=(entradaRecibida[1], entradaRecibida[2])).start()
+                        # Esperar a que la copia sea completada antes de mostrar el mensaje de finalización
+                        self.evento_copia_completada.wait()
+                        print("==================================================")
 
             # Para la OPCIÓN 6: Eliminar un archivo de FiUnamFS
                 elif entradaRecibida[0] == 'salir':
