@@ -7,6 +7,6 @@ if [[ $(pwd) != *"sistop-2024-2/proyectos/AguilarErick" ]]; then
     exit 1
 fi
 tag="sisop_$current_commit:v$autoIncrement"
+name="sisop_$current_commit$(date +%Y%m%d%H%M%S)"
 docker build -t $tag -f Dockerfile.prod .
-clear
-docker run -it --rm $tag
+docker run --name $name -it $tag
