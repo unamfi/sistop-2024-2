@@ -79,10 +79,10 @@ def copiar_a_fiunamfs(fiunamfs_img, archivo_origen, nombre_destino):
         print("Estado del Lock: Liberado (Copiar a FiUnamFS)")
 
 # Función para copiar un archivo del FiUnamFS al sistema actual
-def copiar_desde_fiunamfs(fiunamfs_img, nombre_archivo):
+def copiar_desde_fiunamfs(archivo, nombre_archivo):
     with lock:
         print("Estado del Lock: Adquirido (Copiar desde FiUnamFS)")
-    with open(fiunamfs_img, 'rb') as archivo:
+    with open(archivo, 'rb') as archivo:
         for entrada in leer_directorio(archivo):
             if entrada.nombre.strip() == nombre_archivo.strip():
                 archivo.seek((entrada.cluster + 1) * TAMANO_CLUSTER)
@@ -95,7 +95,6 @@ def copiar_desde_fiunamfs(fiunamfs_img, nombre_archivo):
     with lock:
         print("Estado del Lock: Liberado (Copiar desde FiUnamFS)")
     return False
-
 
 def verificar_superbloque(fiunamfs_img):
     with open(fiunamfs_img, 'rb') as f:
@@ -128,7 +127,7 @@ def eliminar(nombre_archivo, fiunamfs_img):
                 return
     print("Archivo no encontrado en el directorio")
 
-    def mostrar_menu():
+def mostrar_menu():
     print("1. Listar los contenidos del directorio")
     print("2. Copiar un archivo del FiUnamFS al sistema")
     print("3. Copiar un archivo del sistema al FiUnamFS")
@@ -151,7 +150,7 @@ def principal():
             hilo1.join()
         elif opcion == '2':
             nombre_archivo = input("Introduce el nombre del archivo a copiar: ")
-            resultado_copia = copiar_desde_fiunamfs(archivo, nombre_archivo)
+            resultado_copia = copiar_desde_fiunamfs(fiunamfs_img, nombre_archivo)
             if resultado_copia:
                 print(f'El archivo {nombre_archivo} se copió exitosamente.')
             else:
