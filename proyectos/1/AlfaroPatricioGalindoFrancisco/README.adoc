@@ -52,9 +52,12 @@ Dentro de la implementación de dichas estructuras para el manejo del sistema, s
 
 === Concurrencia
 
+Dentro de la función encontrarLibre del tipo FileSystem se lanza una goroutine (checarDisponibilidad) para cada posible cluster en el sistema de archivos. Cada goroutine verifica si el cluster está disponible para ser utilizado o si está ocupado por algún otro archivo. Una vez que una goroutine encuentra un cluster disponible, envía ese valor al canal, indicando así que ha encontrado un espacio libre. Esto permite la búsqueda concurrente de espacio libre en el sistema de archivos.
+
+
 == Requisitos de compilación y ejecución
 
-Para poder compilar este programa es necesario cobtar con go. en caso de no tenerlo instalado, se puede obtener a través de la siguiente URL: https://go.dev/doc/install[Download and Install].
+Para poder compilar este programa es necesario cobtar con Go. en caso de no tenerlo instalado, se puede obtener a través de la siguiente URL: https://go.dev/doc/install[Download and Install] nota: se recomienda instalar la versión 1.22.3.
 Una vez se cuente con Go instalado, coloque la imagen de FiUnamFS en la misma carpeta donde se encuentre el programa. 
 Dirijase a la ruta donde se encuentra el programa dentro de la terminal y ejecute el siguiente comando: "Go run main.go".
 
