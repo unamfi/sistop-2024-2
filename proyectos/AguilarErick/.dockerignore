@@ -1,0 +1,5 @@
+.devcontainer
+Dockerfile.prop
+.dockerignore
+todo.md
+start.sh
