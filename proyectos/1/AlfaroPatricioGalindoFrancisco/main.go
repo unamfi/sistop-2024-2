@@ -37,7 +37,6 @@ func main() {
 	info := flag.Bool("i", false, "Mostrar información del sistema de archivos")
 	remove := flag.String("d", "", "Eliminar un archivo.")
 	path := flag.String("f", "", "Ruta del archivo de la imagen FiUnamFS.")
-	// dump := flag.Bool("x", false, "Exporta todos los archivos de FiUnamFS")
 	var input, output *string
 
 	miFS.archivos = make(map[string]Archivo)
@@ -101,18 +100,6 @@ func main() {
 				}
 			}
 
-			// if *dump {
-			// 	ch := make(chan error)
-			// 	for _, arch := range miFS.archivos {
-			// 		go arch.copiarASistema(arch.nombre, ch)
-			// 	}
-			// 	for range miFS.archivos {
-			// 		err := <-ch
-			// 		if err != nil {
-			// 			miLog.Fatalf("Error al copiar: %v\n", err)
-			// 		}
-			// 	}
-			// }
 			miFS.file.Close()
 		}()
 	}
@@ -138,9 +125,22 @@ func mostrarInfo() {
 }
 
 func listarArchivos() {
-	fmt.Printf("Archivos:\nNombre \t\tTamaño\n")
+	layout := "20060102150405"
+	fmt.Printf("Archivos:\nNombre \t\tTamaño\t\t\tCreado\t\t\t\tModificado\n")
 	for _, archivo := range miFS.archivos {
-		fmt.Printf("├─ %s \t%7d bytes\n", archivo.nombre, archivo.tam)
+
+		creado, err := time.Parse(layout, archivo.creado)
+		if err != nil {
+			miLog.Fatalln("Fecha inválida")
+			return
+		}
+		modificado, err := time.Parse(layout, archivo.modificado)
+		if err != nil {
+			miLog.Fatalln("Fecha inválida")
+			return
+		}
+
+		fmt.Printf("├─ %s \t%7d bytes\t\t%s\t\t%s\n", archivo.nombre, archivo.tam, creado.Format("2006-01-02 15:04:05"), modificado.Format("2006-01-02 15:04:05"))
 	}
 }
 
@@ -195,10 +195,10 @@ func leerEntradaDirectorio(buf []byte, offset uint32) (Archivo, error) {
 		return arch, errors.New("Entrada vacía")
 	}
 
-	arch.nombre = strings.TrimSpace(string(bytes.Trim(buf[1:15], "\x00")))
+	arch.nombre = strings.TrimSpace(string(bytes.Trim(buf[1:16], "\x00")))
 	arch.tam = binary.LittleEndian.Uint32(buf[16:20])
 	arch.cluster = binary.LittleEndian.Uint32(buf[20:24])
-	arch.creado = strings.TrimSpace(string(bytes.Trim(buf[24:37], "\x00")))
+	arch.creado = strings.TrimSpace(string(bytes.Trim(buf[24:38], "\x00")))
 	arch.modificado = strings.TrimSpace(string(bytes.Trim(buf[38:52], "\x00")))
 	arch.offset = offset
 
@@ -333,7 +333,10 @@ func (fs FileSystem) encontrarEntradaLibre() (offset int64, err error){
 		}
 
 		_, err = miFS.file.Read(dirEntryBuff)
-		genErrCheck(err)
+		if err != nil {
+			return
+		}
+
 		_, errorAlLeer := leerEntradaDirectorio(dirEntryBuff, uint32(offset))
 		if errorAlLeer != nil {
 			return
