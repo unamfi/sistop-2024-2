@@ -93,3 +93,42 @@ def mostrar_menu():
     print("4. Eliminar un archivo del FiUnamFS")
     print("5. Salir")
 
+def principal():
+    fiunamfs_img = 'fiunamfs.img'
+    resultado_verificacion = verificar_superbloque(fiunamfs_img)
+    print(resultado_verificacion)
+    if "¡ERROR!" in resultado_verificacion:
+        return  # Termina el programa si la verificación falla
+
+    while True:
+        mostrar_menu()
+        opcion = input("Elige una opción: ")
+        if opcion == '1':
+            hilo1 = threading.Thread(target=listar_directorio, args=(fiunamfs_img,))
+            hilo1.start()
+            hilo1.join()
+        elif opcion == '2':
+            nombre_archivo = input("Introduce el nombre del archivo a copiar: ")
+            resultado_copia = copiar_desde_fiunamfs(fiunamfs_img, nombre_archivo)
+            if resultado_copia:
+                print(f'El archivo {nombre_archivo} se copió exitosamente.')
+            else:
+                print(f'El archivo {nombre_archivo} no fue encontrado en el FiUnamFS.')
+        elif opcion == '3':
+            nombre_archivo_origen = input("Introduce el nombre del archivo a copiar desde el sistema: ")
+            nombre_archivo_destino = input("Introduce el nombre del archivo en FiUnamFS: ")
+            try:
+                copiar_a_fiunamfs(fiunamfs_img, nombre_archivo_origen, nombre_archivo_destino)
+                print(f'Archivo {nombre_archivo_origen} copiado exitosamente como {nombre_archivo_destino} en FiUnamFS.')
+            except Exception as e:
+                print(f'Error al copiar archivo: {e}')
+        elif opcion == '4':
+            nombre_archivo = input("Introduce el nombre del archivo a eliminar: ")
+            eliminar(nombre_archivo, fiunamfs_img)
+        elif opcion == '5':
+            break
+        else:
+            print("Opción no válida. Por favor, elige una opción del menú.")
+
+if __name__ == '__main__':
+    principal()
