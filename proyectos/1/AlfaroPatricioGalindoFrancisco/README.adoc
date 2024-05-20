@@ -47,7 +47,15 @@ Dentro de la implementación de dichas estructuras para el manejo del sistema, s
 
 * borrarArchivo: Esta función elimina un archivo indicado por el usuario dentro de FiUnamFS. En caso de que el archivo indicado no exista se le indica al usuario que no existe dicho archivo.
 
+* copiarDesdeSistema: Esta función permite copiar un archivo desde tu dispositivo a FiUnamFS.
 
+* crearArchivo: Esta función permite que se cree un archivo dentro del directorio de FiUnamFS.
+
+* encontrarEntradaLibre: busca una entrada libre dentro de FiUnamFS.
+
+* encontrarLibre: Esta función se explica a detalle en la sección de "Concurrencia".
+
+* checarDisponibilidad: va pasando espacio por espacio dentro del directorio, revisando si dicho espacio está libre u ocpuado y retornando el valor del cluster si está libre o 0 si está ocupado.
 
 
 === Concurrencia
