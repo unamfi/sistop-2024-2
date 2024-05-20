@@ -1,12 +1,36 @@
 import os
 import struct
+from struct import *
 import threading
 
 # Abrir el archivo
 img_FS = "fiunamfs.img"
 FS = open(img_FS, "r+b")
 
+def info_sistema():
+    #Se muestran los datos del superbloque
+    FS.seek(0)
+    nombre_FS = FS.read(8).decode('ascii')
+    FS.seek(10)
+    version = FS.read(10).decode('ascii')
+    etiqueta_volumen = FS.read(20).decode('ascii')
+    totalsuperbloque = FS.read(54)
+    FS.seek(40)
+    tamaño_cluster = unpack("<I", FS.read(4))[0]
+    FS.seek(45)
+    num_cluster_dir = unpack("<I", FS.read(4))[0]
+    FS.seek(50)
+    num_cluster_uni = unpack("<I", FS.read(4))[0]
+
+    print("Nombre del sistema de archivos: ",nombre_FS,"\n",
+      "Version: ",version,"\n",
+      "Etiqueta del Volumen: ",etiqueta_volumen, "\n",
+      "Tamaño del cluster: ",tamaño_cluster, "bytes", "\n",
+      "Numero de cluster que mide el directorio: ",num_cluster_dir, "\n",
+      "Numero de cluster que mide la unidad completa: ",num_cluster_uni)
+
 # Inicializar variables globales
+#"" son para modificar a lo largo del proyecto
 tamanoClusters = 0
 num_cluster_dir = 0
 num_cluster_uni = 0
@@ -51,7 +75,6 @@ class tablas:
             for nombre, detalles in self.tabla.items():
                 print(f"Archivo: {nombre}, Cluster Inicial: {detalles['cluster_inicial']}, Tamaño: {detalles['tamano']} bytes")
 
-# Instancia de la tabla de asignación de archivos
 tabla_asignacion = tablas()
 
 # Función para leer los datos del archivo enteros
@@ -99,7 +122,7 @@ def escribirDatosASCII(inicio, dato):
     return FS.write(dato)
 
 # Función para agregar un archivo al directorio
-def agregarAlDirectorio(nuevoArchivo):
+def agregar(nuevoArchivo):
     global FS
     global tamanoClusters
     global tamanoDirectorio
@@ -149,17 +172,13 @@ def listarArchivos():
                 print("\n")
 
 # Enlistar los archivos del directorio y agregarlos al arreglo
-def listarDirectorio():
-    global tamanoClusters
-    global num_cluster_dir
-    global tamanoDirectorio
-    global archivos
+def listarEnDirectorio():
+    global tamanoClusters, num_cluster_dir, tamanoDirectorio, archivos
 
     with archivo_lock:
         archivos = []
 
-        print("\033[1m   Nombre archivo\t\tTamaño   \033[0m")
-        # Cuánto mide un cluster, cuántos clusters hay, y cuánto mide el directorio
+        print("   Nombre archivo\t\tTamaño   ")
         for i in range(int((tamanoClusters * num_cluster_dir) / tamanoDirectorio)):
             aux = leerArchivo(i)
             if aux and aux.tamano != 0:
@@ -206,11 +225,8 @@ def exportar(nombreCopia, rutaNueva):
         print("La ruta especificada no existe")
 
 # Función para copiar un archivo de la computadora al sistema de archivos
-def importar(rutaArchivo):
-    global tabla_asignacion
-    global archivos
-    global tamanoClusters
-    global FS
+"""def importar(rutaArchivo):
+    global FS, tabla_asignacion, archivos, tamanoClusters
 
     if not os.path.exists(rutaArchivo):
         print("El archivo no existe.")
@@ -244,21 +260,18 @@ def importar(rutaArchivo):
     print("Nombre del archivo: ", nuevoArchivo.nombre)
     with archivo_lock:
         archivos.append(nuevoArchivo)
-        agregarAlDirectorio(nuevoArchivo)
+        agregar(nuevoArchivo)
     print("Archivo copiado con éxito al sistema de archivos")
 
 def verEspacioDisponible(tamanoArchivo):
-    global archivos
-    global tamanoClusters
-    global num_cluster_dir
-    global FS
+    global FS, archivos, tamanoClusters, num_cluster_dir
 
     with archivo_lock:
         # Conjunto de todos los clusters ocupados por archivos existentes
         clustersOcupados = set()
 
+        # Tenemos que calcular los clusters ocupados en el estado actual
         for archivo in archivos:
-            # Calcula todos los clusters ocupados por el archivo actual
             clusters = [archivo.clusterInicial + i for i in range((archivo.tamano + tamanoClusters - 1) // tamanoClusters)]
             clustersOcupados.update(clusters)
 
@@ -273,17 +286,77 @@ def verEspacioDisponible(tamanoArchivo):
                 if (i + (tamanoArchivo + tamanoClusters - 1) // tamanoClusters) < num_cluster_dir:
                     return i  # Devuelve el índice del espacio libre encontrado
             i += 1
-        return -1  # Si no se encuentra ningún espacio libre, devuelve -1
+        return -1  # Si no se encuentra ningún espacio libre, devuelve -1"""
 
-def info_sistema():
-    print("\nNombre del sistema de archivos: ", img_FS)
-    print("Identificación del sistema de archivos: ", id_FS)
-    print("Versión: ", version)
-    print("Etiqueta del volumen: ", etiqueta)
-    print("Tamaño de un cluster: ", tamanoClusters)
-    print("Número de clusters que mide el directorio: ", num_cluster_dir)
-    print("Número de clusters que mide la unidad completa: ", num_cluster_uni)
-    print("\n\n\n")
+# Función para copiar un archivo de la computadora al sistema de archivos
+def importar(rutaArchivo):
+    global tabla_asignacion
+    global archivos
+    global tamanoClusters
+    global FS
+
+    if not os.path.exists(rutaArchivo):
+        print("El archivo no existe.")
+        return
+
+    # Obtener el nombre del archivo
+    nombreArchivo = os.path.basename(rutaArchivo)
+    
+    #validar si el archivo ya existe en el sistema de archivos
+    if verificarArchivo(nombreArchivo)[1]:
+        print("El archivo ya existe en el sistema de archivos.")
+        return
+
+    # Obtener el tamaño del archivo
+    tamanoArchivo = os.path.getsize(rutaArchivo)
+    espacioDisponible = encontrarEspacioDisponible(tamanoArchivo)
+    print(f"Espacio disponible: {espacioDisponible}")
+
+    if espacioDisponible == -1:
+        print("No hay suficiente espacio en el sistema de archivos para copiar el archivo.")
+        return
+
+    with open(rutaArchivo, "rb") as archivoComputadora:
+        contenido = archivoComputadora.read()
+
+        # Escribir en el espacio disponible encontrado
+        inicio_escritura = espacioDisponible 
+        print("Inicio escritura: ", inicio_escritura)
+        FS.seek(inicio_escritura)
+        FS.write(contenido)
+
+    nuevoArchivo = archivo(nombreArchivo, tamanoArchivo, espacioDisponible)
+    print("Nombre del archivo: ", nuevoArchivo.nombre)
+    archivos.append(nuevoArchivo)
+    agregar(nuevoArchivo)
+    print("Archivo copiado con éxito al sistema de archivos")
+
+def encontrarEspacioDisponible(tamanoArchivo):
+    global archivos
+    global tamanoClusters
+    global num_cluster_dir
+    global FS
+
+    # Conjunto de todos los clusters ocupados por archivos existentes
+    clustersOcupados = set()
+
+    for archivo in archivos:
+        # Calcula todos los clusters ocupados por el archivo actual
+        clusters = [archivo.clusterInicial + i for i in range((archivo.tamano + tamanoClusters - 1) // tamanoClusters)]
+        clustersOcupados.update(clusters)
+
+    # Busca un espacio libre
+    espacioLibre = -1
+    i = 0
+    while i < num_cluster_dir:
+        if i not in clustersOcupados and i * tamanoClusters > 54:  # Excluye los primeros 54 bytes
+            inicio = i * tamanoClusters
+            FS.seek(inicio)
+            # Verifica si el espacio libre encontrado es suficiente para el archivo que se va a escribir
+            if (i + (tamanoArchivo + tamanoClusters - 1) // tamanoClusters) < num_cluster_dir:
+                return i  # Devuelve el índice del espacio libre encontrado
+        i += 1
+    return -1  # Si no se encuentra ningún espacio libre, devuelve -1
 
 def datos():
     global id_FS
@@ -320,32 +393,31 @@ def eliminar(nombreArchivo):
     global tamanoClusters
     global FS
 
-    with archivo_lock:
-        # Verificamos si el archivo que se quiere borrar existe en nuestro directorio
-        indexArchivo, validacion = verificarArchivo(nombreArchivo)
-        if not validacion:
-            print("El archivo no existe")
-            return
+    # Verificamos si el archivo que se quiere borrar existe en nuestro directorio
+    indexArchivo, validacion = verificarArchivo(nombreArchivo)
+    if validacion != True:
+        print("El archivo no existe")
+        return
 
-        # Archivo que se quiere borrar
-        archivoBorrar = archivos[indexArchivo]
+    # Archivo que se quiere borrar
+    archivoBorrar = archivos[indexArchivo]
 
-        # Eliminamos el archivo del directorio
-        archivos.pop(indexArchivo)
+    # Eliminamos el archivo del directorio
+    archivos.pop(indexArchivo)
 
-        # Marcar la entrada en el directorio como eliminada
-        FS.seek(1024 + indexArchivo * 64)
-        FS.write(b'\x00')
+    # Marcar la entrada en el directorio como eliminada
+    FS.seek(1024 + indexArchivo * 64)
+    FS.write(b'\x00')
 
-        # Marcamos los clusters correspondientes como libres
-        FS.seek(archivoBorrar.clusterInicial * tamanoClusters)
-        FS.write(b'\x00' * archivoBorrar.tamano)
+    # Marcamos los clusters correspondientes como libres
+    FS.seek(archivoBorrar.clusterInicial * tamanoClusters)
+    FS.write(b'\x00' * archivoBorrar.tamano)
 
-        # Recargar la lista de archivos del directorio
-        archivos = []
-        listarDirectorio()
+    # Recargar la lista de archivos del directorio
+    archivos = []
+    listarEnDirectorio()
 
-        print("Archivo eliminado con éxito")
+    print("Archivo eliminado con éxito") 
 
 def menu():
     while True:
@@ -359,7 +431,7 @@ def menu():
             if opcion == 1:
                 listarArchivos()
             elif opcion == 2:
-                listarDirectorio()
+                listarEnDirectorio()
                 nombreCopia = input("Ingresa el nombre del archivo que deseas copiar (incluye la extensión): ")
                 rutaCopiar = os.path.dirname(os.path.abspath(__file__))
                 threading.Thread(target=exportar, args=(nombreCopia, rutaCopiar)).start()
@@ -367,7 +439,9 @@ def menu():
                 rutaArchivo = input("Ingresa la ruta de donde deseas copiar el archivo (incluye el archivo con su extensión): ").replace("\\", "/")
                 threading.Thread(target=importar, args=(rutaArchivo,)).start()
             elif opcion == 4:
+                listarEnDirectorio()
                 nombreArchivo = input("Ingresa el nombre del archivo que deseas borrar (incluye la extensión): ")
+                #threading.Thread(target=eliminar, args=(nombreArchivo,)).start()
                 threading.Thread(target=eliminar, args=(nombreArchivo,)).start()
             elif opcion == 5:
                 break
