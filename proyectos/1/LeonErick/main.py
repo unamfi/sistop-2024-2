@@ -220,6 +220,7 @@ def leer_directorio(show=True):
         tipo_archivo = leer_ascii8(i, 1)
         if tipo_archivo == "-":
             nombre_archivo = leer_ascii7(i + 1, 15)
+            nombre_archivo = nombre_archivo.replace("#", "")
             tam_bytes = leer_numero(i + 16)
             cluster_ini = leer_numero(i + 20)
             creacion = leer_ascii8(i + 24, 14)
@@ -229,7 +230,8 @@ def leer_directorio(show=True):
             for j in range(cluster_ini, cluster_ini + ((tam_bytes+tamano_cluster_bytes-1) // tamano_cluster_bytes)):
                 if j in cluster_set:
                     cluster_set.remove(j)
-    print_info_archivos()
+    if show:
+        print_info_archivos()
 
 def buscar_archivo(nombre_archivo):
     global directorio
@@ -322,8 +324,10 @@ def eliminar_archivo(nombre_archivo):
     if archivo is None:
         print("Error: El archivo no existe.")
         return False
-    escribir_ascii8(archivo.pos*64, "/")
-    escribir_ascii7(archivo.pos*64+1, "###############")
+    print("Borrando archivo...")
+    print(archivo.pos)
+    escribir_ascii8(archivo.pos, "/")
+    escribir_ascii7(archivo.pos+1, "###############")
     leer_directorio(False)
 
 # Función principal
@@ -334,5 +338,4 @@ if __name__ == "__main__":
     print("--------------------------------------------------")
     obtener_FiUnamFS()
     validar_FiUnamFS()
-    leer_directorio()
     pass
