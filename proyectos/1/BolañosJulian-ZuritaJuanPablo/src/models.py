@@ -44,7 +44,7 @@ class File():
             # si presenta fallos en el proceso retorna 'None'
             with open(self.path_directory, 'rb') as FiUnamFS:
                 FiUnamFS.seek(start)
-                content = FiUnamFS.read(self.size + 1)
+                content = FiUnamFS.read(self.size)
             
             return content
         except:
@@ -272,24 +272,24 @@ class FiUnamFS():
     '''Inserta dentro del directorio 'FiUnamFS' los datos de entrada del archivo
        a copiar, busca espacio disponible entre los cluster 1-4.'''
     def _insertIntoDirectory(self, path:str, cluster:int) -> int:
+        
+        new_file_name =  os.path.basename(path)
+
+        files = self.getFiles()
+
+        # Revisamos que ese nombre no exista en FiUnamFS
+        for file in files: 
+            if file.name == new_file_name:
+                return 7
 
         # Buscamos algún espacio (64 bytes) para colocar la esntrada
         num_files = (self.cluster_size * self.num_clusters) // self.directory_entry_size
         start = self.cluster_size
 
-        new_file_name =  os.path.basename(path)
-        
         for i in range(num_files):   
             file_name = self._readStrFromFS(start + (i * self.directory_entry_size), 15)
 
-            if '-' in file_name: 
-
-                # Si el nombre ya existe en FiUnamFS
-                if file_name.strip('-') == new_file_name:
-                    return 7
-
-            elif '/' in file_name:
-                
+            if '/' in file_name:   
                 if len(new_file_name) > 14: 
                     return 1
             
