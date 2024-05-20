@@ -37,6 +37,7 @@ func main() {
 	info := flag.Bool("i", false, "Mostrar información del sistema de archivos")
 	remove := flag.String("d", "", "Eliminar un archivo.")
 	path := flag.String("f", "", "Ruta del archivo de la imagen FiUnamFS.")
+	// dump := flag.Bool("x", false, "Exporta todos los archivos de FiUnamFS")
 	var input, output *string
 
 	miFS.archivos = make(map[string]Archivo)
@@ -54,15 +55,66 @@ func main() {
 		input = exportCmd.String("i", "", "Archivo de origen.")
 		path = exportCmd.String("f", "", "Ruta del archivo de la imagen FiUnamFS.")
 		exportCmd.Parse(os.Args[2:])
-		fmt.Println(*input, *output)
+		defer func() {
+			if miFS.archivos[*input].nombre == "" {
+				for _, arch := range miFS.archivos {
+					fmt.Println(arch.nombre, []byte(arch.nombre))
+				}
+				miLog.Fatalln("NOOO", miFS.archivos)
+			}
+
+			ch := make(chan error)
+			go miFS.archivos[*input].copiarASistema(*output, ch)
+			err := <- ch
+			if err != nil {
+				miLog.Fatalf("No pude exportar el archivo: %v\n", err)
+			}
+			miFS.file.Close()
+		}()
 	case "import":
 		output = importCmd.String("o", "", "Archivo de destino.")
 		input = importCmd.String("i", "", "Nombre de archivo de origen.")
 		path = importCmd.String("f", "", "Ruta del archivo de la imagen FiUnamFS.")
 		importCmd.Parse(os.Args[2:])
-		fmt.Println(*input, *output)
+		defer func() {
+			err := miFS.copiarDesdeSistema(*input, *output)
+			if err != nil {
+				miLog.Fatalln("No pude importar el archivo")
+			}
+			miFS.file.Close()
+		}()
 	default:
 		flag.Parse()
+		defer func() {
+			if *info {
+				mostrarInfo()
+			}
+
+			if *list {
+				listarArchivos()
+			}
+
+			if *remove != "" {
+				err := miFS.borrarArchivo(*remove)
+				if err != nil {
+					miLog.Fatalln(err)
+				}
+			}
+
+			// if *dump {
+			// 	ch := make(chan error)
+			// 	for _, arch := range miFS.archivos {
+			// 		go arch.copiarASistema(arch.nombre, ch)
+			// 	}
+			// 	for range miFS.archivos {
+			// 		err := <-ch
+			// 		if err != nil {
+			// 			miLog.Fatalf("Error al copiar: %v\n", err)
+			// 		}
+			// 	}
+			// }
+			miFS.file.Close()
+		}()
 	}
 
 	var err error
@@ -70,44 +122,9 @@ func main() {
 	if err != nil {
 		miLog.Fatalln(err)
 	}
-	defer miFS.file.Close()
 
 	leerSuperBloque()
 	leerDirectorio()
-
-	if exportCmd.Parsed() {
-		if miFS.archivos[*input].nombre == "" {
-			for _, arch := range miFS.archivos {
-				fmt.Println(arch.nombre, []byte(arch.nombre))
-			}
-			miLog.Fatalln("NOOO", miFS.archivos)
-		}
-
-		err = miFS.archivos[*input].copiarASistema(*output)
-		if err != nil {
-			miLog.Fatalln("No pude exportar el archivo")
-		}
-	} else if importCmd.Parsed() {
-		err = miFS.copiarDesdeSistema(*input, *output)
-		if err != nil {
-			miLog.Fatalln("No pude importar el archivo")
-		}
-	} else {
-		if *info {
-			mostrarInfo()
-		}
-
-		if *list {
-			listarArchivos()
-		}
-
-		if *remove != "" {
-			err = miFS.borrarArchivo(*remove)
-			if err != nil {
-				miLog.Fatalln(err)
-			}
-		}
-	}
 
 }
 
@@ -124,10 +141,6 @@ func listarArchivos() {
 	fmt.Printf("Archivos:\nNombre \t\tTamaño\n")
 	for _, archivo := range miFS.archivos {
 		fmt.Printf("├─ %s \t%7d bytes\n", archivo.nombre, archivo.tam)
-		err := archivo.copiarASistema(archivo.nombre)
-		if err != nil {
-			miLog.Fatalln("No se pudo copiar archivo: ", err)
-		}
 	}
 }
 
@@ -192,25 +205,25 @@ func leerEntradaDirectorio(buf []byte, offset uint32) (Archivo, error) {
 	return arch, nil
 }
 
-func (a Archivo) copiarASistema(nombre string) (err error) {
-	_, err = miFS.file.Seek(int64(miFS.tamCluster*a.cluster), 0)
+func (a Archivo) copiarASistema(nombre string, ch chan<-error) {
+	_, err := miFS.file.Seek(int64(miFS.tamCluster*a.cluster), 0)
 	if err != nil {
+		ch <- err
 		return
 	}
 
 	nombre = string(bytes.Trim([]byte(nombre), "\x00")) // Los bytes nulos causan errores al abrir el archivo
 	destino, err := os.Create(nombre)
 	if err != nil {
+		ch <- err
 		return
 	}
 
-	defer func() {
-		err = destino.Close()
-	}()
-
 	_, err = io.CopyN(destino, miFS.file, int64(a.tam))
 
-	return
+	err = destino.Close()
+
+	ch <- err
 }
 
 func (fs FileSystem) borrarArchivo(nombre string) (err error) {
@@ -344,21 +357,37 @@ func (fs FileSystem) encontrarLibre(path string) (uint32, error) {
 
 	cluster := fs.tamDirectorio + 1
 
+	ch := make(chan uint32)
 	for cluster < fs.tamUnidad {
-		libre := true
-		for _, ocupado := range fs.archivos {
-			if ocupado.cluster >= cluster && ocupado.cluster <= cluster + noClusters {
-				noClustersOcupados := ocupado.tam / fs.tamCluster
-				cluster = ocupado.cluster + noClustersOcupados + 1
-				libre = false
-			}
+		go checarDisponibilidad(cluster, noClusters, fs, ch)
+		cluster++
+	}
+	cluster = fs.tamDirectorio + 1
+	for cluster < fs.tamUnidad {
+		disp := <- ch
+		if disp != 0 {
+			return disp, nil
 		}
-		if libre {
-			return cluster, nil
-		}
+		cluster++
 	}
 
 	return 0, errors.New("Sin espacio libre")
+}
+
+func checarDisponibilidad(cluster, noClusters uint32, fs FileSystem, ch chan<-uint32) {
+	libre := true
+	for _, ocupado := range fs.archivos {
+		if ocupado.cluster >= cluster && ocupado.cluster <= cluster + noClusters {
+			noClustersOcupados := ocupado.tam / fs.tamCluster
+			cluster = ocupado.cluster + noClustersOcupados + 1
+			libre = false
+		}
+	}
+	if libre {
+		ch <- cluster
+	} else {
+		ch <- 0
+	}
 }
 
 func genErrCheck(err error) {
