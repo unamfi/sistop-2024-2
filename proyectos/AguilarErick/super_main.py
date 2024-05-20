@@ -27,7 +27,6 @@
 # Description: This program is a simple file system that allows the user to list, delete, copy and extract files from a floppy disk image.
 import os
 import time as t
-import random
 import threading
 import sys
 from copy import deepcopy
