@@ -24,8 +24,10 @@ type Archivo struct {
 }
 
 var miFS FileSystem = FileSystem{}
+var miLog *log.Logger = log.New(os.Stderr, "", 0)
 
 func main() {
+
 	exportCmd := flag.NewFlagSet("export", flag.ExitOnError)
 	importCmd := flag.NewFlagSet("import", flag.ExitOnError)
 
@@ -64,7 +66,7 @@ func main() {
 	var err error
 	miFS.file, err = os.OpenFile(*path, os.O_RDWR, 0644)
 	if err != nil {
-		log.Fatal(err)
+		miLog.Fatalln(err)
 	}
 	defer miFS.file.Close()
 
@@ -82,7 +84,7 @@ func main() {
 	if *remove != "" {
 		err = miFS.borrarArchivo(*remove)
 		if err != nil {
-			fmt.Println(err)
+			miLog.Fatalln(err)
 		}
 	}
 }
@@ -102,7 +104,7 @@ func listarArchivos() {
 		fmt.Printf("├─ %s \t%7d bytes\n", archivo.nombre, archivo.tam)
 		err := archivo.copiarASistema(archivo.nombre)
 		if err != nil {
-			log.Fatal(err)
+			miLog.Fatalln(err)
 		}
 	}
 }
@@ -195,7 +197,6 @@ func (fs FileSystem) borrarArchivo(nombre string) (err error) {
 	}
 
 	mybytes := []byte("/###############")
-	fmt.Println(mybytes)
 	_, err = fs.file.WriteAt(mybytes, int64(archivo.offset))
 
 	return
