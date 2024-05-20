@@ -37,6 +37,46 @@ def listar_directorio(fiunamfs_img):
     with lock:
         print("Estado del Lock: Liberado (Listar Directorio)")
 
+def copiar_a_fiunamfs(fiunamfs_img, archivo_origen, nombre_destino):
+    with lock:
+        print("Estado del Lock: Adquirido (Copiar a FiUnamFS)")
+    with open(fiunamfs_img, 'r+b') as f:
+        tam_origen = os.path.getsize(archivo_origen)
+        cluster_libre = 5
+        posicion_entrada_libre = None
+
+        f.seek(DIRECTORIO_INICIO)
+        for _ in range(DIRECTORIO_TAMANO // TAMANO_ENTRADA):
+            posicion_actual = f.tell()
+            entrada = f.read(TAMANO_ENTRADA)
+            tipo_archivo = entrada[0:1]
+            cluster_ini = struct.unpack('<I', entrada[20:24])[0]
+
+            if tipo_archivo == b'/' and posicion_entrada_libre is None:
+                posicion_entrada_libre = posicion_actual
+
+            if cluster_ini >= cluster_libre:
+                cluster_libre = cluster_ini + 1
+
+        if posicion_entrada_libre is None:
+            raise Exception("No hay espacio en el directorio")
+        else:
+            with open(archivo_origen, 'rb') as archivo_origen_f:
+                f.seek(cluster_libre * TAMANO_CLUSTER)
+                f.write(archivo_origen_f.read())
+
+            f.seek(posicion_entrada_libre)
+            f.write(b'-' + nombre_destino.ljust(15).encode('ascii'))
+            f.write(struct.pack('<I', tam_origen))
+            f.write(struct.pack('<I', cluster_libre))
+            fecha_actual = datetime.datetime.now().strftime('%Y%m%d%H%M%S').encode('ascii')
+            f.write(fecha_actual)  # Fecha de creación
+            f.write(fecha_actual)  # Fecha de modificación
+
+    with lock:
+        print("Estado del Lock: Liberado (Copiar a FiUnamFS)")
+
+
 # Función para copiar un archivo del FiUnamFS al sistema actual
 def copiar_desde_fiunamfs(archivo, nombre_archivo):
     with lock:
