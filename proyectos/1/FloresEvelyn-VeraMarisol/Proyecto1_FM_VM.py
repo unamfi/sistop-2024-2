@@ -19,8 +19,22 @@ DIRECTORIO_TAMANO = 4 * TAMANO_CLUSTER
 MAXIMO_CLUSTERS = 1440 // 4 
 #Semaforo para sincronizar la lectura de archivos
 semaforo = threading.Semaphore(value=1)
+#Sincronizar hilos
+lock = threading.Lock()
 
-
+def ENTERO(DIRECTORIO_INICIO, TAM_ENTRADA):
+    with open(fiunamfs_img, "rb") as f:   
+        f.seek(DIRECTORIO_INICIO)
+        DATA = f.read(TAM_ENTRADA) 
+        E = struct.unpack("<I", DATA)[0]  
+        return E 
+        
+def CADENA(DIRECTORIO_INICIO, TAM_ENTRADA):
+    with open(fiunamfs_img, "rb") as f:  
+        f.seek(DIRECTORIO_INICIO)  
+        CADENA = f.read(TAM_ENTRADA)              
+        string = CADENA.decode("ascii").rstrip()    
+        return string 
 
 def LIST_DIRECTORIO(fiunamfs_img):
     with open(fiunamfs_img, 'rb') as f:
@@ -28,7 +42,8 @@ def LIST_DIRECTORIO(fiunamfs_img):
             nombre = CADENA(DIRECTORIO_TAMANO + _,15)
             tam= ENTERO(DIRECTORIO_TAMANO+_+16,4)
             if nombre != '/':
-                print(f"Archivo: {nombre}, Tamaño: {tam} bytes")
+                print("\033[1m   Nombre\t\tTamaño   \033[0m")
+                print(f"   {nombre}\t{tam} bytes")
                 
 #Funcion apara copiar al nuestro sistema
 def COPY_TO_SYSTEM(fiunamfs_img, nombre_archivo, destino):
@@ -88,8 +103,9 @@ def COPY_TO_FIUNAM(fiunamfs_img, archivo_origen, nombre_destino):
             print(f"Entrada libre en: {posicion_entrada_libre}, Cluster libre para el archivo: {cluster_libre}")
 
         with open(archivo_origen, 'rb') as archivo_origen_f:
-            f.seek(cluster_libre * TAMANO_CLUSTER)
-            f.write(archivo_origen_f.read())
+                 with look:
+                     f.seek(cluster_libre * TAMANO_CLUSTER)
+                     f.write(archivo_origen_f.read())
 
         f.seek(posicion_entrada_libre)
         f.write(b'-' + nombre_destino.ljust(15).encode('ascii'))
@@ -116,7 +132,7 @@ def DELETE(fiunamfs_img, nombre_archivo):
 
 def menu_principal():
     while True:
-        print("\nMenú Principal - Sistema de Archivos FiUnamFS")
+        print("\n- Sistema de Archivos FiUnamFS - ")
         print("1. Listar directorio")
         print("2. Copiar archivo de FiUnamFS a sistema")
         print("3. Copiar archivo de sistema a FiUnamFS")
