@@ -10,3 +10,5 @@ try:
     if system_validation(directory_path):
         fiunamfs = FiUnamFS(path = directory_path, directory_entry_size = 64)
 #+END_SRC
+
+Una vez hecho esto, ejecuta el archivo 'main.py'.
