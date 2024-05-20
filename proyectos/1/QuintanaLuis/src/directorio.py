@@ -1,5 +1,4 @@
 from super_bloque import SuperBloque
-from entrada import Entrada
 from constantes import *
 
 class Directorio:

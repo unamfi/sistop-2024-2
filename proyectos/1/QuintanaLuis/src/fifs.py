@@ -14,7 +14,9 @@ RESOURCES_DIR = '../resources'
 
 
 def mostrar_manual():
-    print("manual")
+    with open("../docs/manual.txt", "r") as file:
+        manual = file.read()
+    print(manual)
 
 
 def limpiar_pantalla():
@@ -35,7 +37,7 @@ def shell():
             comando = input("$ ")
 
             if comando == "":
-                mostrar_manual()
+                print("Ingrese help para mostrar los comandos")
 
             # Comando interactivo
             elif comando == "push":
@@ -122,7 +124,10 @@ def cli():
 
     args = sys.argv
 
-    if args[1] == 'push':
+    if len(args) == 1:
+        mostrar_manual()
+
+    elif args[1] == 'push':
         # si no es el numero de argumentos correcto se mostrara manual
         if len(args) not in (3, 4):
             mostrar_manual()
@@ -162,6 +167,9 @@ def cli():
             sistema_archivos.directorio.listar(detalles=True)
         else:
             sistema_archivos.directorio.listar(detalles=False)
+
+    elif args[1] == 'help':
+        mostrar_manual()
 
     elif args[1] == 'shell':
         del sistema_archivos
