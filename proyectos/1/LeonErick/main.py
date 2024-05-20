@@ -1,5 +1,4 @@
 #León Gómez Erick
-#pip install prettytable
 import os
 import struct
 import datetime
