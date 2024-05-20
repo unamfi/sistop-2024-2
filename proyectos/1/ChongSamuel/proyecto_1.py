@@ -1,19 +1,58 @@
 import struct
 import math
-from typing import List, Optional
+import os
+from typing import List, Optional, Tuple
 
 class FIUnamFS:
+
     def __init__(self, file_path: str):
-        self.file_path = file_path
-        self.size_cluster = self._unpack_datos(40, 4)
-        self.dir_clusters = self._unpack_datos(45, 4)
-        self.un_clusters = self._unpack_datos(50, 4)
-        self.dir_size = 64
-        self.file_list: List[File] = []
-        self.storage_map: List[int] = []
-        self._inicializar_()
+        self.file_path = file_path # Ruta del archivo del sistema de archivos
+        self.size_cluster = self._unpack_datos(40, 4) # Tamaño de un cluster
+        self.dir_clusters = self._unpack_datos(45, 4) # Número de clusters del directorio
+        self.un_clusters = self._unpack_datos(50, 4) # Número de clusters sin utilizar
+        self.dir_size = 64 # Tamaño del directorio
+        self.file_list: List[File] = [] # Lista de archivos
+        self.storage_map: List[int] = [] # Mapa de almacenamiento
+        self._inicializar_() 
         self._lista_archivos()
 
+    def _verificar_archivo(self, nombre_copia: str) -> Tuple[int, bool]:
+        for index, archivo in enumerate(self.file_list):
+            if archivo.name == nombre_copia:
+                return index, True
+        return -1, False
+
+    # Copia un archivo desde el sistema FIUnamFS al sistema local
+    def _copiar_archivo(self, nombre_copia: str, ruta_nueva: str) -> None:
+        # Verificamos si el archivo que se quiere copiar existe en nuestro directorio
+        index_archivo, validacion = self._verificar_archivo(nombre_copia)
+        if not validacion:
+            print("El archivo no existe en el sistema")
+            return
+
+        # Archivo que se quiere copiar
+        archivo_c = self.file_list[index_archivo]
+
+        print(f"Tamaño del archivo a copiar: {archivo_c.size}")
+
+        # Crear el archivo en la ruta especificada
+        if os.path.exists(ruta_nueva):
+            if os.path.isfile(os.path.join(ruta_nueva, nombre_copia)):
+                ruta_archivo_destino = os.path.join(ruta_nueva, "copia_de_" + nombre_copia)
+            else:
+                ruta_archivo_destino = os.path.join(ruta_nueva, nombre_copia)
+
+            with open(self.file_path, "rb") as sistema_archivos, open(ruta_archivo_destino, "wb") as destino:
+                inicio_lectura = archivo_c.first_cluster * self.size_cluster
+                sistema_archivos.seek(inicio_lectura)
+                datos_archivo = sistema_archivos.read(archivo_c.size)
+                destino.write(datos_archivo)
+
+            print("Archivo copiado con éxito")
+        else:
+            print("La ruta especificada no existe")
+
+    # Lee datos binarios desde el archivo
     def _leer_datos(self, start: int, size: int) -> bytes:
         with open(self.file_path, "rb") as img:
             img.seek(start)
@@ -71,6 +110,7 @@ class File:
         self.first_cluster = first_cluster
         self.date = date
         self.num_clusters = math.ceil(size / size_cluster)
+
 def desplegar_menu():
     fs = FIUnamFS("fiunamfs.img")
     print("Bienvenidx a FIUnamFS")
@@ -88,7 +128,9 @@ def desplegar_menu():
             print("El contenido del directorio es \n")
             fs._mostrar_directorio()
         elif opcion == '2':
-            print("2")
+                    copia_archivo = input("Ingrese el nombre del archivo a copiar en su equipo: ")
+                    ruta_archivo = input("Ingrese la ruta del directorio a donde se copiará el archivo: ") 
+                    fs._copiar_archivo(copia_archivo, ruta_archivo)
         elif opcion == '3':
             print("3")
         elif opcion == '4':
