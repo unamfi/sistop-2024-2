@@ -169,6 +169,84 @@ void listar_nombres_archivos(const char *fiunamfs_img_path, uint32_t directorio_
     fclose(file);
 }
 
+void copiar_a_sistema_local(const char *fiunamfs_img_path, uint32_t directorio_inicio, uint32_t directorio_tamano, uint32_t entrada_directorio_tamano, uint32_t tamano_cluster)
+{
+            printf("\n------------------------------------Arhivos existentes------------------------------------\n\n");
+    listar_nombres_archivos(fiunamfs_img_path, directorio_inicio, directorio_tamano, entrada_directorio_tamano);
+
+    char nombre_archivo_destino[256];
+    char ruta_destino[256];
+    printf("\nIngrese el nombre del archivo a copiar: ");
+    scanf("%s", nombre_archivo_destino);
+    printf("\nIngrese la ruta de destino del sistema *Incluir el nombre del archivo*:  ");
+    scanf("%s", ruta_destino);
+
+    FILE *fiunamfs = fopen(fiunamfs_img_path, "rb");
+    if (!fiunamfs)
+    {
+        perror("No se pudo abrir el archivo");
+        exit(EXIT_FAILURE);
+    }
+
+    fseek(fiunamfs, directorio_inicio, SEEK_SET);
+    uint8_t *directorio = malloc(directorio_tamano);
+    fread(directorio, 1, directorio_tamano, fiunamfs);
+
+    int archivo_encontrado = 0;
+
+    for (uint32_t i = 0; i < directorio_tamano; i += entrada_directorio_tamano)
+    {
+        uint8_t *entrada = directorio + i;
+        char nombre_archivo[15];
+        memcpy(nombre_archivo, entrada + 1, 14);
+        nombre_archivo[14] = '\0';
+
+        uint32_t tamano_archivo = *(uint32_t *)(entrada + 16);
+        uint32_t cluster_inicial = *(uint32_t *)(entrada + 20);
+
+        if (strcmp(nombre_archivo, nombre_archivo_destino) == 0 && tamano_archivo > 0)
+        {
+            archivo_encontrado = 1;
+
+            uint32_t posicion_inicial = cluster_inicial * tamano_cluster;
+            fseek(fiunamfs, posicion_inicial, SEEK_SET);
+            uint8_t *datos_archivo = malloc(tamano_archivo);
+            fread(datos_archivo, 1, tamano_archivo, fiunamfs);
+
+            if (ferror(fiunamfs))
+            {
+                perror("Error leyendo el archivo");
+                free(datos_archivo);
+                fclose(fiunamfs);
+                return;
+            }
+
+            FILE *archivo_local = fopen(ruta_destino, "wb");
+            if (!archivo_local)
+            {
+                perror("No se pudo crear el archivo local");
+                free(datos_archivo);
+                fclose(fiunamfs);
+                return;
+            }
+
+            fwrite(datos_archivo, 1, tamano_archivo, archivo_local);
+            fclose(archivo_local);
+            free(datos_archivo);
+            printf("\nARCHIVO '%s' COPIADO CON EXITO A '%s'.\n", nombre_archivo_destino, ruta_destino);
+            break;
+        }
+    }
+
+    if (!archivo_encontrado)
+    {
+        printf("No se encontró el archivo '%s' en FiUnamFS.\n", nombre_archivo_destino);
+    }
+
+    free(directorio);
+    fclose(fiunamfs);
+}
+
 void limpiarPantallaE()
 {
     printf("\nPresione Enter para continuar...");
