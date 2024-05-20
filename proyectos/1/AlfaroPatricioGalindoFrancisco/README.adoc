@@ -57,7 +57,7 @@ Dentro de la función encontrarLibre del tipo FileSystem se lanza una goroutine 
 
 == Requisitos de compilación y ejecución
 
-Para poder compilar este programa es necesario cobtar con Go. en caso de no tenerlo instalado, se puede obtener a través de la siguiente URL: https://go.dev/doc/install[Download and Install] nota: se recomienda instalar la versión 1.22.3.
+Para poder compilar este programa es necesario cobtar con Go. en caso de no tenerlo instalado, se puede obtener a través de la siguiente URL: https://go.dev/doc/install[Download and Install] nota: se desarrolló con la versión 1.22.
 Una vez se cuente con Go instalado, coloque la imagen de FiUnamFS en la misma carpeta donde se encuentre el programa. 
 Dirijase a la ruta donde se encuentra el programa dentro de la terminal y ejecute el siguiente comando: "Go run main.go".
 
