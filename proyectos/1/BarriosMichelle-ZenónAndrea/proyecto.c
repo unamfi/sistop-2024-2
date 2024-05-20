@@ -164,6 +164,7 @@ int main()
     {
         printf("\n\t=== Menu principal ===\n");
         printf("1. Mostrar archivos\n");
+        printf("2. Copiar archivo de FiUnamFs al sistema\n");
         printf("0. Salir\n");
 
         char opcion[3];
@@ -182,6 +183,10 @@ int main()
         {
             printf("Terminando programa...\n");
             break;
+        }else if(strcmp(opcion, "2") == 0)
+        {
+            copiar_a_sistema_local(fiunamfs_img_path, sb.directorio_inicio, sb.directorio_tamano, sb.entrada_directorio_tamano, sb.tamano_cluster);
+            limpiarPantallaE();
         }
         else
         {
