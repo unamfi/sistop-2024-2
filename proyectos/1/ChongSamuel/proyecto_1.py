@@ -103,6 +103,35 @@ class FIUnamFS:
         for f in self.file_list:
             print(f"{f.name}        {f.size} bytes")
 
+	# Este método elimina un archivo del sistema
+
+    def _eliminar_archivo(self, nombre_archivo: str) -> None:
+        # Verificamos si el archivo que se quiere eliminar existe en el sistema
+        index_archivo, validacion = self.verificar_archivo(nombre_archivo)
+        if not validacion:
+            print("El archivo no existe")
+            return
+
+    
+        archivo_borrar = self.file_list[index_archivo]
+
+        
+        del self.file_list[index_archivo]
+
+        
+        with open(self.file_path, "r+b") as sistema_archivos:
+            sistema_archivos.seek(1024 + index_archivo * 64)
+            sistema_archivos.write(b'\x00' * 64)
+
+           
+            sistema_archivos.seek(archivo_borrar.first_cluster * self.size_cluster)
+            sistema_archivos.write(b'\x00' * archivo_borrar.size)
+
+       
+        self._init_files()
+
+        print("Archivo eliminado con éxito")
+
 class File:
     def __init__(self, name: str, size: int, first_cluster: int, date: str, size_cluster: int):
         self.name = name.replace(" ", "")
@@ -132,13 +161,17 @@ def desplegar_menu():
                     ruta_archivo = input("Ingrese la ruta del directorio a donde se copiará el archivo: ") 
                     fs._copiar_archivo(copia_archivo, ruta_archivo)
         elif opcion == '3':
+		    
             print("3")
         elif opcion == '4':
-            print("4")
+                    print("4")
+                    archivo_a_eliminar = input("Ingrese el nombre a eliminar del sistema FIUnamFS: ").strip()
+                    _eliminar_archivo(archivo_a_eliminar)
         elif opcion == '5':
             print("Saliendo del programa...")
             break
         else:
             print("Opción no válida. Por favor, intente nuevamente.")
 desplegar_menu()
+
 
