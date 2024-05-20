@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/binary"
 	"errors"
 	"flag"
@@ -9,6 +10,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
 type FileSystem struct {
@@ -73,20 +75,40 @@ func main() {
 	leerSuperBloque()
 	leerDirectorio()
 
-	if *info {
-		mostrarInfo()
-	}
+	if exportCmd.Parsed() {
+		if miFS.archivos[*input].nombre == "" {
+			for _, arch := range miFS.archivos {
+				fmt.Println(arch.nombre, []byte(arch.nombre))
+			}
+			miLog.Fatalln("NOOO", miFS.archivos)
+		}
 
-	if *list {
-		listarArchivos()
-	}
-
-	if *remove != "" {
-		err = miFS.borrarArchivo(*remove)
+		err = miFS.archivos[*input].copiarASistema(*output)
 		if err != nil {
-			miLog.Fatalln(err)
+			miLog.Fatalln("No pude exportar el archivo")
+		}
+	} else if importCmd.Parsed() {
+		err = miFS.copiarDesdeSistema(*input, *output)
+		if err != nil {
+			miLog.Fatalln("No pude importar el archivo")
+		}
+	} else {
+		if *info {
+			mostrarInfo()
+		}
+
+		if *list {
+			listarArchivos()
+		}
+
+		if *remove != "" {
+			err = miFS.borrarArchivo(*remove)
+			if err != nil {
+				miLog.Fatalln(err)
+			}
 		}
 	}
+
 }
 
 func mostrarInfo() {
@@ -104,7 +126,7 @@ func listarArchivos() {
 		fmt.Printf("├─ %s \t%7d bytes\n", archivo.nombre, archivo.tam)
 		err := archivo.copiarASistema(archivo.nombre)
 		if err != nil {
-			miLog.Fatalln(err)
+			miLog.Fatalln("No se pudo copiar archivo: ", err)
 		}
 	}
 }
@@ -160,11 +182,11 @@ func leerEntradaDirectorio(buf []byte, offset uint32) (Archivo, error) {
 		return arch, errors.New("Entrada vacía")
 	}
 
-	arch.nombre = strings.TrimSpace(string(buf[1:15]))
+	arch.nombre = strings.TrimSpace(string(bytes.Trim(buf[1:15], "\x00")))
 	arch.tam = binary.LittleEndian.Uint32(buf[16:20])
 	arch.cluster = binary.LittleEndian.Uint32(buf[20:24])
-	arch.creado = strings.TrimSpace(string(buf[24:37]))
-	arch.modificado = strings.TrimSpace(string(buf[38:52]))
+	arch.creado = strings.TrimSpace(string(bytes.Trim(buf[24:37], "\x00")))
+	arch.modificado = strings.TrimSpace(string(bytes.Trim(buf[38:52], "\x00")))
 	arch.offset = offset
 
 	return arch, nil
@@ -176,6 +198,7 @@ func (a Archivo) copiarASistema(nombre string) (err error) {
 		return
 	}
 
+	nombre = string(bytes.Trim([]byte(nombre), "\x00")) // Los bytes nulos causan errores al abrir el archivo
 	destino, err := os.Create(nombre)
 	if err != nil {
 		return
@@ -193,13 +216,149 @@ func (a Archivo) copiarASistema(nombre string) (err error) {
 func (fs FileSystem) borrarArchivo(nombre string) (err error) {
 	archivo := fs.archivos[nombre]
 	if archivo.nombre == "" {
-		return errors.New(fmt.Sprintf("Imposible borrar \"%s\": Archivo inexistente", nombre))
+		return errors.New(fmt.Sprintf("Imposible borrar %s: Archivo inexistente", nombre))
 	}
 
 	mybytes := []byte("/###############")
 	_, err = fs.file.WriteAt(mybytes, int64(archivo.offset))
 
 	return
+}
+
+func (fs FileSystem) copiarDesdeSistema(inPath, outPath string) (err error){
+	cluster, err := fs.encontrarLibre(inPath)
+	if err != nil {
+		err = fs.compactarArchivos()
+		if err != nil {
+			return
+		}
+		cluster, err = fs.encontrarLibre(inPath)
+		if err != nil {
+			return
+		}
+	}
+
+	inFile, err := os.Open(inPath)
+	if err != nil {
+		return
+	}
+
+	_, err = fs.file.Seek(int64(fs.tamCluster*cluster), 0)
+	if err != nil {
+		return
+	}
+	_, err = io.Copy(fs.file, inFile)
+	if err != nil {
+		return
+	}
+
+	fi, err := os.Stat(inPath)
+	if err != nil {
+		return
+	}
+
+	err = fs.crearArchivo(outPath, cluster, uint32(fi.Size()))
+
+	return
+}
+
+func (fs FileSystem) crearArchivo(nombre string, cluster, tam uint32) (err error){
+	ahora := time.Now()
+	fechaStr := ahora.Format("20060102150405")
+	offset, err := fs.encontrarEntradaLibre()
+	if err != nil {
+		return
+	}
+
+	archivo := Archivo{
+		nombre: nombre,
+		cluster: cluster,
+		tam: tam,
+		modificado: fechaStr,
+		creado: fechaStr,
+		offset: uint32(offset),
+	}
+
+	fs.archivos[nombre] = archivo
+
+	buff := make([]byte, 64)
+	for i := range buff {
+		buff[i] = 0
+	}
+	_, err = fs.file.WriteAt(buff, int64(archivo.offset))
+	if err != nil {
+		return
+	}
+
+
+	buff[0] = '-'
+	copy(buff[1:], []byte(archivo.nombre))
+	copy(buff[16:], binary.LittleEndian.AppendUint32([]byte{}, archivo.tam))
+	copy(buff[20:], binary.LittleEndian.AppendUint32([]byte{}, archivo.cluster))
+	copy(buff[24:], []byte(archivo.creado))
+	copy(buff[38:], []byte(archivo.modificado))
+
+	_, err = fs.file.WriteAt(buff, int64(archivo.offset))
+
+	return
+}
+
+func (fs FileSystem) encontrarEntradaLibre() (offset int64, err error){
+	_, err = fs.file.Seek(int64(fs.tamCluster), 0)
+	if err != nil {
+		return
+	}
+
+	dirEntryBuff := make([]byte, 64)
+	for {
+		offset, err = fs.file.Seek(0, io.SeekCurrent)
+		if err != nil {
+			return
+		}
+		if offset >= int64(fs.tamCluster*(fs.tamDirectorio+1)) {
+			break
+		}
+
+		_, err = miFS.file.Read(dirEntryBuff)
+		genErrCheck(err)
+		_, errorAlLeer := leerEntradaDirectorio(dirEntryBuff, uint32(offset))
+		if errorAlLeer != nil {
+			return
+		}
+	}
+
+	return
+}
+
+func (fs FileSystem) compactarArchivos() (err error){
+	return
+}
+
+func (fs FileSystem) encontrarLibre(path string) (uint32, error) {
+	fi, err := os.Stat(path)
+	if err != nil {
+		return 0, nil
+	}
+
+	noClusters := uint32(fi.Size() / int64(fs.tamCluster))
+
+	cluster := fs.tamDirectorio + 1
+
+	for cluster < fs.tamUnidad {
+		libre := true
+		for _, ocupado := range fs.archivos {
+			if ocupado.cluster >= cluster && ocupado.cluster <= cluster + noClusters {
+				noClustersOcupados := ocupado.tam / fs.tamCluster
+				cluster = ocupado.cluster + noClustersOcupados + 1
+				libre = false
+			}
+		}
+		if libre {
+			return cluster, nil
+		}
+	}
+
+	return 0, errors.New("Sin espacio libre")
 }
 
 func genErrCheck(err error) {
