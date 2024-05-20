@@ -146,7 +146,19 @@ class FileSystemFiUNAMFS:
         if start is not None:
             segments.append((start, length))
         return segments
-
+    def extractFile(self, adreesToAllocateInDirectory):
+        file = [file for file in self.getFiles() if file.getData()['address_in_directory'] == adreesToAllocateInDirectory]
+        if file.__len__() == 0:
+            raise Exception('No se encontro el archivo')
+        file = file[0]
+        data = file.getData()
+        name = data['name'].replace('\x00','') + '_FIUNAMFS_' + datetime.now().strftime("%Y%m%d%H%M%S") + '.bin'
+        print(name)
+        size = data['size']
+        content = self.disc.read(data['cluster'] * self.specifications['sizeCluster'],size)
+        print(content.__len__())
+        with open(name,'wb') as f:
+            f.write(content)
     def copyInside(self, absPath):
         files = sorted(self.getFiles(),key= lambda file: file.getData()['address_in_directory'])
         date = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -273,12 +285,30 @@ class Menu:
                 continue
         absPath = os.path.join(base,selectedFile)
         self.fileSystem.copyInside(absPath)
+    def extracFile(self):
+        files = [file for file in self.fileSystem.getFiles() if not file.empty()]
+        if files.__len__() == 0:
+            return richPrint(Panel("[yellow]No hay archivos para extraer[/yellow]",title="Sin archivos",expand=False))
+        cleaned_files = [(i+1, file.getData()['name'].rstrip('\x00').strip()) for i, file in enumerate(files)]
+        questions = [
+            {
+                'type': 'list',
+                'name': 'file',
+                'message': 'Choose a file to extract',
+                'choices': [f"{i}){name}" for i, name in cleaned_files]
+            }
+        ]
+        fileToExtract = prompt(questions)['file']
+        index = int(fileToExtract[0]) - 1
+        adress = files[index].getData()['address_in_directory']
+        self.fileSystem.extractFile(adress)
+
 menu = Menu(fileSystem)
 options = {
     "DELETE_FILE" : menu.deleteFile,
     "LIST_FILES" : menu.listFiles,
     "COPY_FILE" : menu.copyFile,
-    "EXTRACT_FILE" : lambda: print('EXTRACT_FILE'),
+    "EXTRACT_FILE" : menu.extracFile,
     "EXIT" : lambda: sys.exit(0)
 }
 def main_menu():
