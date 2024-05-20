@@ -102,7 +102,7 @@ def leer_ascii8(posicion, longitud):
         mutex_archivo.release()
         return False
     
-def escribir_caracteres(posicion, cadena):
+def escribir_ascii8(posicion, cadena):
     global ruta_FiUnamFS
     # Escribir en el archivo
     mutex_archivo.acquire()
@@ -181,9 +181,8 @@ def validar_FiUnamFS():
     print(num_clusters_total)
     print("Sistema de archivos FiUnamFS cargado exitosamente.")
     
-def obtener_fecha():
-    now = datetime.datetime.now()
-    return now.strftime("%Y%m%d%H%M%S")
+def formato_fecha(fecha):
+    return fecha.strftime("%Y%m%d%H%M%S")
 
 def imprimir_fecha(fecha):
     return fecha[0:4] + "-" + fecha[4:6] + "-" + fecha[6:8] + " " + fecha[8:10] + ":" + fecha[10:12] + ":" + fecha[12:14]
@@ -208,7 +207,7 @@ def print_info_archivos():
     print(table)
 
 
-def leer_directorio():
+def leer_directorio(show=True):
     global ruta_FiUnamFS
     global tamano_cluster_bytes
     global num_clusters_dir
@@ -260,6 +259,72 @@ def fiunamfs_to_local(nombre_archivo, ruta_local):
         print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
         mutex_archivo.release()
         return False
+
+def encontrar_contiguo(tam_bytes):
+    global cluster_set
+    contiguo = -1
+    contiguo_actual = 0
+    for cluster in cluster_set:
+        contiguo_actual += 1
+        if contiguo_actual == (tam_bytes+tamano_cluster_bytes-1) // tamano_cluster_bytes:
+            contiguo = cluster - contiguo_actual + 1
+            break
+    return contiguo
+
+def local_to_fiunamfs(ruta_local, nombre_archivo):
+    global directorio
+    global cluster_set
+    tam_bytes = os.path.getsize(os.path.join(directorio_fisico, ruta_local))
+    if tam_bytes > tamano_cluster_bytes * len(cluster_set):
+        print("Error: El archivo es demasiado grande para ser almacenado en el sistema de archivos FiUnamFS.")
+        return False
+    archivo = buscar_archivo(nombre_archivo)
+    if archivo is not None:
+        print("Error: Ya existe un archivo con ese nombre.")
+        return False
+    cluster_ini = encontrar_contiguo(tam_bytes)
+    if cluster_ini == -1:
+        print("Error: No hay suficiente espacio contiguo en el sistema de archivos FiUnamFS.")
+        return False
+    mutex_archivo.acquire()
+    try:
+        with open(ruta_FiUnamFS, "r+b") as f:
+            f.seek(cluster_ini * tamano_cluster_bytes)
+            with open(os.path.join(directorio_fisico, ruta_local), "rb") as f_local:
+                info = f_local.read()
+                f.write(info)
+        for i in range(cluster_ini, cluster_ini + ((tam_bytes+tamano_cluster_bytes-1) // tamano_cluster_bytes)):
+            if i in cluster_set:
+                cluster_set.remove(i)
+        creacion = formato_fecha(datetime.datetime.fromtimestamp(os.path.getctime(os.path.join(directorio_fisico, ruta_local))))
+        modificacion = formato_fecha(datetime.datetime.fromtimestamp(os.path.getctime(os.path.join(directorio_fisico, ruta_local))))
+        for i in range(tamano_cluster_bytes, tamano_cluster_bytes * (num_clusters_dir + 1), 64):
+            tipo_archivo = leer_ascii8(i, 1)
+            if tipo_archivo == "/":
+                escribir_ascii8(i, "-")
+                escribir_ascii7(i + 1, nombre_archivo)
+                escribir_numero(i + 16, tam_bytes)
+                escribir_numero(i + 20, cluster_ini)
+                escribir_ascii8(i + 24, creacion)
+                escribir_ascii8(i + 38, modificacion)
+                break
+        mutex_archivo.release()
+        leer_directorio(False)
+        return True
+    except PermissionError:
+        print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
+        mutex_archivo.release()
+        return False
+
+def eliminar_archivo(nombre_archivo):
+    global directorio
+    archivo = buscar_archivo(nombre_archivo)
+    if archivo is None:
+        print("Error: El archivo no existe.")
+        return False
+    escribir_ascii8(archivo.pos*64, "/")
+    escribir_ascii7(archivo.pos*64+1, "###############")
+    leer_directorio(False)
 
 # Función principal
 if __name__ == "__main__":
