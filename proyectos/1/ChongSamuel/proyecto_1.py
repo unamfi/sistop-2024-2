@@ -162,6 +162,31 @@ class FIUnamFS:
         self._update_map()
         print("Archivo copiado con éxito al sistema de archivos")
 
+    def borrar_archivo(self, nombre_archivo: str) -> None:
+        index_archivo, validacion = self._verificar_archivo(nombre_archivo)
+        if not validacion:
+            print("El archivo no existe")
+            return
+
+        archivo_borrar = self.file_list[index_archivo]
+        del self.file_list[index_archivo]
+
+        with open(self.file_path, "r+b") as sistema_archivos:
+            # Marcar la entrada del archivo en el directorio como eliminada
+            sistema_archivos.seek(1024 + index_archivo * 64)
+            sistema_archivos.write(b'\x00' * 64)
+
+            # Marcar los clusters ocupados por el archivo como libres en el mapa de almacenamiento
+            for i in range(archivo_borrar.num_clusters):
+                cluster_pos = archivo_borrar.first_cluster + i
+                self.storage_map[cluster_pos] = 0
+                # Limpiar los datos en el archivo físico (opcional)
+                sistema_archivos.seek(cluster_pos * self.size_cluster)
+                sistema_archivos.write(b'\x00' * self.size_cluster)
+
+        self._actualizar_()
+        print("Archivo eliminado con éxito")
+
 class File:
     def __init__(self, name: str, size: int, first_cluster: int, date: str, size_cluster: int):
         self.name = name.replace(" ", "")
