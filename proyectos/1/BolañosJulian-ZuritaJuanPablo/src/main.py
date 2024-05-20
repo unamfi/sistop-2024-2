@@ -128,51 +128,57 @@ def _eliminarArchivo(semaphore1, semaphore2):
    porque señaliza cuando uno de los otros hilos debe ejecutarce.'''
 def _menu(sem1,sem2,sem3,sem4, sem5):
     global option, fiunamfs
+    
+    while True:
+        sem1.acquire()
+        print('\n\t\tBienvenido a FiUnamFS\n')
+        print('(1) - Listar los contenidos del directorio.')
+        print('(2) - Copiar uno de los archivo dentro de FiUnamFS hacia tu sistema.')
+        print('(3) - Copiar un archivo de tu computadora hacia FiUnamFS.')
+        print('(4) - Eliminar un archivo del FiUnamFS.')
+        print('(5) - Salir.')
+        option = input('Opcion -> ')
 
-    directory_path = 'C:/Users/juanz/Downloads/Proyecto/fiunamfs.img'
+        if option == '1':
+            sem2.release()
+        elif option == '2':
+            sem3.release()
+        elif option == '3':
+            sem4.release()
+        elif option == '4':
+            sem5.release()              
+        elif option == '5':
+            sem2.release()
+            sem3.release()
+            sem4.release()
+            sem5.release()
+            break
+        else: 
+            sem1.release()
+
+
+directory_path = '../../fiunamfs.img'
+try:
     if system_validation(directory_path):
         fiunamfs = FiUnamFS(path = directory_path, directory_entry_size = 64)
 
-        while True:
-            sem1.acquire()
-            print('\n\t\tBienvenido a FiUnamFS\n')
-            print('(1) - Listar los contenidos del directorio.')
-            print('(2) - Copiar uno de los archivo dentro de FiUnamFS hacia tu sistema.')
-            print('(3) - Copiar un archivo de tu computadora hacia FiUnamFS.')
-            print('(4) - Eliminar un archivo del FiUnamFS.')
-            print('(5) - Salir.')
-            option = input('Opcion -> ')
+        '''Los siguientes semáforos van a servir de señales para que los hilos realicen 
+            su ejecución. Cada hilo le corresponde una función que señalizar (listarContenido, 
+            copiarACompuLocal, etc).'''
 
-            if option == '1':
-                sem2.release()
-            elif option == '2':
-                sem3.release()
-            elif option == '3':
-                sem4.release()
-            elif option == '4':
-                sem5.release()              
-            elif option == '5':
-                sem2.release()
-                sem3.release()
-                sem4.release()
-                sem5.release()
-                break
-            else: 
-                sem1.release()
+        menu = threading.Semaphore(1)
+        listarContenido = threading.Semaphore(0)
+        copiarACompuLocal = threading.Semaphore(0)
+        copiarASistema = threading.Semaphore(0)
+        eliminarArchivo = threading.Semaphore(0)
 
-
-'''Los siguientes semáforos van a servir de señales para que los hilos realicen 
-   su ejecución. Cada hilo le corresponde una función que señalizar (listarContenido, 
-   copiarACompuLocal, etc).'''
-
-menu = threading.Semaphore(1)
-listarContenido = threading.Semaphore(0)
-copiarACompuLocal = threading.Semaphore(0)
-copiarASistema = threading.Semaphore(0)
-eliminarArchivo = threading.Semaphore(0)
-
-threading.Thread(target = _menu, args = [menu,listarContenido,copiarACompuLocal,copiarASistema, eliminarArchivo]).start()
-threading.Thread(target = _listarContenido, args = [menu,listarContenido]).start()
-threading.Thread(target = _copiarACompuLocal, args = [menu,copiarACompuLocal]).start()
-threading.Thread(target = _copiarASistema, args = [menu, copiarASistema]).start()
-threading.Thread(target = _eliminarArchivo, args = [menu, eliminarArchivo]).start()
+        threading.Thread(target = _menu, args = [menu,listarContenido,copiarACompuLocal,copiarASistema, eliminarArchivo]).start()
+        threading.Thread(target = _listarContenido, args = [menu,listarContenido]).start()
+        threading.Thread(target = _copiarACompuLocal, args = [menu,copiarACompuLocal]).start()
+        threading.Thread(target = _copiarASistema, args = [menu, copiarASistema]).start()
+        threading.Thread(target = _eliminarArchivo, args = [menu, eliminarArchivo]).start()
+            
+    else: 
+        print('\nEl archivo "imagen" no es el apropiado para trabjar.\n')
+except:
+        print('\nError al cargar el archivo\n')
