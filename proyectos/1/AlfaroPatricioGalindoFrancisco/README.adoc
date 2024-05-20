@@ -4,7 +4,33 @@
 
 == Contexto
 
+En este proyecto se buscó generar un programa que permitiera visualizar, modificar y crear información de un micro-sistema de archivos de la Facultad de Ingeniería (FI). Para poder demostrar que dicho programa funcionara de forma correcta, el profesor no otorgó un micro-sistema de archivos llamado FiUnamFS para que pudieramos poner a prueba el programa generado para verificar que todo lo solicitado se pudiera realizar. Es de este modo que se generó e programa "FiUnamFSReader" con el cual, entre otras cosas puedes hacer:
+
+* Listar los contenidos de un directoio
+* Copiar archivos de dentro de FiUnamFS hacia tu sistema
+* Copiar un archivo de tu computadora hacia FiUnamFS
+* Eliminar un archivo de FiUnamFS
+
+
+
+
 == Detalles de implementación
+
+Para realizar este proyecto se utilizó el lenguaje de programación "Go" debido a la faciliad con la que se puede trabajar la concurrencia dentro de él.
+
+Primero se hablará de los elementos dentro del código y después de como se utilizaron para poder realizar los puntos solicitados.
+
+Para este programa se hizo uso de dos estructuras, las cuales son:
+
+*FileSystem: cuenta con los campos de nombre, versión, equitqueta, tamaño de Cluster (tamCluster), tamaño de drectorio (tamDirectorio), tamaño de unidad (tamUnidad), file y archivos.
+*Archivo: cuenta con los campos de nombre, creado, modificado, tamaño (tam), cluster y offset.
+
+Dentro de la implementación de dichas estructuras para el manejo del sistema, se crearon funciones para poder distribuir de forma adecuada el código. las funciones con las que cuenta este programa son:
+
+*mostrarInfo: como su nombre indica, esta función se va a encargar de mostrar la información del micro sistema de archivos, haciendo uso de la estructura FileSystem para esto. la información que muestra es: Nombre, versión (la versión sirve para verificar que la versión usada sea la 24-2 para evitar corrupción de datos), Etiqueta, número de bytes con los que cuenta cada cluster, número de clusters en el directorio y número de clusters en la unidad.
+
+
+
 
 === Concurrencia
 
