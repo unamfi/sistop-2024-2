@@ -138,6 +138,22 @@ void listar_archivos(const char *fiunamfs_img_path, uint32_t directorio_inicio, 
     free(directorio);
     fclose(file);
 }
+void limpiarPantallaE()
+{
+    printf("\nPresione Enter para continuar...");
+    while (getchar() != '\n')
+        ;
+    getchar();
+    system("cls || clear");
+}
+
+void limpiarPantallaS()
+{
+    printf("Redireccionando...\n");
+    sleep(1);               
+    system("cls || clear");
+}
+
 int main()
 {
     const char *fiunamfs_img_path = "fiunamfs.img";
