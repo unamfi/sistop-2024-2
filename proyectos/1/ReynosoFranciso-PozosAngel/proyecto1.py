@@ -1,16 +1,19 @@
 import os
 import struct
+import threading
 import datetime
+from os import path
 
-# Constantes
+# Constantes de configuración del sistema de archivos
 TAMANO_CLUSTER = 2048  # Tamaño del cluster en bytes
 DIRECTORIO_INICIO = TAMANO_CLUSTER  # Inicio del directorio
 TAMANO_ENTRADA = 64  # Tamaño de cada entrada del directorio
 DIRECTORIO_TAMANO = TAMANO_CLUSTER * 4  # Tamaño total del directorio
 ENTRADA_VACIA = b'###############'  # Marca de entrada vacía
-lock = threading.Lock()
+lock = threading.Lock()  # Lock para sincronización de hilos
 
 class EntradaArchivo:
+    """Clase que representa una entrada de archivo en el directorio."""
     def __init__(self, datos):
         self.tipo = datos[0]
         self.nombre = datos[1:16].decode('ascii', 'ignore').rstrip('\x00')
@@ -20,16 +23,18 @@ class EntradaArchivo:
         self.fecha_modificacion = datos[38:52].decode('ascii', 'ignore')
 
 def leer_directorio(archivo):
-    archivo.seek(DIRECTORIO_INICIO)  # El directorio comienza en el segundo cluster
+    """Lee las entradas del directorio desde el archivo del sistema."""
+    archivo.seek(DIRECTORIO_INICIO) 
     entradas = []
     for _ in range(DIRECTORIO_TAMANO // TAMANO_ENTRADA):
         datos = archivo.read(TAMANO_ENTRADA)
-        if datos[1:16] != ENTRADA_VACIA:
+        if datos[1:16] != ENTRADA_VACIA:  # Verifica si la entrada no está vacía
             entradas.append(EntradaArchivo(datos))
     return entradas
 
 def listar_directorio(fiunamfs_img):
-    with lock:
+    """Lista los archivos contenidos en el directorio."""
+    with lock:  # Bloquea para evitar conflictos entre hilos
         print("Estado del Lock: Adquirido (Listar Directorio)")
     with open(fiunamfs_img, 'rb') as archivo:
         for entrada in leer_directorio(archivo):
@@ -38,11 +43,12 @@ def listar_directorio(fiunamfs_img):
         print("Estado del Lock: Liberado (Listar Directorio)")
 
 def copiar_a_fiunamfs(fiunamfs_img, archivo_origen, nombre_destino):
+    """Copia un archivo del sistema actual al sistema de archivos FiUnamFS."""
     with lock:
         print("Estado del Lock: Adquirido (Copiar a FiUnamFS)")
     with open(fiunamfs_img, 'r+b') as f:
         tam_origen = os.path.getsize(archivo_origen)
-        cluster_libre = 5
+        cluster_libre = 5  # Primer cluster libre
         posicion_entrada_libre = None
 
         f.seek(DIRECTORIO_INICIO)
@@ -53,10 +59,10 @@ def copiar_a_fiunamfs(fiunamfs_img, archivo_origen, nombre_destino):
             cluster_ini = struct.unpack('<I', entrada[20:24])[0]
 
             if tipo_archivo == b'/' and posicion_entrada_libre is None:
-                posicion_entrada_libre = posicion_actual
+                posicion_entrada_libre = posicion_actual  # Encuentra primera entrada libre
 
             if cluster_ini >= cluster_libre:
-                cluster_libre = cluster_ini + 1
+                cluster_libre = cluster_ini + 1  # Encuentra el próximo cluster libre
 
         if posicion_entrada_libre is None:
             raise Exception("No hay espacio en el directorio")
@@ -76,9 +82,8 @@ def copiar_a_fiunamfs(fiunamfs_img, archivo_origen, nombre_destino):
     with lock:
         print("Estado del Lock: Liberado (Copiar a FiUnamFS)")
 
-
-# Función para copiar un archivo del FiUnamFS al sistema actual
 def copiar_desde_fiunamfs(archivo, nombre_archivo):
+    """Copia un archivo del sistema de archivos FiUnamFS al sistema actual."""
     with lock:
         print("Estado del Lock: Adquirido (Copiar desde FiUnamFS)")
     with open(archivo, 'rb') as archivo:
@@ -96,12 +101,13 @@ def copiar_desde_fiunamfs(archivo, nombre_archivo):
     return False
 
 def verificar_superbloque(fiunamfs_img):
+    """Verifica la validez del superbloque del sistema de archivos."""
     with open(fiunamfs_img, 'rb') as f:
         nombre_fs = f.read(8).decode('ascii').strip()
         version = f.read(7).decode('ascii').strip().replace('-', '.')
-        
+
         print(f"Nombre FS leído: {nombre_fs}, Versión leída: {version}")
-        
+
         resultado = f"Nombre del sistema de archivos: {nombre_fs}, Versión: {version}\n"
         if nombre_fs != "FiUnamFS" and version != "24.2":
             resultado += f"¡ERROR! La versión o el sistema de archivos no coinciden con FiUnamFS versión 24.2. Se esperaba 'FiUnamFS' y '24.2' pero se encontró '{nombre_fs}' y '{version}'\n"
@@ -111,6 +117,7 @@ def verificar_superbloque(fiunamfs_img):
     return resultado
 
 def eliminar(nombre_archivo, fiunamfs_img):
+    """Elimina un archivo del sistema de archivos FiUnamFS."""
     with lock:
         print("Estado del Lock: Adquirido (Eliminar de FiUnamFS)")
     with open(fiunamfs_img, 'r+b') as archivo:
@@ -120,13 +127,13 @@ def eliminar(nombre_archivo, fiunamfs_img):
             nombre = entrada[1:16].rstrip(b'\x00').decode('ascii', errors='ignore').strip()
             if nombre == nombre_archivo:
                 archivo.seek(-64, os.SEEK_CUR)
-                # Escribir exactamente 64 bytes, llenando con ceros después de '/###############'
-                archivo.write(b'/###############' + b'\x00' * (64 - 17))  # Asegura exactamente 64 bytes
+                archivo.write(b'/###############' + b'\x00' * (64 - 17))  # Marca la entrada como vacía
                 print("Archivo borrado exitosamente")
                 return
     print("Archivo no encontrado en el directorio")
 
 def mostrar_menu():
+    """Muestra el menú de opciones para el usuario."""
     print("1. Listar los contenidos del directorio")
     print("2. Copiar un archivo del FiUnamFS al sistema")
     print("3. Copiar un archivo del sistema al FiUnamFS")
@@ -134,6 +141,7 @@ def mostrar_menu():
     print("5. Salir")
 
 def principal():
+    """Función principal que gestiona la interacción con el usuario."""
     fiunamfs_img = 'fiunamfs.img'
     resultado_verificacion = verificar_superbloque(fiunamfs_img)
     print(resultado_verificacion)
