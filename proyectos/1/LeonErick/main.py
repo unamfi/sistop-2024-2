@@ -16,6 +16,7 @@ num_clusters_dir = 0
 num_clusters_total = 0
 mutex_archivo = Lock()
 directorio = []
+cluster_set = set()
 
 def show_menu():
     print("1. Listar los contenidos del directorio")
@@ -44,7 +45,7 @@ def obtener_FiUnamFS():
     print(ruta_FiUnamFS)
     try:
         if not os.path.exists(ruta_FiUnamFS):
-            print("Ingrese el nombre con el que se tiene guardado el sistema de archivos FiUnamFS: ")
+            print("Ingrese la ruta relativa del sistema de archivos FiUnamFS: ")
             ruta_FiUnamFS = input()
             ruta_FiUnamFS = os.path.join(directorio_fisico, ruta_FiUnamFS)
             if not os.path.exists(ruta_FiUnamFS):
@@ -188,12 +189,13 @@ def imprimir_fecha(fecha):
     return fecha[0:4] + "-" + fecha[4:6] + "-" + fecha[6:8] + " " + fecha[8:10] + ":" + fecha[10:12] + ":" + fecha[12:14]
 
 class info_archivo:
-    def __init__(self, nombre_archivo, tam_bytes, cluster_ini, creacion, modificacion):
+    def __init__(self, nombre_archivo, tam_bytes, cluster_ini, creacion, modificacion, pos):
         self.nombre_archivo = nombre_archivo
         self.tam_bytes = tam_bytes
         self.cluster_ini = cluster_ini
         self.creacion = creacion
         self.modificacion = modificacion
+        self.pos = pos
     
 from prettytable import PrettyTable
 
@@ -211,8 +213,10 @@ def leer_directorio():
     global tamano_cluster_bytes
     global num_clusters_dir
     global directorio
+    global cluster_set
+    for i in range(num_clusters_dir + 1, num_clusters_total):
+        cluster_set.add(i)
     directorio = [] * num_clusters_dir
-    print("Leyendo directorio")
     for i in range(tamano_cluster_bytes, tamano_cluster_bytes * (num_clusters_dir + 1), 64):
         tipo_archivo = leer_ascii8(i, 1)
         if tipo_archivo == "-":
@@ -221,12 +225,41 @@ def leer_directorio():
             cluster_ini = leer_numero(i + 20)
             creacion = leer_ascii8(i + 24, 14)
             modificacion = leer_ascii8(i + 38, 14)
-            archivo = info_archivo(nombre_archivo, tam_bytes, cluster_ini, creacion, modificacion)
+            archivo = info_archivo(nombre_archivo, tam_bytes, cluster_ini, creacion, modificacion, i)
             directorio.append(archivo)
+            for j in range(cluster_ini, cluster_ini + ((tam_bytes+tamano_cluster_bytes-1) // tamano_cluster_bytes)):
+                if j in cluster_set:
+                    cluster_set.remove(j)
     print_info_archivos()
 
-    
+def buscar_archivo(nombre_archivo):
+    global directorio
+    for archivo in directorio:
+        if archivo.nombre_archivo[0:len(nombre_archivo)] == nombre_archivo:
+            return archivo
+    return None
 
+def fiunamfs_to_local(nombre_archivo, ruta_local):
+    archivo = buscar_archivo(nombre_archivo)
+    if archivo is None:
+        print("Error: El archivo no existe.")
+        return False
+    cluster_actual = archivo.cluster_ini
+    tam_bytes = archivo.tam_bytes
+    archivo_local = os.path.join(directorio_fisico, ruta_local)
+    mutex_archivo.acquire()
+    try:
+        with open(ruta_FiUnamFS, "rb") as f:
+            f.seek(cluster_actual * tamano_cluster_bytes)
+            info = f.read(tam_bytes)
+        with open(archivo_local, "wb") as f:
+            f.write(info)
+        mutex_archivo.release()
+        return True
+    except PermissionError:
+        print("Error: No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
+        mutex_archivo.release()
+        return False
 
 # Función principal
 if __name__ == "__main__":
