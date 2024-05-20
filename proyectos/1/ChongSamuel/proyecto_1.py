@@ -1,3 +1,5 @@
+import threading 
+import queue 
 import struct
 import math
 import os
@@ -195,38 +197,53 @@ class File:
         self.date = date
         self.num_clusters = math.ceil(size / size_cluster)
 
-def desplegar_menu():
+
+def main():
     fs = FIUnamFS("fiunamfs.img")
-    print("Bienvenidx a FIUnamFS")
-    while True:
-        print("\n-------------------------Menú de opciones--------------------------------")
-        print("1. Listar los contenidos del directorio")
-        print("2. Copiar uno de los archivos de dentro del FiUnamFS hacia tu sistema")
-        print("3. Copiar un archivo de tu computadora hacia tu FiUnamFS")
-        print("4. Eliminar un archivo del FiUnamFS")
-        print("5. Salir")
-        
-        opcion = input("Seleccione una opción: ")
-        
-        if opcion == '1':
-            print("El contenido del directorio es \n")
-            fs._mostrar_directorio()
-        elif opcion == '2':
-                    copia_archivo = input("Ingrese el nombre del archivo a copiar en su equipo: ")
-                    ruta_archivo = input("Ingrese la ruta del directorio a donde se copiará el archivo: ") 
-                    fs._copiar_archivo(copia_archivo, ruta_archivo)
-        elif opcion == '3':
-            ruta_archivo = input("Ingrese la ruta del archivo a copiar: ").strip()
-            fs._copiar_archivo_a_sistema(ruta_archivo)
-        elif opcion == '4':
-                    print("4")
-                    archivo_a_eliminar = input("Ingrese el nombre a eliminar del sistema FIUnamFS: ").strip()
-                    _eliminar_archivo(archivo_a_eliminar)
-        elif opcion == '5':
-            print("Saliendo del programa...")
-            break
-        else:
-            print("Opción no válida. Por favor, intente nuevamente.")
-desplegar_menu()
+    evento = threading.Event()
+    cola = queue.Queue()
 
+    def monitor():
+        while not evento.is_set():
+            # Monitorear el estado del sistema de archivos cada 5 segundos
+            print("Monitorizando el sistema de archivos...")
+            cola.put(fs.storage_map.copy())
+            evento.wait(60)
 
+    def menu():
+        print("Bienvenidx a FIUnamFS")
+        while True:
+            print("\n-------------------------Menú de opciones--------------------------------")
+            print("1. Listar los contenidos del directorio")
+            print("2. Copiar uno de los archivos de dentro del FiUnamFS hacia tu sistema")
+            print("3. Copiar un archivo de tu computadora hacia tu FiUnamFS")
+            print("4. Eliminar un archivo del FiUnamFS")
+            print("5. Salir")
+            opcion = input("").strip()
+            if opcion == "1":
+                print("El contenido del directorio es \n")
+                fs._mostrar_directorio()
+            elif opcion == "2":
+                copia_archivo = input("Ingrese el nombre del archivo a copiar: ").strip()
+                ruta_archivo = input("Ingrese la ruta de destino: ").strip()
+                fs._copiar_archivo(copia_archivo, ruta_archivo)
+            elif opcion == "3":
+                ruta_archivo = input("Ingrese la ruta del archivo a copiar: ").strip()
+                fs._copiar_archivo_a_sistema(ruta_archivo)
+            elif opcion == "4":
+                nombre_archivo = input("Ingrese el nombre del archivo a eliminar: ").strip()
+                fs.borrar_archivo(nombre_archivo)
+            elif opcion == "5":
+                evento.set()  # Detiene el hilo monitor
+                break
+
+    t_monitor = threading.Thread(target=monitor)
+    t_menu = threading.Thread(target=menu)
+    t_monitor.start()
+    t_menu.start()
+
+    t_monitor.join()  # Espera a que el hilo monitor termine antes de salir
+    print("Saliendo del programa...")
+
+if __name__ == "__main__":
+    main()
