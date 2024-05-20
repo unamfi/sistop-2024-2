@@ -15,6 +15,7 @@ type FileSystem struct {
 	nombre, version, etiqueta            string
 	tamCluster, tamDirectorio, tamUnidad uint32
 	file                                 *os.File
+	archivos                             map[string]Archivo
 }
 
 type Archivo struct {
@@ -23,7 +24,6 @@ type Archivo struct {
 }
 
 var miFS FileSystem = FileSystem{}
-var archivos map[string]Archivo = make(map[string]Archivo)
 
 func main() {
 	exportCmd := flag.NewFlagSet("export", flag.ExitOnError)
@@ -34,6 +34,8 @@ func main() {
 	remove := flag.String("d", "", "Eliminar un archivo.")
 	path := flag.String("f", "", "Ruta del archivo de la imagen FiUnamFS.")
 	var input, output *string
+
+	miFS.archivos = make(map[string]Archivo)
 
 	usage()
 
@@ -60,7 +62,7 @@ func main() {
 	}
 
 	var err error
-	miFS.file, err = os.Open(*path)
+	miFS.file, err = os.OpenFile(*path, os.O_RDWR, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,8 +79,11 @@ func main() {
 		listarArchivos()
 	}
 
-	if *remove == "" {
-		os.Exit(0)
+	if *remove != "" {
+		err = miFS.borrarArchivo(*remove)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
@@ -93,9 +98,9 @@ func mostrarInfo() {
 
 func listarArchivos() {
 	fmt.Printf("Archivos:\nNombre \t\tTamaño\n")
-	for _, papu := range archivos {
-		fmt.Printf("├─ %s \t%7d bytes\n", papu.nombre, papu.tam)
-		err := copiarArchivo(papu, papu.nombre)
+	for _, archivo := range miFS.archivos {
+		fmt.Printf("├─ %s \t%7d bytes\n", archivo.nombre, archivo.tam)
+		err := archivo.copiarASistema(archivo.nombre)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -129,7 +134,7 @@ func leerDirectorio() {
 	_, err := miFS.file.Seek(int64(miFS.tamCluster), 0)
 	genErrCheck(err)
 
-	dirEntry := make([]byte, 64)
+	dirEntryBuff := make([]byte, 64)
 	for {
 		offset, err := miFS.file.Seek(0, io.SeekCurrent)
 		genErrCheck(err)
@@ -137,11 +142,11 @@ func leerDirectorio() {
 			break
 		}
 
-		_, err = miFS.file.Read(dirEntry)
+		_, err = miFS.file.Read(dirEntryBuff)
 		genErrCheck(err)
-		arch, err := leerEntradaDirectorio(dirEntry, uint32(offset))
+		arch, err := leerEntradaDirectorio(dirEntryBuff, uint32(offset))
 		if err == nil {
-			archivos[arch.nombre] = arch
+			miFS.archivos[arch.nombre] = arch
 		}
 	}
 }
@@ -163,8 +168,8 @@ func leerEntradaDirectorio(buf []byte, offset uint32) (Archivo, error) {
 	return arch, nil
 }
 
-func copiarArchivo(arch Archivo, nombre string) (err error) {
-	_, err = miFS.file.Seek(int64(miFS.tamCluster*arch.cluster), 0)
+func (a Archivo) copiarASistema(nombre string) (err error) {
+	_, err = miFS.file.Seek(int64(miFS.tamCluster*a.cluster), 0)
 	if err != nil {
 		return
 	}
@@ -178,7 +183,20 @@ func copiarArchivo(arch Archivo, nombre string) (err error) {
 		err = destino.Close()
 	}()
 
-	_, err = io.CopyN(destino, miFS.file, int64(arch.tam))
+	_, err = io.CopyN(destino, miFS.file, int64(a.tam))
+
+	return
+}
+
+func (fs FileSystem) borrarArchivo(nombre string) (err error) {
+	archivo := fs.archivos[nombre]
+	if archivo.nombre == "" {
+		return errors.New(fmt.Sprintf("Imposible borrar \"%s\": Archivo inexistente", nombre))
+	}
+
+	mybytes := []byte("/###############")
+	fmt.Println(mybytes)
+	_, err = fs.file.WriteAt(mybytes, int64(archivo.offset))
 
 	return
 }
