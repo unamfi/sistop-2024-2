@@ -2,12 +2,13 @@ from excepciones import EntradaNoValidaException
 
 
 class Entrada:
-    def __init__(self, tipo: str = '/', nombre: str = '', tamano_bytes: int = 0,
+    def __init__(self, byte_inicial: int, tipo: str = '/', nombre: str = '', tamano_bytes: int = 0,
                  cluster_inicial: int = 0, fecha_creacion: str = '', fecha_ultima_modificacion: str = '',
                  espacio_no_utilizado: int = 0):
         if tipo != '-':
             raise EntradaNoValidaException("Entrada vacia o no válida")
 
+        self.byte_inicial = byte_inicial
         self.tipo = tipo
         # quitar espacios a los lados para evitar errores al operar los archivos
         self.nombre = nombre.strip()
@@ -24,4 +25,4 @@ class Entrada:
                   f"{self.fecha_ultima_modificacion} {self.nombre}")
             return
 
-        print(self.nombre, end='')
+        print(self.nombre, end=' ')

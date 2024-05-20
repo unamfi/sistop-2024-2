@@ -56,6 +56,7 @@ class SistemaArchivos:
         # Se llegará hasta el tamaño en clusters del directorio.py por
         # 4 sectores por 512 bytes
         while i < self.directorio.byte_fin:
+            byte_inicial = i
             tipo_archivo = self.sistema[i:i + 1].decode('ascii')
 
             # En caso de tener una entrada vacia se omite
@@ -80,6 +81,7 @@ class SistemaArchivos:
             i += 12
 
             self.directorio.entradas_ocupadas.append(Entrada(
+                byte_inicial=byte_inicial,
                 tipo=tipo_archivo,
                 nombre=nombre_archivo,
                 tamano_bytes=tamano_bytes_archivo,
@@ -94,19 +96,22 @@ class SistemaArchivos:
         sistema de archivos
         """
         for entrada in self.directorio.entradas_ocupadas:
-            print(entrada.nombre)
             if entrada.nombre == nombre:
                 return True
 
         return False
 
-    def pull(self, nombre: str, destino: str):
+    def pull(self, nombre: str, destino: str = './'):
         """
         Encargado de llevar un archivo del sistema FiUnamFs a nuestro sistema
         como funciona en android-tools, por medio de adb pull | push
         """
         if not self.es_archivo_valido_interno(nombre):
             raise EntradaNoValidaException(f"{nombre} no existe en {constantes.NOMBRE_SISTEMA_ARCHIVOS}")
+
+        if Path(destino).is_dir() or destino == './':
+            destino = os.path.join(destino, nombre)
+
 
         # buscamos en las entradas ocupadas el cluster inicial y tamaño
         cluster_inicial = 0
@@ -160,13 +165,14 @@ class SistemaArchivos:
         # agregar entrada
         if archivo_creado:
             self.escribir_entrada(Entrada(
+                byte_inicial=entrada_vacia_byte,
                 tipo='-',
                 nombre=nombre,
                 tamano_bytes=tamano_bytes,
                 cluster_inicial=cluster_inicial,
                 fecha_creacion=fecha_creacion,
                 fecha_ultima_modificacion=fecha_creacion
-            ), entrada_vacia_byte)
+            ))
 
         self.recargar_sistema()
 
@@ -191,7 +197,23 @@ class SistemaArchivos:
         # se deben tener 14 caracteres fijos
         return string.ljust(15).encode('ascii')
 
-    def escribir_entrada(self, entrada: Entrada, entrada_vacia_byte: int):
+    def remover_entrada(self, byte_inicial):
+        tipo = '/'.encode('ascii')
+        nombre = self.formatear_string_a_ascii_7_bits('###############')
+        tamano_bytes_archivo = struct.pack('i', 0)
+        cluster_inicial_archivo = struct.pack('i', 0)
+        fecha_creacion_archivo = '00000000000000'.encode('ascii')
+        fecha_ultima_modificacion_archivo = '00000000000000'.encode('ascii')
+        espacio_no_utilizado = struct.pack('iii', 0, 0, 0)
+
+        contenido = tipo + nombre + tamano_bytes_archivo + cluster_inicial_archivo + fecha_creacion_archivo + fecha_ultima_modificacion_archivo + espacio_no_utilizado
+
+        with open(self.ruta_sistema, "r+b") as archivo:
+            archivo.seek(byte_inicial)
+            archivo.write(contenido)
+            return True
+
+    def escribir_entrada(self, entrada: Entrada):
 
         tipo = entrada.tipo.encode('ascii')
         nombre = self.formatear_string_a_ascii_7_bits(entrada.nombre)
@@ -204,6 +226,22 @@ class SistemaArchivos:
         contenido = tipo + nombre + tamano_bytes_archivo + cluster_inicial_archivo + fecha_creacion_archivo + fecha_ultima_modificacion_archivo + espacio_no_utilizado
 
         with open(self.ruta_sistema, "r+b") as archivo:
-            archivo.seek(entrada_vacia_byte)
+            archivo.seek(entrada.byte_inicial)
             archivo.write(contenido)
             return True
+
+    def remove(self, nombre: str):
+        if not self.es_archivo_valido_interno(nombre):
+            raise EntradaNoValidaException(f"{nombre} no existe en {constantes.NOMBRE_SISTEMA_ARCHIVOS}")
+
+        # buscar entrada
+        for entrada in self.directorio.entradas_ocupadas:
+            if entrada.nombre == nombre:
+                byte_inicial = entrada.byte_inicial
+                self.remover_entrada(byte_inicial)
+
+                self.recargar_sistema()
+                return
+
+
+        raise EntradaNoValidaException(f"Error al buscar entrada para {nombre}")

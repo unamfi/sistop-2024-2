@@ -23,6 +23,7 @@ class Directorio:
                 entrada.listar(detalles)
                 continue
             entrada.listar(detalles)
+        print()
 
     def set_entradas_ocupadas(self, entradas_ocupadas: list):
         self.entradas_ocupadas = entradas_ocupadas
