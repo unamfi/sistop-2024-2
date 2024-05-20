@@ -15,6 +15,7 @@ class FIUnamFS:
         self.storage_map: List[int] = [] # Mapa de almacenamiento
         self._inicializar_() 
         self._lista_archivos()
+        self.number_of_clusters = 720
 
     def _verificar_archivo(self, nombre_copia: str) -> Tuple[int, bool]:
         for index, archivo in enumerate(self.file_list):
@@ -103,34 +104,63 @@ class FIUnamFS:
         for f in self.file_list:
             print(f"{f.name}        {f.size} bytes")
 
-	# Este método elimina un archivo del sistema
+    def _encontrar_espacio(self, tamano_archivo: int) -> int:
+        clusters_ocupados = set()
+        for archivo in self.file_list:
+            clusters = [archivo.first_cluster + i for i in range((archivo.size + self.size_cluster - 1) // self.size_cluster)]
+            clusters_ocupados.update(clusters)
 
-    def _eliminar_archivo(self, nombre_archivo: str) -> None:
-        # Verificamos si el archivo que se quiere eliminar existe en el sistema
-        index_archivo, validacion = self.verificar_archivo(nombre_archivo)
-        if not validacion:
-            print("El archivo no existe")
+        for i in range(5, self.number_of_clusters):
+            if i not in clusters_ocupados:
+                if (i + (tamano_archivo + self.size_cluster - 1) // self.size_cluster) <= self.number_of_clusters:
+                    return i
+        return -1
+
+    def _agregar_al_directorio(self, archivo: 'File') -> None:
+        with open(self.file_path, "r+b") as sistema_archivos:
+            for i in range(len(self.file_list)):
+                start = 1024 + i * 64
+                sistema_archivos.seek(start)
+                if sistema_archivos.read(1) == b'\x00':
+                    sistema_archivos.seek(start)
+                    sistema_archivos.write(archivo.name.ljust(14).encode('ascii'))
+                    sistema_archivos.write(struct.pack('<i', archivo.size))
+                    sistema_archivos.write(struct.pack('<i', archivo.first_cluster))
+                    sistema_archivos.write(archivo.date.ljust(14).encode('ascii'))
+                    break
+
+    def _copiar_archivo_a_sistema(self, ruta_archivo: str) -> None:
+        if not os.path.exists(ruta_archivo):
+            print("El archivo no existe.")
             return
 
-    
-        archivo_borrar = self.file_list[index_archivo]
-
+        nombre_archivo = os.path.basename(ruta_archivo)
         
-        del self.file_list[index_archivo]
+        if self._verificar_archivo(nombre_archivo)[1]:
+            print("El archivo ya existe en el sistema de archivos.")
+            return
 
-        
-        with open(self.file_path, "r+b") as sistema_archivos:
-            sistema_archivos.seek(1024 + index_archivo * 64)
-            sistema_archivos.write(b'\x00' * 64)
+        tamano_archivo = os.path.getsize(ruta_archivo)
+        espacio_disponible = self._encontrar_espacio(tamano_archivo)
+        print(f"Espacio disponible: {espacio_disponible}")
 
-           
-            sistema_archivos.seek(archivo_borrar.first_cluster * self.size_cluster)
-            sistema_archivos.write(b'\x00' * archivo_borrar.size)
+        if espacio_disponible == -1:
+            print("No hay suficiente espacio en el sistema de archivos para copiar el archivo.")
+            return
 
-       
-        self._init_files()
+        with open(ruta_archivo, "rb") as archivo_computadora, open(self.file_path, "r+b") as sistema_archivos:
+            contenido = archivo_computadora.read()
+            inicio_escritura = espacio_disponible * self.size_cluster
+            print("Inicio escritura: ", inicio_escritura)
+            sistema_archivos.seek(inicio_escritura)
+            sistema_archivos.write(contenido)
 
-        print("Archivo eliminado con éxito")
+        nuevo_archivo = File(nombre_archivo, tamano_archivo, espacio_disponible, "", self.size_cluster)
+        print("Nombre del archivo: ", nuevo_archivo.name)
+        self.file_list.append(nuevo_archivo)
+        self._agregar_al_directorio(nuevo_archivo)
+        self._update_map()
+        print("Archivo copiado con éxito al sistema de archivos")
 
 class File:
     def __init__(self, name: str, size: int, first_cluster: int, date: str, size_cluster: int):
@@ -161,8 +191,8 @@ def desplegar_menu():
                     ruta_archivo = input("Ingrese la ruta del directorio a donde se copiará el archivo: ") 
                     fs._copiar_archivo(copia_archivo, ruta_archivo)
         elif opcion == '3':
-		    
-            print("3")
+            ruta_archivo = input("Ingrese la ruta del archivo a copiar: ").strip()
+            fs._copiar_archivo_a_sistema(ruta_archivo)
         elif opcion == '4':
                     print("4")
                     archivo_a_eliminar = input("Ingrese el nombre a eliminar del sistema FIUnamFS: ").strip()
