@@ -1,17 +1,18 @@
 import os
 import struct
 import threading
-import tkinter as tk #FAVOR DE QUE AL CORRER EL PROGRAMA, AMPLIAR LA INTERFAZ A PANTALLA COMPLETA PARA VISUALIZAR LAS OPCIONES
-from tkinter import filedialog, messagebox, simpledialog #INTERFAZ GRAFICA
+import tkinter as tk
+from tkinter import filedialog, messagebox, simpledialog
+import datetime
 
 TAMANO_CLUSTER = 1024
 TAMANO_ENTRADA = 64
-DIRECTORIO_INICIO = TAMANO_CLUSTER  # Cluster 1
-DIRECTORIO_TAMANO = 4 * TAMANO_CLUSTER  # 4 clusters para el directorio
-MAXIMO_CLUSTERS = 1440 // 4  # Asumiendo que el tamaño total es 1440KB
+DIRECTORIO_INICIO = TAMANO_CLUSTER
+DIRECTORIO_TAMANO = 4 * TAMANO_CLUSTER
+MAXIMO_CLUSTERS = 1440 // 4
 
 lock = threading.Lock()
-#PRIMER CPOMMIT
+
 def leer_superbloque(fiunamfs_img):
     resultado = ""
     with open(fiunamfs_img, 'rb') as f:
@@ -25,7 +26,7 @@ def leer_superbloque(fiunamfs_img):
         else:
             resultado += "Superbloque válido\n"
     return resultado
-#SEGUNDO COMMIT
+
 def listar_directorio(fiunamfs_img):
     resultado = ""
     with open(fiunamfs_img, 'rb') as f:
@@ -41,7 +42,7 @@ def listar_directorio(fiunamfs_img):
                 fecha_modificacion = entrada[38:52].decode('ascii')
                 resultado += f"Tipo: {tipo_archivo}, Nombre: {nombre}, Tamaño: {tam_archivo}, Cluster inicial: {cluster_ini}, Creación: {fecha_creacion}, Modificación: {fecha_modificacion}\n"
     return resultado
-#TERCER COMMIT
+
 def copiar_a_sistema(fiunamfs_img, nombre_archivo, destino):
     with lock:
         app.lock_label.config(text="Estado del Lock: Adquirido (Copiar a sistema)")
@@ -92,10 +93,14 @@ def copiar_a_fiunamfs(fiunamfs_img, archivo_origen, nombre_destino):
                 f.write(archivo_origen_f.read())
 
             f.seek(posicion_entrada_libre)
+            fecha_actual = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+
             f.write(b'-' + nombre_destino.ljust(15).encode('ascii'))
             f.write(struct.pack('<I', tam_origen))
             f.write(struct.pack('<I', cluster_libre))
-#CUARTO COMMIT
+            f.write(fecha_actual.encode('ascii'))
+            f.write(fecha_actual.encode('ascii'))
+
 def eliminar_archivo(fiunamfs_img, nombre_archivo):
     with lock:
         app.lock_label.config(text="Estado del Lock: Adquirido (Eliminar archivo)")
@@ -109,7 +114,7 @@ def eliminar_archivo(fiunamfs_img, nombre_archivo):
                 f.seek(posicion)
                 f.write(b'/' + b' ' * 15)
                 return
-#INTERFAZ GRAFICA, QUINTPO COMMIT
+
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
