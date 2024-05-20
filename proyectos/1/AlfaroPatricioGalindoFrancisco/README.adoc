@@ -22,12 +22,24 @@ Primero se hablará de los elementos dentro del código y después de como se ut
 
 Para este programa se hizo uso de dos estructuras, las cuales son:
 
-*FileSystem: cuenta con los campos de nombre, versión, equitqueta, tamaño de Cluster (tamCluster), tamaño de drectorio (tamDirectorio), tamaño de unidad (tamUnidad), file y archivos.
-*Archivo: cuenta con los campos de nombre, creado, modificado, tamaño (tam), cluster y offset.
+* FileSystem: cuenta con los campos de nombre, versión, equitqueta, tamaño de Cluster (tamCluster), tamaño de drectorio (tamDirectorio), tamaño de unidad (tamUnidad), file y archivos.
+* Archivo: cuenta con los campos de nombre, creado, modificado, tamaño (tam), cluster y offset.
 
 Dentro de la implementación de dichas estructuras para el manejo del sistema, se crearon funciones para poder distribuir de forma adecuada el código. las funciones con las que cuenta este programa son:
 
-*mostrarInfo: como su nombre indica, esta función se va a encargar de mostrar la información del micro sistema de archivos, haciendo uso de la estructura FileSystem para esto. la información que muestra es: Nombre, versión (la versión sirve para verificar que la versión usada sea la 24-2 para evitar corrupción de datos), Etiqueta, número de bytes con los que cuenta cada cluster, número de clusters en el directorio y número de clusters en la unidad.
+* mostrarInfo: como su nombre indica, esta función se va a encargar de mostrar la información del micro sistema de archivos, haciendo uso de la estructura FileSystem para esto. la información que muestra es: Nombre, versión (la versión sirve para verificar que la versión usada sea la 24-2 para evitar corrupción de datos), Etiqueta, número de bytes con los que cuenta cada cluster, número de clusters en el directorio y número de clusters en la unidad.
+
+* listarArchivos: esta función itera dentro del sistema para listar el nombre y tamaño de todos los archivos con los que cuenta el directorio.
+
+* leerSuprBloque: esta función se encarga de asignarle a las variables de la estructura miFS de tipo FileSystem su respectivo dato, haciendo uso del tamaño de bytes de la información proporcionada por el profesor para así generar una asignación adecuada de nombre, versión y etiqueta entre otros datos.
+
+* leerDirectorio: esta función lee el directorio del sistema de archivos FiUnamFS y genera una entrada de archivo para cada archivo que encuentre dentro del directorio.
+
+* leerEntradaDirectorio: esta función es la que se encarga de generar las estructuras tipo archivo ue contendrán los datos de los archivos que se van a encontrar dentro del directorio. Esta función es utilizada por leerDirectorio para poder generar las entradas de todos los archivos.
+
+* CopiarASistema: esta función copia un archivo de FiUnamFS que indique el usuario al dispositivo en el que se está ejecutando el programa.
+
+* borrarArchivo: Esta función elimina un archivo indicado por el usuario dentro de FiUnamFS. En caso de que el archivo indicado no exista se le indica al usuario que no existe dicho archivo.
 
 
 
@@ -35,6 +47,10 @@ Dentro de la implementación de dichas estructuras para el manejo del sistema, s
 === Concurrencia
 
 == Requisitos de compilación y ejecución
+
+Para poder compilar este programa es necesario cobtar con go. en caso de no tenerlo instalado, se puede obtener a través de la siguiente URL: https://go.dev/doc/install[Download and Install].
+Una vez se cuente con Go instalado, coloque la imagen de FiUnamFS en la misma carpeta donde se encuentre el programa. 
+Dirijase a la ruta donde se encuentra el programa dentro de la terminal y ejecute el siguiente comando: "Go run main.go".
 
 == Uso
 
