@@ -1,0 +1,121 @@
+Autores:
+
+Alfaro Domínguez Patricio
+
+Galindo Mena Francisco
+
+= FiUnamFSReader
+
+:toc:
+
+== Contexto
+
+En este proyecto se buscó generar un programa que permitiera visualizar, modificar y crear información de un micro-sistema de archivos de la Facultad de Ingeniería (FI). Para poder demostrar que dicho programa funcionara de forma correcta, el profesor no otorgó un micro-sistema de archivos llamado FiUnamFS para que pudieramos poner a prueba el programa generado para verificar que todo lo solicitado se pudiera realizar. Es de este modo que se generó e programa "FiUnamFSReader" con el cual, entre otras cosas puedes hacer:
+
+* Listar los contenidos de un directoio
+* Copiar archivos de dentro de FiUnamFS hacia tu sistema
+* Copiar un archivo de tu computadora hacia FiUnamFS
+* Eliminar un archivo de FiUnamFS
+
+
+
+
+== Detalles de implementación
+
+Para realizar este proyecto se utilizó el lenguaje de programación "Go" debido a la faciliad con la que se puede trabajar la concurrencia dentro de él.
+
+Primero se hablará de los elementos dentro del código y después de como se utilizaron para poder realizar los puntos solicitados.
+
+Para este programa se hizo uso de dos estructuras, las cuales son:
+
+* FileSystem: cuenta con los campos de nombre, versión, equitqueta, tamaño de Cluster (tamCluster), tamaño de drectorio (tamDirectorio), tamaño de unidad (tamUnidad), file y archivos.
+* Archivo: cuenta con los campos de nombre, creado, modificado, tamaño (tam), cluster y offset.
+
+Dentro de la implementación de dichas estructuras para el manejo del sistema, se crearon funciones para poder distribuir de forma adecuada el código. las funciones con las que cuenta este programa son:
+
+* mostrarInfo: como su nombre indica, esta función se va a encargar de mostrar la información del micro sistema de archivos, haciendo uso de la estructura FileSystem para esto. la información que muestra es: Nombre, versión (la versión sirve para verificar que la versión usada sea la 24-2 para evitar corrupción de datos), Etiqueta, número de bytes con los que cuenta cada cluster, número de clusters en el directorio y número de clusters en la unidad.
+
+* listarArchivos: esta función itera dentro del sistema para listar el nombre y tamaño de todos los archivos con los que cuenta el directorio.
+
+* leerSuprBloque: esta función se encarga de asignarle a las variables de la estructura miFS de tipo FileSystem su respectivo dato, haciendo uso del tamaño de bytes de la información proporcionada por el profesor para así generar una asignación adecuada de nombre, versión y etiqueta entre otros datos.
+
+* leerDirectorio: esta función lee el directorio del sistema de archivos FiUnamFS y genera una entrada de archivo para cada archivo que encuentre dentro del directorio.
+
+* leerEntradaDirectorio: esta función es la que se encarga de generar las estructuras tipo archivo ue contendrán los datos de los archivos que se van a encontrar dentro del directorio. Esta función es utilizada por leerDirectorio para poder generar las entradas de todos los archivos.
+
+* CopiarASistema: esta función copia un archivo de FiUnamFS que indique el usuario al dispositivo en el que se está ejecutando el programa.
+
+* borrarArchivo: Esta función elimina un archivo indicado por el usuario dentro de FiUnamFS. En caso de que el archivo indicado no exista se le indica al usuario que no existe dicho archivo.
+
+* copiarDesdeSistema: Esta función permite copiar un archivo desde tu dispositivo a FiUnamFS.
+
+* crearArchivo: Esta función permite que se cree un archivo dentro del directorio de FiUnamFS.
+
+* encontrarEntradaLibre: busca una entrada libre dentro de FiUnamFS.
+
+* encontrarLibre: Esta función se explica a detalle en la sección de "Concurrencia".
+
+* checarDisponibilidad: va pasando espacio por espacio dentro del directorio, revisando si dicho espacio está libre u ocpuado y retornando el valor del cluster si está libre o 0 si está ocupado.
+
+
+=== Concurrencia
+
+Dentro de la función encontrarLibre del tipo FileSystem se lanza una goroutine (checarDisponibilidad) para cada posible cluster en el sistema de archivos. Cada goroutine verifica si el cluster está disponible para ser utilizado o si está ocupado por algún otro archivo. Una vez que una goroutine encuentra un cluster disponible, envía ese valor al canal, indicando así que ha encontrado un espacio libre. Esto permite la búsqueda concurrente de espacio libre en el sistema de archivos.
+
+
+== Requisitos de compilación y ejecución
+
+Para poder compilar este programa es necesario cobtar con Go. en caso de no tenerlo instalado y de que el sistema operativo de su elección no tenga un paquete disponible, se puede obtener https://go.dev/doc/install[aquí] (el progrma se desarrolló con la versión 1.22).
+
+Con Go instalado, puede compilarse el programa con el comando `go build
+main.go`. Ejecutar el programa (`./main`) no debería mostrar ninguna salida.
+
+== Uso
+
+FiUnamFSReader es un programa de CLI, para conocer cómo interactuar con el programa, puede ejecutarse (`./main -h`) para mostrar un menú de ayuda.
+
+Las opciones aceptadas por el programa son:
+
+* `d`: Para eliminar el archivo con el nombre indicado.
+* `f`: Para indicar del archivo de la imagen FiUnamFS.
+* `i`: *Toggle* para mostrar información del sistema de archivos
+* `l`: *Toggle* para listar archivos en el sistema FiUnamFS.
+* Subcomandos
+** `import`        Importa un archivo desde FiUnamFS al sistema.
+*** `i`: Archivo de origen
+*** `o`: Archivo de destino
+** `export`        Exporta un archivo desde el sistema a FiUnamFS.
+*** 
+*** `i`: Archivo de origen
+*** `o`: Archivo de destino
+
+=== Ejemplos
+
+Ejecute
+
+----
+go run main.go -f fiunamfs.img -l
+----
+
+Para listar todos los archivos del sistema FIUNAMFS:
+
+----
+Archivos:
+Nombre          Tamaño                  Creado                          Modificado
+├─ que9.png        1393 bytes           2024-05-19 22:58:44             2024-05-19 22:58:44
+├─ README.org     31222 bytes           2024-05-08 13:17:56             2024-05-08 13:17:56
+├─ que.png         1393 bytes           2024-05-19 22:56:38             2024-05-19 22:56:38
+├─ logo.png      126423 bytes           2024-05-08 13:17:56             2024-05-08 13:17:56
+├─ que2.png        1393 bytes           2024-05-19 22:58:38             2024-05-19 22:58:38
+├─ que4.png        1393 bytes           2024-05-19 22:58:39             2024-05-19 22:58:39
+├─ mensaje.jpg   254484 bytes           2024-05-08 13:17:56             2024-05-08 13:17:56
+├─ que6.png        1393 bytes           2024-05-19 22:58:42             2024-05-19 22:58:42
+----
+
+También
+
+----
+go run main.go export -f fiunamfs.img -i que.png -o test.png
+----
+
+Para que el archivo `que.png` de la imagen sea guardado en el sistema bajo el nombre `test.png`.
