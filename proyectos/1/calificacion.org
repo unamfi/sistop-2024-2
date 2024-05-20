@@ -1,0 +1,764 @@
+** Erick Aguilar
+- Documentación :: [[./AguilarErick/README.md][README.md]], [[./AguilarErick/requirements.txt][requirements.txt]], [[./AguilarErick/todo.md][todo.md]]
+- Archivos :: [[./AguilarErick/Dockerfile.prod][Dockerfile.prod]], [[./AguilarErick/fiunamfs.img][fiunamfs.img]], [[./AguilarErick/start.sh][start.sh]], [[./AguilarErick/super_main.py][super_main.py]]
+- Uso de hilos :: 
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Patricio Alfaro, Francisco Galindo
+- Documentación :: [[./AlfaroPatricioGalindoFrancisco/README.adoc][README.adoc]]
+- Archivos :: [[./AlfaroPatricioGalindoFrancisco/main.go][main.go]]
+- Uso de hilos ::
+  - /Goroutines/ para varias de las funciones:
+    - Encontrar el espacio libre (=checarDisponibilidad()=)
+    - Copiar archivos al sistema externo (=miFS.archivos[].copiarASistema()=)
+- Comentarios ::
+  - El código es claro y fácil de leer. ¡Muy bien!
+    - Sin embargo... algunos comentarios respecto a cuestions
+      no-obvias habría sido muy bienvenido... además de estar
+      explícitamente requerido 😉
+  - La interfaz usuario... Es _muy_ poco amigable ☹
+    - Si me falta especificar un parámetro, se muere de una forma
+      no-descriptiva:
+      #+begin_src text
+	$ ./main   export -f fiunamfs.img mensaje.jpg -o mensaje.jpgmensaje.jpg [109 101 110 115 97 106 101 46 106 112 103]
+	README.org [82 69 65 68 77 69 46 111 114 103]
+	NOOO map[README.org:{README.org 20240508131756 20240508131756 31222 6 2048} mensaje.jpg:{mensaje.jpg 20240508131756 20240508131756 254484 84 2368}]
+      #+end_src
+    - Si olvido especificar un parámetro importante (como el nombre de
+      archivo destino al crear un archivo en el FiUnamFS), no se
+      queja... ¡Crea un archivo sin nombre!
+      #+begin_src text
+	$ ./main import -f fiunamfs.img -i main.go   # ← me faltó indicar '-o main.go'
+	$ ./main -f fiunamfs.img -l
+	Archivos:
+	Nombre 		Tamaño			Creado				Modificado
+	├─ README.org 	 31222 bytes		2024-05-08 13:17:56		2024-05-08 13:17:56
+	├─  	  9296 bytes		2024-05-20 10:37:05		2024-05-20 10:37:05
+	├─ logo.png 	126423 bytes		2024-05-08 13:17:56		2024-05-08 13:17:56
+	├─ mensaje.jpg 	254484 bytes		2024-05-08 13:17:56		2024-05-08 13:17:56
+      #+end_src
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     2.50 |
+| Cumplimiento           |        10 |        |     1.00 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |         5 |        |     0.50 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     2.00 |
+| Directorio de proyecto |        10 |        |     1.00 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |         0 |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     2.01 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     8.51 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Gerardo Arredondo
+- Documentación :: [[./ArredondoGerardo/Proyecto1_SO_ArredondoGranadosGerardo.pdf][Proyecto1_SO_ArredondoGranadosGerardo.pdf]]
+- Archivos :: [[./ArredondoGerardo/main.py][main.py]]
+- Uso de hilos ::
+  - Se lanzan hilos para algunas operaciones, como
+    =listar_archivos_thread()=, y el hilo central espera su
+    finalización llamando a =join()= sobre el objeto =Thread=
+  - Manejo de cola (=Queue=) para que los hilos comuniquen información
+    al hilo central (y éste pueda entregarla al usuario)
+- Comentarios ::
+  - No se implementó el copiado de archivos hacia FiUnamFS 🙁
+  - Tu función =listar_archivos()= muestra los archivos eliminados a
+    pesar de que la línea 55 busca ignorarlos con ~if nombre !=
+    "###############":~... ¡porque son quince =#=, y deberían ser 14!
+    😜
+  - ¡Sólo encontraron dos archivos, de los tres que hay! ¿Qué pasó con
+    mi querido =mensaje.jpg=? culpa de la línea 50: El directorio mide
+    =superblock["tamaño_cluster"]= /clusters/, no entradas 😦
+    - Si cada cluster mide 2048 bytes, el directorio mide 4 clusters,
+      y cada entrada de directorio son 64 bytes, puede haber hasta 128
+      archivos.
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     2.50 |
+| Cumplimiento           |       7.5 |        |     0.75 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     3.00 |
+| Directorio de proyecto |        10 |        |     1.00 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     1.50 |
+| Estructura             |       7.5 |        |     0.75 |
+| Nomenclatura           |       7.5 |        |     0.75 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     2.01 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     9.01 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Michelle Barrios, Andrea Zenón
+- Documentación :: [[./BarriosMichelle-ZenónAndrea/BarriosMichelle_ZenónAndrea_Proyecto.pdf][BarriosMichelle_ZenónAndrea_Proyecto.pdf]]
+- Archivos :: [[./BarriosMichelle-ZenónAndrea/proyecto.c][proyecto.c]]
+- Uso de hilos :: No usa hilos ☹
+- Comentarios ::
+  - ¡Hace falta ser valiente para desarrollar un programa como este en
+    C!
+    - Y... ¡tiene todo el sentido que lo intenten, por ser software de
+      sistema. Sin embargo, hay mucho manejo de cadenas, que es uno de
+      los puntos más débiles del lenguaje...
+  - Veo que usan cadenas ANSI para enfatizar elementos del texto. Pero
+    al mismo tiempo, veo que usan una /fea/ función
+    =limpiarPantallaE()=. ¡Es una terrible práctica llamar a un
+    comando externo (=cls= o =clear=) sólo para limpiar la pantalla!
+    Bastaría con imprimir los comandos ANSI para limpiar la pantalla y
+    volver al origen: =printf("\033[2J\033[H");=
+  - La función =listar_nombres_archivos()= está /casi/ correctamente
+    implementada, pero hay un problema: cuando piden al usuario un
+    nombre de archivo, tienen que considerar que deben completar el
+    nombre con espacios hasta llegar a los 14 caracteres: No se llama
+    "~README.org~", sino que ~"README.org____"~ (con " " en vez de
+    "_").
+  - Entiendo que les haya faltado tiempo para terminar el proyecto 🙁
+    pero les recomiendo adoptar la costumbre de comentar el código
+    /conforme lo escriben/, no como una tarea posterior.
+    - No sólo porque significa /puntitos/ en la evaluación, sino
+      porque únicamente cuando escribimos estamos conscientes de lo
+      que realmente es necesario comentar.
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     2.25 |
+| Cumplimiento           |         5 |        |     0.50 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     1.75 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |         0 |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     1.75 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |       7.5 |        |     0.75 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     2.01 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     7.76 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Julian Bolaños, Juan Pablo Zurita
+- Documentación :: [[./BolañosJulian-ZuritaJuanPablo/proyecto_sistop_doc.pdf][proyecto_sistop_doc.pdf]],  [[./BolañosJulian-ZuritaJuanPablo/src/README.org][README.org]]
+- Archivos :: [[./BolañosJulian-ZuritaJuanPablo/src/main.py][main.py]], [[./BolañosJulian-ZuritaJuanPablo/src/models.py][models.py]]
+- Uso de hilos ::
+  - Para leer la lista de archivos (128 archivos en la versión actual)
+    que hay en el directorio, =getFiles()= lanza 8 hilos que van
+    llenando los datos en una lista compartida. Los hilos se van
+    ejecutando controlados por una barrera. Manejan, además, un mutex
+    para la modificación de la estructura común, =data_storage=.
+- Comentarios ::
+  - Si esperan que el usuario pueda modificar el directorio en el cual
+    puede encontrar a =fiunamfs.img=, ¿por qué no hacerlo un parámetro
+    de línea de comando o en tiempo de ejecución? ¿Cuántos programas
+    han visto donde el usuario final tenga que modificar el código
+    fuente para poder ejecutarlos?
+  - ¡Muy buena y completa documentación! ¡Felicidades!
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     3.00 |
+| Cumplimiento           |        10 |        |     1.00 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |        10 |        |     1.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     3.00 |
+| Directorio de proyecto |        10 |        |     1.00 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     2.01 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |    10.01 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Samuel Chong
+- Documentación :: [[./ChongSamuel/README.md][README.md]], [[./ChongSamuel/README.org][README.org]],
+- Archivos :: [[./ChongSamuel/fiunamfs.img][fiunamfs.img]], [[./ChongSamuel/logo.png][logo.png]], [[./ChongSamuel/mensaje.jpg][mensaje.jpg]], [[./ChongSamuel/proyecto_1.py][proyecto_1.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |       7.5 |        |     0.00 |
+| Entorno y dependencias |        10 |        |     0.00 |
+| Historia en Git        |        10 |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Armando Cruz, Ángel Diaz Gonzalez
+- Documentación :: [[./CruzArmando-DiazGonzalezÁngel/documentacion.pdf][documentacion.pdf]]
+- Archivos :: [[./CruzArmando-DiazGonzalezÁngel/Archivos.py][Archivos.py]], [[./CruzArmando-DiazGonzalezÁngel/fiunamfs.img][fiunamfs.img]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Uriel De La Merced, Carlos Hernandez
+- Documentación :: [[./DeLaMercedUriel-HernandezCarlos/DocumentacionProyectolSistop_DeLaMercedUriel_HernandezCarlos.pdf][DocumentacionProyectolSistop_DeLaMercedUriel_HernandezCarlos.pdf]]
+- Archivos :: [[./DeLaMercedUriel-HernandezCarlos/Adelanto1Sistop_DeLaMerced_Hernandez.ipynb][Adelanto1Sistop_DeLaMerced_Hernandez.ipynb]], [[./DeLaMercedUriel-HernandezCarlos/Adelanto2Sistop_DeLaMercedUriel_HernandezMario.ipynb][Adelanto2Sistop_DeLaMercedUriel_HernandezMario.ipynb]], [[./DeLaMercedUriel-HernandezCarlos/Entregable3_Sistop_DeLaMerced_Hernández.ipynb][Entregable3_Sistop_DeLaMerced_Hernández.ipynb]], [[./DeLaMercedUriel-HernandezCarlos/ProyectoFinalSistop_DeLaMered_Hernandez.py][ProyectoFinalSistop_DeLaMered_Hernandez.py]], [[./DeLaMercedUriel-HernandezCarlos/imgReferencia1.jpeg][imgReferencia1.jpeg]], [[./DeLaMercedUriel-HernandezCarlos/imgReferencia2.jpeg][imgReferencia2.jpeg]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Jesus Dominguez, Saida Sanchez
+- Documentación :: [[./DominguezJesus-SanchezSaida/Documentacion.pdf][Documentacion.pdf]]
+- Archivos :: [[./DominguezJesus-SanchezSaida/proyecto.py][proyecto.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Carlos Figueroa, Ernesto Quintana
+- Documentación :: [[./FigueroaCarlos-QuintanaErnesto/Documentacion.pdf][Documentacion.pdf]]
+- Archivos :: [[./FigueroaCarlos-QuintanaErnesto/ProyectoV1.py][ProyectoV1.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** David González, Luis Reyes
+- Documentación :: [[./GonzálezDavid-ReyesLuis/GonzálezDavid-ReyesLuis_Proyecto01_SO.pdf][GonzálezDavid-ReyesLuis_Proyecto01_SO.pdf]]
+- Archivos :: [[./GonzálezDavid-ReyesLuis/González_Reyes_Proyecto01.py][González_Reyes_Proyecto01.py]], [[./GonzálezDavid-ReyesLuis/fiunamfs.img][fiunamfs.img]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Miguel Hernandez, Alexa Lopez
+- Documentación :: [[./HernandezMiguel-LopezAlexa/HernándezRamírez_LópezTavera_Documentación_ProyectoSO.pdf][HernándezRamírez_LópezTavera_Documentación_ProyectoSO.pdf]]
+- Archivos :: [[./HernandezMiguel-LopezAlexa/PROYECTO SO.py][PROYECTO SO.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Axel Jimenez, Alam Lopez
+- Documentación :: [[./JimenezAxel-LopezAlam/Proyecto01_Documentacion_JimenezAxel-LopezAlam.pdf][Proyecto01_Documentacion_JimenezAxel-LopezAlam.pdf]]
+- Archivos :: [[./JimenezAxel-LopezAlam/proyectoSO_Axel_Alam.py][proyectoSO_Axel_Alam.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Erick Leon
+- Documentación :: [[./LeonErick/README.md][README.md]]
+- Archivos :: [[./LeonErick/main.py][main.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Francisco Lopez, Alejandro Vigi
+- Documentación :: [[./LopezFrancisco-VigiAlejandro/Doc-ProyectoSO.pdf][Doc-ProyectoSO.pdf]]
+- Archivos :: [[./LopezFrancisco-VigiAlejandro/proyecto_sistop.py][proyecto_sistop.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Adrian Pacheco Pacheco
+- Documentación :: [[./PachecoPachecoAdrian/P1_PachecoAdrian_Grupo06.pdf][P1_PachecoAdrian_Grupo06.pdf]]
+- Archivos :: [[./PachecoPachecoAdrian/Proyecto1VersionFinal.py][Proyecto1VersionFinal.py]], [[./PachecoPachecoAdrian/primer_avance.py][primer_avance.py]], [[./PachecoPachecoAdrian/prueba.py][prueba.py]], [[./PachecoPachecoAdrian/pruebaconinterfaz1.py][pruebaconinterfaz1.py]], [[./PachecoPachecoAdrian/pruebahilos.py][pruebahilos.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Ricardo Pineda
+- Documentación :: [[./PinedaRicardo/Documentación_proyecto.pdf][Documentación_proyecto.pdf]]
+- Archivos :: [[./PinedaRicardo/PinedaGalindoRicardo_proyecto1.py][PinedaGalindoRicardo_proyecto1.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Luis Quintana
+- Documentación :: [[./QuintanaLuis/README.md][README.md]], [[./QuintanaLuis/docs/cli.md][cli.md]], [[./QuintanaLuis/docs/demo_cli.gif][demo_cli.gif]], [[./QuintanaLuis/docs/demo_shell.gif][demo_shell.gif]], [[./QuintanaLuis/docs/estrategia.md][estrategia.md]], [[./QuintanaLuis/docs/estructura.md][estructura.md]], [[./QuintanaLuis/docs/manual.txt][manual.txt]], [[./QuintanaLuis/docs/shell.md][shell.md]]
+- Archivos :: [[./QuintanaLuis/fiunamfs.img][fiunamfs.img]], [[./QuintanaLuis/resources/imagen.jpeg][imagen.jpeg]], [[./QuintanaLuis/src/__init__.py][__init__.py]], [[./QuintanaLuis/src/constantes.py][constantes.py]], [[./QuintanaLuis/src/directorio.py][directorio.py]], [[./QuintanaLuis/src/entrada.py][entrada.py]], [[./QuintanaLuis/src/excepciones.py][excepciones.py]], [[./QuintanaLuis/src/fifs.py][fifs.py]], [[./QuintanaLuis/src/helper.py][helper.py]], [[./QuintanaLuis/src/sistema_archivos.py][sistema_archivos.py]], [[./QuintanaLuis/src/super_bloque.py][super_bloque.py]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Franciso Reynoso, Angel Pozos
+- Documentación :: [[./ReynosoFranciso-PozosAngel/DocumentaciónProyecto1SO.pdf][DocumentaciónProyecto1SO.pdf]]
+- Archivos :: [[./ReynosoFranciso-PozosAngel/proyecto1.py][proyecto1.py]]
+- Uso de hilos ::
+- Comentarios ::
+  - Su entrega in
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+cluyó también el archivo [[./PozosAngel/proyecto1.py][proyecto1.py]], en otro
+    directorio. Ignoro este archivo, dado que el que aparece en el
+    directorio /correcto/ muestra haber avanzado más allá de
+    este. Recuerden que un archivo se puede mover a otro directorio
+    con =git mv=, o eliminar con =git rm=.
+
+** Isaias Rosas
+- Documentación :: [[./RosasIsaias/-logo.png][-logo.png]], [[./RosasIsaias/-mensaje.jpg][-mensaje.jpg]], [[./RosasIsaias/README.md][README.md]]
+- Archivos :: [[./RosasIsaias/SistemaDeArchivosMultihilos.py][SistemaDeArchivosMultihilos.py]], [[./RosasIsaias/fiunamfs.img][fiunamfs.img]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Gerardo Torres
+- Documentación :: [[./TorresGerardo/LEEME_GTM.org][LEEME_GTM.org]]
+- Archivos :: [[./TorresGerardo/fiunamfs.img][fiunamfs.img]], [[./TorresGerardo/funciones.c][funciones.c]], [[./TorresGerardo/main.c][main.c]], [[./TorresGerardo/prueba.c][prueba.c]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
+** Atzin Ugalde Santos
+- Documentación :: [[./Ugalde_Santos_Atzin/proyecto.txt][proyecto.txt]]
+- Uso de hilos ::
+- Comentarios ::
+
+| *Rubro*                | *Parcial* | *Peso* | *Puntos* |
+|------------------------+-----------+--------+----------|
+| *Proyecto*             |           |    0.3 |     0.00 |
+| Cumplimiento           |           |        |     0.00 |
+| Claridad de desarrollo |           |        |     0.00 |
+| Interfaz usuario       |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Desarrollo*           |           |    0.3 |     0.00 |
+| Directorio de proyecto |           |        |     0.00 |
+| Código válido          |           |        |     0.00 |
+| Comentarios            |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Legibilidad*          |           |    0.2 |     0.00 |
+| Estructura             |           |        |     0.00 |
+| Nomenclatura           |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *Entrega*              |           |    0.2 |     0.00 |
+| Documentación externa  |           |        |     0.00 |
+| Entorno y dependencias |           |        |     0.00 |
+| Historia en Git        |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+| *TOTAL*                |           |        |     0.00 |
+|------------------------+-----------+--------+----------|
+#+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
+
