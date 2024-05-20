@@ -1,0 +1,14 @@
+= FiUnamFSReader
+
+:toc:
+
+== Contexto
+
+== Detalles de implementación
+
+=== Concurrencia
+
+== Requisitos de compilación y ejecución
+
+== Uso
+
