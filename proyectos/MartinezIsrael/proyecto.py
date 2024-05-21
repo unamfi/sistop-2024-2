@@ -54,15 +54,15 @@ def escribir_numero(file, posicion, numero):
     file.write(struct.pack('<I', numero))
 #Lee una cadena ASCII desde una posición específica en el #archivo.
 
-#Escribe una cadena ASCII en una posición específica en el #archivo.
+
 def leer_ascii(file, posicion, longitud, encoding='latin-1'):
     file.seek(posicion)
     return file.read(longitud).decode(encoding)
-
+#Escribe una cadena ASCII en una posición específica en el #archivo.
 def escribir_ascii(file, posicion, cadena, encoding='latin-1'):
     file.seek(posicion)
     file.write(bytearray(cadena, encoding))
-
+#Valida el archivo FiUnamFS asegurándose de que tiene el tamaño #correcto y la estructura adecuada.
 def validar_FiUnamFS():
     global etiqueta_volumen, tamano_cluster_bytes, num_clusters_dir, num_clusters_total
     if os.path.getsize(ruta_FiUnamFS) != 1440*1024:
@@ -83,13 +83,13 @@ def validar_FiUnamFS():
         num_clusters_total = leer_numero(f, 50)
     messagebox.showinfo("Ã‰xito", "Sistema de archivos FiUnamFS cargado exitosamente.")
     return True
-
+#Formatea una fecha en el formato YYYYMMDDHHMMSS.
 def formato_fecha(fecha):
     return fecha.strftime("%Y%m%d%H%M%S")
-
+#Imprime una fecha en el formato YYYY-MM-DD HH:MM:SS.
 def imprimir_fecha(fecha):
     return f"{fecha[:4]}-{fecha[4:6]}-{fecha[6:8]} {fecha[8:10]}:{fecha[10:12]}:{fecha[12:14]}"
-
+#Imprime la información de los archivos en una tabla.
 def print_info_archivos():
     global directorio
     table = PrettyTable()
@@ -97,7 +97,7 @@ def print_info_archivos():
     for archivo in directorio:
         table.add_row([archivo.nombre_archivo, archivo.tam_bytes, archivo.cluster_ini, imprimir_fecha(archivo.creacion), imprimir_fecha(archivo.modificacion)])
     return table
-
+#Lee el directorio del sistema de archivos FiUnamFS.
 def leer_directorio(show=True):
     global directorio, cluster_set
     cluster_set = set(range(num_clusters_dir + 1, num_clusters_total))
