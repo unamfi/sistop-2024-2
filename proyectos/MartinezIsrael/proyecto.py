@@ -6,23 +6,24 @@ from tkinter import Tk, Label, Button, Entry, Text, messagebox, filedialog, END
 from prettytable import PrettyTable
 
 # Variables globales
-directorio_fisico = ""
-ruta_FiUnamFS = ""
-etiqueta_volumen = ""
-tamano_cluster_bytes = 0
-num_clusters_dir = 0
-num_clusters_total = 0
-directorio = []
-cluster_set = set()
-menu = 0
+directorio_fisico = "" # Directorio físico actual
+ruta_FiUnamFS = "" # Ruta del archivo FiUnamFS
+etiqueta_volumen = "" # Etiqueta del volumen 
+tamano_cluster_bytes = 0 # Tamaño del clúster en bytes
+num_clusters_dir = 0 # Número de clústeres del directorio
+num_clusters_total = 0 # Número total de clústeres
+directorio = [] # Lista para almacenar información del directorio
+cluster_set = set() # Conjunto de clústeres disponibles
+menu = 0 # Variable de menú (sin uso en el código)
 # Barrera para sincronizar hilos 
 barrier = Barrier(3)
-cluster_ini = -1
-tam_bytes = 0
-rvtb = False
-rbat = False
+cluster_ini = -1  # Clúster inicial 
+tam_bytes = 0 # Tamaño en bytes del archivo
+rvtb = False  # Resultado de verificación de tamaño
+rbat = False # Resultado de verificación de archivo
 
-
+#Clase para almacenar la información de un archivo en FiUnamFS.
+    
 class InfoArchivo: 
     def __init__(self, nombre_archivo, tam_bytes, cluster_ini, creacion, modificacion, pos):
         self.nombre_archivo = nombre_archivo
@@ -32,6 +33,7 @@ class InfoArchivo:
         self.modificacion = modificacion
         self.pos = pos
 
+#Obtiene la ruta del archivo FiUnamFS.
 def obtener_FiUnamFS():
     global directorio_fisico, ruta_FiUnamFS
     directorio_fisico = os.path.dirname(os.path.abspath(__file__))
@@ -42,14 +44,17 @@ def obtener_FiUnamFS():
             return False
     return True
 
+#Lee un número entero de 4 bytes desde una posición específica en #el archivo.
 def leer_numero(file, posicion):
     file.seek(posicion)
     return struct.unpack('<I', file.read(4))[0]
-
+#Escribe un número entero de 4 bytes en una posición específica #en el archivo.
 def escribir_numero(file, posicion, numero):
     file.seek(posicion)
     file.write(struct.pack('<I', numero))
+#Lee una cadena ASCII desde una posición específica en el #archivo.
 
+#Escribe una cadena ASCII en una posición específica en el #archivo.
 def leer_ascii(file, posicion, longitud, encoding='latin-1'):
     file.seek(posicion)
     return file.read(longitud).decode(encoding)
