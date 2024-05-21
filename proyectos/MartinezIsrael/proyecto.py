@@ -121,11 +121,11 @@ def leer_directorio(show=True):
         info_table = print_info_archivos()
         text_info.delete(1.0, END)
         text_info.insert(END, info_table)
-
+#Busca un archivo por su nombre en el directorio.
 def buscar_archivo(nombre_archivo):
     global directorio
     return next((archivo for archivo in directorio if archivo.nombre_archivo == nombre_archivo), None)
-
+#Copia un archivo desde el sistema de archivos FiUnamFS al #sistema de archivos local.
 def fiunamfs_to_local():
     nombre_archivo = entry_nombre_archivo.get()
     archivo = buscar_archivo(nombre_archivo)
@@ -144,7 +144,7 @@ def fiunamfs_to_local():
         messagebox.showinfo("Ã‰xito", "Archivo copiado exitosamente.")
     except PermissionError:
         messagebox.showerror("Error", "No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-
+#Encuentra un espacio contiguo en el sistema de archivos para #almacenar un archivo.
 def encontrar_contiguo(tam_bytes):
     global cluster_set
     contiguo = -1
@@ -156,7 +156,7 @@ def encontrar_contiguo(tam_bytes):
             contiguo = cluster - contiguo_actual + 1
             break
     return contiguo
-
+#Verifica si el tamaño del archivo es adecuado para ser #almacenado en el sistema de archivos FiUnamFS.
 def verify_tam_bytes(ruta_local):
     global cluster_ini, tam_bytes, rvtb
     tam_bytes = os.path.getsize(ruta_local)
@@ -171,7 +171,7 @@ def verify_tam_bytes(ruta_local):
         else:
             rvtb = True
     barrier.wait()
-
+#Hilo para buscar un archivo en el directorio.
 def buscar_archivo_thread(nombre_archivo):
     global rbat
     archivo = buscar_archivo(nombre_archivo)
@@ -181,7 +181,7 @@ def buscar_archivo_thread(nombre_archivo):
     else:
         rbat = True
     barrier.wait()
-
+#Copia un archivo desde el sistema de archivos local al sistema #de archivos FiUnamFS.
 def local_to_fiunamfs():
     ruta_local = filedialog.askopenfilename(title="Seleccione el archivo a copiar")
     if not ruta_local:
@@ -221,7 +221,7 @@ def local_to_fiunamfs():
         messagebox.showinfo("Ã‰xito", "Archivo copiado exitosamente.")
     except PermissionError:
         messagebox.showerror("Error", "No se tienen los permisos necesarios para acceder al archivo o directorio especificado.")
-
+#Elimina un archivo del sistema de archivos FiUnamFS.
 def eliminar_archivo():
     nombre_archivo = entry_nombre_archivo.get()
     archivo = buscar_archivo(nombre_archivo)
@@ -233,7 +233,7 @@ def eliminar_archivo():
         escribir_ascii(f, archivo.pos + 1, "###############", encoding='ascii')
     leer_directorio(False)
     messagebox.showinfo("Ã‰xito", "Archivo eliminado exitosamente.")
-
+# Función principal que inicializa la interfaz gráfica y carga el #sistema de archivos FiUnamFS.
 def main():
     global text_info, entry_nombre_archivo, root
     if not obtener_FiUnamFS():
