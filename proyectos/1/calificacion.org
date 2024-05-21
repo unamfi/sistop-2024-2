@@ -208,10 +208,10 @@
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     3.00 |
+| *Proyecto*             |           |    0.3 |     2.75 |
 | Cumplimiento           |        10 |        |     1.00 |
 | Claridad de desarrollo |        10 |        |     1.00 |
-| Interfaz usuario       |        10 |        |     1.00 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
 | *Desarrollo*           |           |    0.3 |     3.00 |
 | Directorio de proyecto |        10 |        |     1.00 |
@@ -227,7 +227,7 @@
 | Entorno y dependencias |        10 |        |     0.67 |
 | Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |    10.01 |
+| *TOTAL*                |           |        |     9.76 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -235,30 +235,136 @@
 - Documentación :: [[./ChongSamuel/README.md][README.md]], [[./ChongSamuel/README.org][README.org]],
 - Archivos :: [[./ChongSamuel/fiunamfs.img][fiunamfs.img]], [[./ChongSamuel/logo.png][logo.png]], [[./ChongSamuel/mensaje.jpg][mensaje.jpg]], [[./ChongSamuel/proyecto_1.py][proyecto_1.py]]
 - Uso de hilos ::
+  - Un hilo para un monitor que se ejecuta en el fondo, otro hilo para
+    presentar el menú principal.
+  - Una cola sincronizada (=Queue=) para comunicar el estado del mapa
+    del almacenamiento al monitor
+  - Sincronización: un evento indica al hilo de monitoreo que el
+    usuario pidió finalizar la ejecución.
 - Comentarios ::
+  - El programa me genera varios errores al intentar usarlo. La
+    primera vez que lo ejecuté:
+      #+begin_src text
+	$ python3 proyecto_1.py 
+	Traceback (most recent call last):
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 290, in <module>
+	    main()
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 243, in main
+	    fs = FIUnamFS("fiunamfs.img")
+		 ^^^^^^^^^^^^^^^^^^^^^^^^
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 60, in __init__
+	    self._lista_archivos()
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 140, in _lista_archivos
+	    file_data = self._get_data(x)
+			^^^^^^^^^^^^^^^^^
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 127, in _get_data
+	    if self._unpack_datos_ascii(start + 1, 14) != "--------------":
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 111, in _unpack_datos_ascii
+	    return data.decode("ascii")
+		   ^^^^^^^^^^^^^^^^^^^^
+	UnicodeDecodeError: 'ascii' codec can't decode byte 0xd0 in position 13: ordinal not in range(128)
+      #+end_src
+      Claro, porque no estamos tratando con datos representables en el
+      conjunto ASCII formal de 7 bits (128 caracteres). Pero comprendo
+      que tú no lo sepas (no entramos en esos detalles en el
+      curso).
+    - Lo corregí por un ASCII ampliado a 8 bits, modificando tu línea
+      111 de ~return data.decode("ascii")~ por  ~return
+      data.decode("iso-8859-1")~, y:
+      #+begin_src text
+	$ python3 proyecto_1.py 
+	Traceback (most recent call last):
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 290, in <module>
+	    main()
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 243, in main
+	    fs = FIUnamFS("fiunamfs.img")
+		 ^^^^^^^^^^^^^^^^^^^^^^^^
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 60, in __init__
+	    self._lista_archivos()
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 143, in _lista_archivos
+	    self._actualizar_()
+	  File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 122, in _actualizar_
+	    self.storage_map[archivo.first_cluster + j] = 1
+	    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	IndexError: list assignment index out of range
+      #+end_src
+      Pero no quería ponerme a entender por qué te "caíste" por el
+      final del arreglo... Así que decidí simplemente ignorarlo,
+      cambiando tu línea 122 por:
+      #+begin_src python
+	try:
+	    self.storage_map[archivo.first_cluster + j] = 1
+	except:
+	    pass
+      #+end_src
+      ... No es bonito, y no lo pondría jamás en código real, pero me
+      permite por lo menos ver la ejecución de tu programa 😉
+  - Al intentar copiar archivos hacia adentro de tu sistema, me
+    encontré con un error:
+    #+begin_src text
+      -------------------------Menú de opciones--------------------------------
+      1. Listar los contenidos del directorio
+      2. Copiar uno de los archivos de dentro del FiUnamFS hacia tu sistema
+      3. Copiar un archivo de tu computadora hacia tu FiUnamFS
+      4. Eliminar un archivo del FiUnamFS
+      5. Salir
+      3
+      Ingrese la ruta del archivo a copiar: README.md
+      Espacio disponible: 5
+      Inicio escritura:  10240
+      Nombre del archivo:  README.md
+      Exception in thread Thread-2 (menu):
+      Traceback (most recent call last):
+	File "/usr/lib/python3.11/threading.py", line 1045, in _bootstrap_inner
+	  self.run()
+	File "/usr/lib/python3.11/threading.py", line 982, in run
+	  self._target(*self._args, **self._kwargs)
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 276, in menu
+	  fs._copiar_archivo_a_sistema(ruta_archivo)
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/ChongSamuel/proyecto_1.py", line 208, in _copiar_archivo_a_sistema
+	  self._update_map()
+	  ^^^^^^^^^^^^^^^^
+      AttributeError: 'FIUnamFS' object has no attribute '_update_map'
+    #+end_src
+    No encontré ninguna referencia a una función =_update_map()= en
+    ningún lugar de tu archivo ☹
+
+    El archivo se crea en el sistema de archivos, aunque con el nombre
+    corrompido (=EADME.mdÐ=): no respetaste al primer caracter del
+    nombre de archivo, que indica el /tipo/ de archivo. Los datos del
+    archivo copiado, además, sobreescriben a los archivos
+    preexistentes.
+  - Incluyes una copia del sistema de archivos (y de los archivos que
+    éste incluye) en tu proyecto. Si ejecuto tu programa,
+    necesariamente los modifico...
+    - → Tendrías que haberlos listado en un =.gitignore=
+  - Veo que estructuraste tu implementación con clases, seguiste las
+    convenciones de Python respecto a los nombres, y demás. ¡Muy bien!
+    😃
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.50 |
+| Cumplimiento           |       7.5 |        |     0.75 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.50 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |       7.5 |        |     0.75 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |       7.5 |        |     0.00 |
-| Entorno y dependencias |        10 |        |     0.00 |
-| Historia en Git        |        10 |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.84 |
+| Documentación externa  |       7.5 |        |     0.50 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     8.84 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -266,30 +372,42 @@
 - Documentación :: [[./CruzArmando-DiazGonzalezÁngel/documentacion.pdf][documentacion.pdf]]
 - Archivos :: [[./CruzArmando-DiazGonzalezÁngel/Archivos.py][Archivos.py]], [[./CruzArmando-DiazGonzalezÁngel/fiunamfs.img][fiunamfs.img]]
 - Uso de hilos ::
+  - Uso de cola (=Queue=) para sincronizar el acceso a una estructura
+    de datos compartida
+    - Comandos enviados del hilo que interactúa con el usuario al que
+      realiza el trabajo mediante mensajes en la cola
+    - Mutex para asegurar que no se procese más de un comando a la vez
 - Comentarios ::
+  - Incluyen una copia de mi =fiunamfs.img= dentro de la entrega, pero
+    al ejecutar el programa, si realizo cualquier modificación, el
+    árbol Git queda /sucio/. ¡Deberían haber utilizado =.gitignore=!
+  - Si bien los requisitos del programa son ligeros (la versión 3 de
+    Python con su biblioteca estándar), no indica detalles de versión
+    como fue solicitado. Esto puede ser muy importante para depurar
+    cualquier problema.
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.75 |
+| Cumplimiento           |        10 |        |     1.00 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.75 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.84 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |       7.5 |        |     0.50 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     9.34 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -297,30 +415,72 @@
 - Documentación :: [[./DeLaMercedUriel-HernandezCarlos/DocumentacionProyectolSistop_DeLaMercedUriel_HernandezCarlos.pdf][DocumentacionProyectolSistop_DeLaMercedUriel_HernandezCarlos.pdf]]
 - Archivos :: [[./DeLaMercedUriel-HernandezCarlos/Adelanto1Sistop_DeLaMerced_Hernandez.ipynb][Adelanto1Sistop_DeLaMerced_Hernandez.ipynb]], [[./DeLaMercedUriel-HernandezCarlos/Adelanto2Sistop_DeLaMercedUriel_HernandezMario.ipynb][Adelanto2Sistop_DeLaMercedUriel_HernandezMario.ipynb]], [[./DeLaMercedUriel-HernandezCarlos/Entregable3_Sistop_DeLaMerced_Hernández.ipynb][Entregable3_Sistop_DeLaMerced_Hernández.ipynb]], [[./DeLaMercedUriel-HernandezCarlos/ProyectoFinalSistop_DeLaMered_Hernandez.py][ProyectoFinalSistop_DeLaMered_Hernandez.py]], [[./DeLaMercedUriel-HernandezCarlos/imgReferencia1.jpeg][imgReferencia1.jpeg]], [[./DeLaMercedUriel-HernandezCarlos/imgReferencia2.jpeg][imgReferencia2.jpeg]]
 - Uso de hilos ::
+  - Semáforo protegiendo al sistema de archivos de acceso simultáneo
+    al copiar desde / hacia
+  - Las tareas solicitadas por el usuario se ejecutan como hilos
+    independientes.
 - Comentarios ::
+  - ¡Bien! /Se la rifaron/ diseñando una interfaz gráfica GUI para el proyecto
+    - ...Hay que trabajarle mucho a la usabilidad. Por ejemplo, en
+      varias de las pantallas nada indica que para dejar de ver
+      determinada información sea necesario oprimir "F1" para volver
+      al menú.
+  - Al intentar ejecutar el programa, no verifica si existe el archivo
+    =fiunamfs.img= antes de abrirlo, y al llamar a cualquier de las
+    opciones, la ejecución del hilo principal se muere:
+    #+begin_src text
+      $ python3 ProyectoFinalSistop_DeLaMered_Hernandez.py 
+      Listando contenido de FiUnamFS...
+      Exception in Tkinter callback
+      Traceback (most recent call last):
+	File "/usr/lib/python3.11/tkinter/__init__.py", line 1967, in __call__
+	  return self.func(*args)
+		 ^^^^^^^^^^^^^^^^
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/DeLaMercedUriel-HernandezCarlos/ProyectoFinalSistop_DeLaMered_Hernandez.py", line 387, in capturar_tecla
+	  opciones_menu[key][1]()
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/DeLaMercedUriel-HernandezCarlos/ProyectoFinalSistop_DeLaMered_Hernandez.py", line 310, in listar_contenido_fiunamfs
+	  listar_contenidos_directorio()
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/DeLaMercedUriel-HernandezCarlos/ProyectoFinalSistop_DeLaMered_Hernandez.py", line 56, in listar_contenidos_directorio
+	  with open("fiunamfs.img", "rb") as archivo:
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+      FileNotFoundError: [Errno 2] No such file or directory: 'fiunamfs.img'
+    #+end_src
+  - El sistema de archivos requiere estar en el directorio actual, y
+    con un nombre determinado. ¿No valdría la pena colocarlo en un
+    =.gitignore=?
+  - No es posible eliminar archivos.
+    - Veo la función =borrar_archivo()=, y me parece a ojo que la
+      implementación es correcta... pero siempre indica que no lo
+      encuentra.
+  - Si bien documentan que “Nuestro proyecto está desarrollado en
+    Python”, no explicitan la versión de Python que ustedes emplean,
+    ni la dependencia en =Tk=.
+  - El desarrollo /real/ del proyecto consta de dos
+    /commits/. Incluyen varios archivos cuya función no resulta
+    obvia. Hacen mención a /entregables/ que no fueron soliciados. [
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     3.00 |
+| Cumplimiento           |        10 |        |     1.00 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.75 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.33 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |         5 |        |     0.33 |
+| Historia en Git        |         5 |        |     0.33 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     9.08 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
