@@ -1,7 +1,35 @@
+* Comentarios generales
+
+Al revisar sus proyectos, encontré que varios puntos se repetían en mis
+comentarios. Una vez que lo determiné... ¡mejor lo explico una sola vez, y en un
+lugar prominente para que todos los vean! 😉
+
+** Eliminar archivos: ¡Tan simple como puedas!
+
+Varios de ustedes implementaron la eliminación de archivos completa,
+sobreescribiendo la totalidad de los datos del archivo con ~0x00~ (o, siguiendo
+la notación Python, ~b'\x00'~). Recuerden que en clase comentamos que un sistema
+de archivos, sobre todo para un floppy, debe diseñarse /pensando fuertemente en
+la eficiencia/. Borrar a detalle un archivo es muy lento, y si el espacio está
+marcado como vacío... ¡no hace falta /echarse el clavado/ y borrar expresamente
+toda la información! recuerden... basta marcar el archivo como eliminado en el
+directorio.
+
+** Manejo de =.gitignore= para =fiunamfs.img=
+
+Muchos de ustedes incluyeron una copia de mi archivo =fiunamfs.img= dentro de
+sus directorios. Otros no lo hicieron, pero el programa espera que lo copie al
+directorio desde donde se ejecuta. Sin embargo, muy pocos recordaron (a pesar de
+que aparece expresamente en la rúbrica de evaluación 😉) que cuando manejamos un
+archivo que se va a modificar como parte del uso del programa en un repositorio
+Git, debemos listarlo en el =.gitignore=.
+
+* Revisión individual 
+
 ** Erick Aguilar
 - Documentación :: [[./AguilarErick/README.md][README.md]], [[./AguilarErick/requirements.txt][requirements.txt]], [[./AguilarErick/todo.md][todo.md]]
 - Archivos :: [[./AguilarErick/Dockerfile.prod][Dockerfile.prod]], [[./AguilarErick/fiunamfs.img][fiunamfs.img]], [[./AguilarErick/start.sh][start.sh]], [[./AguilarErick/super_main.py][super_main.py]]
-- Uso de hilos :: 
+- Uso de hilos ::
 - Comentarios ::
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
@@ -339,6 +367,7 @@
     éste incluye) en tu proyecto. Si ejecuto tu programa,
     necesariamente los modifico...
     - → Tendrías que haberlos listado en un =.gitignore=
+    - Ver nota sobre =.gitignore= en la primera sección de este texto.
   - Veo que estructuraste tu implementación con clases, seguiste las
     convenciones de Python respecto a los nombres, y demás. ¡Muy bien!
     😃
@@ -378,9 +407,7 @@
       realiza el trabajo mediante mensajes en la cola
     - Mutex para asegurar que no se procese más de un comando a la vez
 - Comentarios ::
-  - Incluyen una copia de mi =fiunamfs.img= dentro de la entrega, pero
-    al ejecutar el programa, si realizo cualquier modificación, el
-    árbol Git queda /sucio/. ¡Deberían haber utilizado =.gitignore=!
+  - Ver la nota sobre =.gitignore= en la primera sección de este texto.
   - Si bien los requisitos del programa son ligeros (la versión 3 de
     Python con su biblioteca estándar), no indica detalles de versión
     como fue solicitado. Esto puede ser muy importante para depurar
@@ -445,9 +472,7 @@
 	       ^^^^^^^^^^^^^^^^^^^^^^^^^^
       FileNotFoundError: [Errno 2] No such file or directory: 'fiunamfs.img'
     #+end_src
-  - El sistema de archivos requiere estar en el directorio actual, y
-    con un nombre determinado. ¿No valdría la pena colocarlo en un
-    =.gitignore=?
+  - Ver la nota sobre =.gitignore= en la primera sección de este texto.
   - No es posible eliminar archivos.
     - Veo la función =borrar_archivo()=, y me parece a ojo que la
       implementación es correcta... pero siempre indica que no lo
@@ -488,30 +513,65 @@
 - Documentación :: [[./DominguezJesus-SanchezSaida/Documentacion.pdf][Documentacion.pdf]]
 - Archivos :: [[./DominguezJesus-SanchezSaida/proyecto.py][proyecto.py]]
 - Uso de hilos ::
-- Comentarios ::
+  - Todas las funciones lllamadas desde el hilo principal (menú) se lanzan como
+    un hilo independiente
+    - Ojo: Aquí tienen /concurrencia sin sincronización/:
+      #+begin_src text
+	Ingresa el nombre del archivo que deseas borrar (incluye la extensión): README.org
+	   Nombre archivo		Tamaño   
+	   README.org    	31222 bytes
+	   logo.png      	126423 bytes
 
+	1. Listar el contenido del directorio
+	2. Copiar archivo del sistema a la computadora
+	3. Copiar archivo de la computadora al sistema
+	4. Borrar archivo del sistema
+	5. Salir
+	Ingresa una opción:    mensaje.jpg   	254484 bytes
+	Archivo eliminado con éxito
+      #+end_src
+      La razón por la que se mezclan la salida de "eliminar un archivo" con la
+      generación del menú es que la terminal de salida... También es un recurso
+      rival compartido. Y cuando dos hilos escriben en él, pasa como aquí les
+      cito.
+  - Se usa un mutex =archivo_lock= para proteger la lista de archivos y la
+    asignación de clusters de accesos concurrentes.
+- Comentarios ::
+  - El listado del directorio debería omitir las entradas vacías del directorio.
+    - ¿Por qué comienzan a leer el directorio desde =1024 + (posicion * 64)=?
+      (línea 155) El directorio comienza en el cluster 1, esto es, en la posición
+      =2048=.
+    - ¿Por qué limitan a sólo leer 64 archivos (línea 154, =for i in
+      range(64)=)? El directorio puede tener a hasta 128 archivos (el directorio
+      cubre los clusters 1 a 4; cada cluster mide =4×512=2048= bytes;
+      =2048×4=8192=; cada entrada de directorio mide 64 bytes. =8192 / 64 =
+      128=.
+  - Eliminar archivos no funciona: Borran los datos del espacio de datos (¡vean
+    la nota /Eliminar archivos/ al principio de este documento!), ¡pero /no lo
+    eliminan del directorio/! El espacio (ahora en blanco) sigue marcado como
+    ocupado 🙁
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.25 |
+| Cumplimiento           |       7.5 |        |     0.75 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |         5 |        |     0.50 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.75 |
+| Directorio de proyecto |        10 |        |     1.00 |
+| Código válido          |       7.5 |        |     0.75 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     1.75 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     2.01 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     8.76 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -519,30 +579,51 @@
 - Documentación :: [[./FigueroaCarlos-QuintanaErnesto/Documentacion.pdf][Documentacion.pdf]]
 - Archivos :: [[./FigueroaCarlos-QuintanaErnesto/ProyectoV1.py][ProyectoV1.py]]
 - Uso de hilos ::
+  - Maneja un hilo para guardar la información de los archiovs, otro para cargar
+    los contenidos, y el hilo de control
+    - Pero en vez de un =sleep(1)=, ¿no es este el ejemplo /cantadito/ para que
+      =guardar_info_archivos()= y =cargar_contenidos()= enviaran una
+      =señalización=, notificando a =__main__= que puede continuar?
 - Comentarios ::
+  - Si ejecuto el programa y no tengo en el directorio actual un archivo
+    =fiunamfs.img=, se muere muy malamente 🙁
+    - Y en caso de sí tener a =fiunamfs.img= — revisen la nota de la primera
+      sección sobre =.gitignore=.
+  - ¡Excelente documentación! 😃 Tiene un par de detallitos menores, pero está
+    muy completa, cuidada y agradable de seguir.
+    - Correspondientemente, aunque hay algunos casos en que no, en general
+      verifican el resultado de sus operaciones así como la ejecución correcta
+      de lo que se le pide, reportando limpiamente las situaciones de
+      error. ¡muy bien!
+  - Revisen la nota en la primera scción sobre la eliminación de archivos.
+  - Puede ser cuestión estilística... pero me parece poco óptimo que para cada
+    operación vuelvan a hacer un =open(sistema_archivos,'rb')=, en vez de hacer
+    un =open()= global. Lo que ustedes hicieron es bueno (puede resultar más
+    robusto al no asumir que estará siempre abierto), pero es malo (el
+    mantenimiento de una orden repetida por todos lados se vuelve engorroso).
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     3.00 |
+| Cumplimiento           |        10 |        |     1.00 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.75 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     2.01 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     9.76 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
