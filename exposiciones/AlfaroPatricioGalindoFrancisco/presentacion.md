@@ -33,7 +33,8 @@ lotTitle: "# Lista de tablas"
   de la misma.
 - *Punto de acceso inalámbrico (WAP)*: Dispositivo que se encarga de proveer una
   conexión WiFi a las computadoras de una red.
-- *Firewall*: Dispositivo (ya sea hardware o un programa) 
+- *Firewall*: Dispositivo (ya sea hardware o software) que bloquea o permite el
+  paso de paquetes de red según ciertas reglas.
 
 # ¿Qué es OpenWRT?
 

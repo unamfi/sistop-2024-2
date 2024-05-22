@@ -52,7 +52,10 @@ permitirán por lo menos saber de *qué* se habla:
   es).
 - *Punto de acceso inalámbrico (WAP)*: Dispositivo que se encarga de proveer una
   conexión WiFi a las computadoras de una red.
-- *Firewall*: Dispositivo (ya sea hardware o un programa) 
+- *Firewall*: Dispositivo (ya sea hardware o software) que monitorea los
+  paquetes entrantes y salientes de alguna red. Se encarga de bloquear o
+  permitir el paso de aquellos paquetes que sigan ciertas normas definidas por
+  el administrador.
 
 En una red casera real, suele haber un *router* que conecta la red de la casa
 con el *internet*. A él, esta conectado uno o varios *switches* y *WAPs* a los
