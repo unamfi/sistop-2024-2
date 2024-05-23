@@ -1,0 +1,97 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Sistemas operativos en computadoras cuánticas
+
+- Tema presentado por :: Samuel Chong
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                   9.36 |  0.3 |               7.13 |  0.7 |    7.80 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 1 | 4 |  9.60 |
+| Nivel        | 0 | 0 | 0 | 2 | 3 |  9.20 |
+| Relevancia   | 0 | 0 | 1 | 0 | 4 |  9.20 |
+| Claridad     | 0 | 0 | 0 | 1 | 4 |  9.60 |
+| Presencia    | 0 | 0 | 0 | 2 | 3 |  9.20 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.36 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+(no dejaron ningún comentario)
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |            5 |       1. |
+| Fuentes bibliográficas |    0.1 |          7.5 |     0.75 |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |          7.5 |    1.125 |
+| Presencia              |   0.15 |            5 |     0.75 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     7.13 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+- Hablas a con un nivel de voz muy bajo. Si le sumamos que tienes
+  bastante ruido de fondo, dificulta entender lo que dices.
+- Como te lo comenté antes cuando platicamos respecto al tema que presentarías,
+  la presentación se mantiene a un nivel que podría verse como /mercadotecnia/:
+  no mencionas ningún dato técnico respecto a la diferencia que puede tener el
+  cómputo cuántico
+  - Hay algunas (pocas) áreas en que se ve que sí representará un cambio
+    cualitativo. Mencionas, por ejemplo, la criptografía (donde hace que sean
+    necesarios algoritmos diferentes diseñados para aguantar este nuevo modelo
+    de cómputo) y la privacidad (la transmisión de información codificada en
+    qubits, que hace imposible el que un tercero la espíe sin revelarse). Pero
+    no son muchas las aplicaciones que podrán ganar de ello.
+  - El cómputo cuántico no es /más rápido/ ni /más potente/... únicamente
+    permite relizar /algunas clases específicas de operaciones matemáticas/ de
+    una sola vez /como si fuera un sistema masivamente paralelo), manteniendo su
+    ejecuciónen tiempo constante.
+- No hay en horizonte ningún sistema operativo para computadoras cuánticas, ni
+  se espera que representen un cambio para éstos.
+  - La unidad de computación cuántica se ve como un /periférico especializado/
+    a ser manejado por una computadora /con un sistema operativo normal/,
+    como hoy en día se manejan los coprocesadores numéricos o los GPUs.
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 23% de textos sospechosos
+  - 2% de similitudes con otros documentos
+  - 20% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 3% idiomas no reconocidos
+  - 0% de citas atribuídas (citas expresas)

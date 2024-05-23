@@ -1,0 +1,93 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Algoritmos de encriptación
+
+- Tema presentado por :: Carlos Hernández
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                    9.1 |  0.3 |                8.0 |  0.7 |    8.33 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 0 | 4 | 10.00 |
+| Nivel        | 0 | 0 | 1 | 2 | 1 |  8.00 |
+| Relevancia   | 0 | 0 | 0 | 2 | 2 |  9.00 |
+| Claridad     | 0 | 0 | 0 | 2 | 2 |  9.00 |
+| Presencia    | 0 | 0 | 0 | 1 | 3 |  9.50 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.10 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+- hay información que puede resumirse, es una exposición muy larga y
+  llena de demasiada información
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |            5 |       1. |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |           10 |       1. |
+| Uso del tiempo         |    0.1 |            5 |      0.5 |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     8.00 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+- ¡Felicidades! Se nota que es un tema que te interesa y que comprenes,
+  seguramente desde antes de haber preparado esta presentación.
+- ¡Ojo! En inglés se habla de /encryption/, pero en español se habla de
+  /cifrado/ (no /encriptación/). No hay, hasta donde yo sé, una razón clara para
+  preferir una palabra sobre la otra... pero conviene que uses la terminología
+  que se usa en el campo en el que buscas participar.
+  - (¡y espero que participes en el bonito mundo del cifrado en tu vida
+    profesional! 😉)
+- ...Capacidad de delimitar el tema y de concreción. Me gustó mucho tu
+  exposición, está muy bien hecha, pero... Si /le tiras/ a hacer un video de
+  15-20 minutos, y terminas entregando uno de 27 minutos, claramente estás
+  desarrollando más material, o entrando a mayor profundidad, de lo que se
+  espera para tu exposición.
+
+  Me parece un /excelente/ material, pero desarrollarlo tanto... terminó
+  incluso costándote puntos 🙁
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 40% de textos sospechosos
+  - 27% de similitudes con otros documentos
+  - 12% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 2% idiomas no reconocidos
+  - <1% de citas atribuídas (citas expresas)
