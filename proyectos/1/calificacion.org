@@ -70,30 +70,84 @@ la terminal (tipicamente blanco/negro), =\033[31m= rojo, =\033[32m= verde,
 - Documentación :: [[./AguilarErick/README.md][README.md]], [[./AguilarErick/requirements.txt][requirements.txt]], [[./AguilarErick/todo.md][todo.md]]
 - Archivos :: [[./AguilarErick/Dockerfile.prod][Dockerfile.prod]], [[./AguilarErick/fiunamfs.img][fiunamfs.img]], [[./AguilarErick/start.sh][start.sh]], [[./AguilarErick/super_main.py][super_main.py]]
 - Uso de hilos ::
+  - Un hilo para presentar el menú, otro para ejecutar cada una de las
+    opciones que vaya solicitando el usuario. El hilo principal se va
+    a dormir para siempre.
+  - Se sincronizan usando los eventos =modify_event=, =read_event= y =stop_flag=.
 - Comentarios ::
+  - ¡Ufff! ¡Montar toooodo un entorno Docker nomás para compartir un
+    archivito de tarea!
+    - Me queda claro que eres usuario frecuente de Docker 😉 Pero
+      muchos lo evitamos como la plaga por la pesadilla de seguridad
+      que representa
+    - Requiere de una /inicialización pesada/.
+    - Y... Por más que prometa lo contrario, muchas veces no cumple su
+      promesa de poder distribuir de forma indolora las
+      aplicaciones. A veces trae dificultades hasta de compatibilidad
+      entre versiones ☹
+  - Siguiendo tu script de arranque, =start.sh=, me encuentro con lo
+    que supongo que es una incompatibilidad de versiones que hace que
+    a tí te funcione dar rutas relativas y a mí no:
+    #+begin_src bash
+      $ . start.sh 
+      Sending build context to Docker daemon  1.503MB
+      Step 1/11 : FROM python:3.9-alpine AS base
+      (...)
+      Successfully built 6240e5f16e4e
+      Successfully tagged sisop_942f8bed:v2
+      docker: Error response from daemon: create ./files: "./files" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path.
+      See 'docker run --help'.
+    #+end_src
+    Bueno... ¡Se ve fácil de arreglar! Hagámoslo... Modifico =./files=
+    por la ruta completa,
+    =/home/gwolf/vcs/sistop-2024-2/proyectos/1/AguilarErick=
+    #+begin_src bash
+      (...)
+      Successfully built 6240e5f16e4e
+      Successfully tagged sisop_942f8bed:v4
+      python: can't open file '/app/super_main.py': [Errno 2] No such file or directory
+    #+end_src
+    ... hasta que, en mi desesperación, encontré que funcionaba
+    especficando únicamente =files=.
+  - ¡Muy buena interfaz usuario, felicidades y gracias! 😃
+    - Aunque... al seleccionar =EXIT= se queda esperando a
+      algo... tengo que interrumpir (=Ctrl-C=), y me muestra que se
+      quedó esperndo a una señal:
+      #+begin_src text
+	? Choose an option  EXIT
+	^C^CException ignored in: <module 'threading' from '/usr/local/lib/python3.9/threading.py'>
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python3.9/threading.py", line 1477, in _shutdown
+	    lock.acquire()
+	KeyboardInterrupt: 
+      #+end_src
+  - No encuentro la documentación 😰 Tu =README= sólo me indica cómo
+    ejecutar el programa...
+    - Tampoco hay comentarios en el código 😰 (sí hay algunas
+      /Docstrings/, pero son diferentes niveles..)
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.75 |
+| Cumplimiento           |        10 |        |     1.00 |
+| Claridad de desarrollo |       7.5 |        |     0.75 |
+| Interfaz usuario       |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.25 |
+| Directorio de proyecto |        10 |        |     1.00 |
+| Código válido          |       7.5 |        |     0.75 |
+| Comentarios            |         5 |        |     0.50 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.33 |
+| Documentación externa  |         5 |        |     0.33 |
+| Entorno y dependencias |         5 |        |     0.33 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     8.33 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -1286,33 +1340,42 @@ la terminal (tipicamente blanco/negro), =\033[31m= rojo, =\033[32m= verde,
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
 ** Luis Quintana
-- Documentación :: [[./QuintanaLuis/README.md][README.md]], [[./QuintanaLuis/docs/cli.md][cli.md]], [[./QuintanaLuis/docs/demo_cli.gif][demo_cli.gif]], [[./QuintanaLuis/docs/demo_shell.gif][demo_shell.gif]], [[./QuintanaLuis/docs/estrategia.md][estrategia.md]], [[./QuintanaLuis/docs/estructura.md][estructura.md]], [[./QuintanaLuis/docs/manual.txt][manual.txt]], [[./QuintanaLuis/docs/shell.md][shell.md]]
-- Archivos :: [[./QuintanaLuis/fiunamfs.img][fiunamfs.img]], [[./QuintanaLuis/resources/imagen.jpeg][imagen.jpeg]], [[./QuintanaLuis/src/__init__.py][__init__.py]], [[./QuintanaLuis/src/constantes.py][constantes.py]], [[./QuintanaLuis/src/directorio.py][directorio.py]], [[./QuintanaLuis/src/entrada.py][entrada.py]], [[./QuintanaLuis/src/excepciones.py][excepciones.py]], [[./QuintanaLuis/src/fifs.py][fifs.py]], [[./QuintanaLuis/src/helper.py][helper.py]], [[./QuintanaLuis/src/sistema_archivos.py][sistema_archivos.py]], [[./QuintanaLuis/src/super_bloque.py][super_bloque.py]]
+- Documentación :: *[[./QuintanaLuis/README.md][README.md]]*, [[./QuintanaLuis/docs/cli.md][cli.md]], [[./QuintanaLuis/docs/demo_cli.gif][demo_cli.gif]], [[./QuintanaLuis/docs/demo_shell.gif][demo_shell.gif]],
+  [[./QuintanaLuis/docs/estrategia.md][estrategia.md]], [[./QuintanaLuis/docs/estructura.md][estructura.md]], [[./QuintanaLuis/docs/manual.txt][manual.txt]], [[./QuintanaLuis/docs/shell.md][shell.md]]
+- Archivos :: *[[./QuintanaLuis/src/fifs.py][fifs.py]]*, [[./QuintanaLuis/resources/imagen.jpeg][imagen.jpeg]], [[./QuintanaLuis/src/__init__.py][__init__.py]], [[./QuintanaLuis/src/constantes.py][constantes.py]],
+  [[./QuintanaLuis/src/directorio.py][directorio.py]], [[./QuintanaLuis/src/entrada.py][entrada.py]], [[./QuintanaLuis/src/excepciones.py][excepciones.py]], [[./QuintanaLuis/src/helper.py][helper.py]],
+  [[./QuintanaLuis/src/sistema_archivos.py][sistema_archivos.py]], [[./QuintanaLuis/src/super_bloque.py][super_bloque.py]]
 - Uso de hilos ::
 - Comentarios ::
+  - ¡Excelente implementación! ¡Excelente interfaz usuario!
+    - Muy buena idea de documentar con una animación mostrando el uso.
+  - Pero... Faltó la parte de implementación de concurrencia y
+    sincronización ☹
+  - Lee la nota /«Manejo de .gitignore»/ en la primera sección de este
+    documento.
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.75 |
+| Cumplimiento           |       7.5 |        |     0.75 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.75 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     2.01 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     9.51 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -1320,30 +1383,69 @@ la terminal (tipicamente blanco/negro), =\033[31m= rojo, =\033[32m= verde,
 - Documentación :: [[./ReynosoFranciso-PozosAngel/DocumentaciónProyecto1SO.pdf][DocumentaciónProyecto1SO.pdf]]
 - Archivos :: [[./ReynosoFranciso-PozosAngel/proyecto1.py][proyecto1.py]]
 - Uso de hilos ::
+  - La función =listar_directorio()= (pero no las demás requeridas por
+    el usuario... ???) se lanza como un hilo.  Ninguna otra función se
+    maneja con concurrencia.
 - Comentarios ::
-  - Su entrega in
+  - Muy interesante que su documento incluyera
+    /conclusiones/. ¡Agradezco! 😃
+  - La bibliografía, excelentemente estructurada y comentada. ¡Gracias
+    también!
+  - El listado de archivos incluye a todas las entradas del directorio
+    vacías. ¿Por qué no omitirlas? No le sirven de nada al usuario, y
+    le dificultan ver la información real que le interesa.
+  - Lean la nota /«Manejo de .gitignore»/ en la primera sección de este
+    documento.
+  - Hay un error al copiar archivos de FiUnamFS hacia la computadora,
+    y la información resultante siempre está corrupta (por eso, en su
+    documentación, pág. 15, no pudieron ver mi mensaje ☹).
+    - Esto se debe a que en la línea 92, en =copiar_desde_fiunamfs()=,
+      ustedes hacen:
+      #+begin_src python
+	archivo.seek((entrada.cluster + 1) * TAMANO_CLUSTER)
+      #+end_src
+      pero... ¡no hay razón para ese =+1=! (recuerden que el primer
+      cluster, donde está el superbloque, es el #0)
+    - Modifiqué este punto, y el programa ya funciona como debe 😃
+  - Declaran un mutex, =lock=. Sin embargo, no está correctamente utilizado
+    - Por ejemplo, en =listar_directorio()=, líneas 35–44:
+      #+begin_src python
+	def listar_directorio(fiunamfs_img):
+	    """Lista los archivos contenidos en el directorio."""
+	    with lock:  # Bloquea para evitar conflictos entre hilos
+		print("Estado del Lock: Adquirido (Listar Directorio)")
+	    with open(fiunamfs_img, 'rb') as archivo:
+		for entrada in leer_directorio(archivo):
+		    print(f'Nombre: {entrada.nombre}, Tamaño: {entrada.tamano}, Fecha de creación: {entrada.fecha_creacion}, Fecha de modificación: {entrada.fecha_modificacion}')
+	    with lock:
+		print("Estado del Lock: Liberado (Listar Directorio)")
+      #+end_src
+      El mutex sólo protege... a los =print()= que reportan el estado
+      del candado. Recuerden que si usan la sintaxis =with lock:= todo
+      lo que quieran proteger /debe ir dentro del bloque =with=.
+
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.50 |
+| Cumplimiento           |       7.5 |        |     0.75 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.75 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.67 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |         5 |        |     0.33 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     8.92 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 cluyó también el archivo [[./PozosAngel/proyecto1.py][proyecto1.py]], en otro
@@ -1356,30 +1458,55 @@ cluyó también el archivo [[./PozosAngel/proyecto1.py][proyecto1.py]], en otro
 - Documentación :: [[./RosasIsaias/-logo.png][-logo.png]], [[./RosasIsaias/-mensaje.jpg][-mensaje.jpg]], [[./RosasIsaias/README.md][README.md]]
 - Archivos :: [[./RosasIsaias/SistemaDeArchivosMultihilos.py][SistemaDeArchivosMultihilos.py]], [[./RosasIsaias/fiunamfs.img][fiunamfs.img]]
 - Uso de hilos ::
+  - Cuando copia un archivo de FiUnamFS al sistema, la función
+    =self.corta()= es llamada como un hilo
+  - Usa el evento =self.evento_copia_completada= para señalizar que el
+    archivo fue copiado correctamente
+  - ...¿Y por qué únicamente en esta función? ☹ Podrías seguir
+    exactamente el mismo patrón en las otras funciones...
 - Comentarios ::
+  - Por tu nota final en la documentación: ¡Si yo mismo les comenté
+    que podían consultar e inspirarse en resoluciones de semestres
+    anteriores! Comparé tu implementación con la de Diego, y si bien
+    hay similitudes, me resulta claro que tuviste que dedicarle un
+    buen rato a modificarla a profundidad.
+
+    Bien hecho por ser honesto y citar a tus fuentes 😃
+    - Pero se te escaparon varios puntos. Por ejemplo, el sistema de
+      archivos de 2021-1 soportaba hasta 64 archivos, mientras que el
+      de 2024 soporta 128...
+  - Lee la nota /«Manejo de .gitignore»/ en la primera sección de este
+    documento.
+  - La especificación del sistema de archivos indica que el primer
+    caracter de cada entrada del directorio indica el tipo de
+    archivo. =-= indica que es un archivo regular, =/= indica que es
+    una entrada vacía.
+    - Este "malentendido" causa que presentes tantas entradas de
+      directorio =/##############=...
+
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.25 |
+| Cumplimiento           |       7.5 |        |     0.75 |
+| Claridad de desarrollo |       7.5 |        |     0.75 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.75 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     1.75 |
+| Estructura             |       7.5 |        |     0.75 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.84 |
+| Documentación externa  |       7.5 |        |     0.50 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     8.59 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -1387,60 +1514,86 @@ cluyó también el archivo [[./PozosAngel/proyecto1.py][proyecto1.py]], en otro
 - Documentación :: [[./TorresGerardo/LEEME_GTM.org][LEEME_GTM.org]]
 - Archivos :: [[./TorresGerardo/fiunamfs.img][fiunamfs.img]], [[./TorresGerardo/funciones.c][funciones.c]], [[./TorresGerardo/main.c][main.c]], [[./TorresGerardo/prueba.c][prueba.c]]
 - Uso de hilos ::
+  - Las funciones =listarContenido()= y =copiaDeFiApc= lanzan tres
+    hilos de ejecución empleando /OpenMP/... peo no encuentro ningún
+    mecanismo de sincronización (ni trabajo que se haga de forma
+    concurrente entre ellos ☹
 - Comentarios ::
+  - ¡Código realizado en C, muy bien! 😃
+  - Lee la nota /«Manejo de .gitignore»/ en la primera sección de este
+    documento.
+  - La documentación es muy parca ☹ No incluye detalles respecto a
+    cómo utilizaste la sincronización, ni ejemplos de cómo ejecutar el
+    programa... incluso las instrucciones de compilación son
+    incorrectas (indican el archivo erróneo).
+    - ... ni documentación... ¡ni comentarios! 😰
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.75 |
+| Cumplimiento           |       7.5 |        |     0.75 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     1.75 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |         0 |        |     0.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.67 |
+| Documentación externa  |         5 |        |     0.33 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     8.17 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
 ** Atzin Ugalde Santos
-- Documentación :: [[./Ugalde_Santos_Atzin/proyecto.txt][proyecto.txt]]
+- Documentación :: [[./Ugalde_Santos_Atzin/README.md][README.md]], [[./Ugalde_Santos_Atzin/proyecto.txt][proyecto.txt]]
+- Archivos :: [[./Ugalde_Santos_Atzin/Makefile][Makefile]], [[./Ugalde_Santos_Atzin/src/cp.c][cp.c]], [[./Ugalde_Santos_Atzin/src/cp.h][cp.h]], [[./Ugalde_Santos_Atzin/src/error.c][error.c]], [[./Ugalde_Santos_Atzin/src/error.h][error.h]], [[./Ugalde_Santos_Atzin/src/fs.c][fs.c]], [[./Ugalde_Santos_Atzin/src/fs.h][fs.h]],
+  [[./Ugalde_Santos_Atzin/src/ls.c][ls.c]], [[./Ugalde_Santos_Atzin/src/ls.h][ls.h]], [[./Ugalde_Santos_Atzin/src/main.c][main.c]], [[./Ugalde_Santos_Atzin/src/misc.c][misc.c]], [[./Ugalde_Santos_Atzin/src/misc.h][misc.h]], [[./Ugalde_Santos_Atzin/src/rm.c][rm.c]], [[./Ugalde_Santos_Atzin/src/rm.h][rm.h]]
 - Uso de hilos ::
+  - No maneja concurrencia ☹
 - Comentarios ::
+  - ¡Código realizado en C, muy bien! 😃
+  - El programa se siente sólido; responde bien a diferentes
+    situaciones como invocación con errores en los argumentos.
+  - La interfaz es cómoda y simple, como debe ser. Sin embargo, carece
+    de una ayuda suficiente para ser utilizado sin tener tu
+    documentación abierto al lado.
+  - Desarrollo muy limpio, fácil de seguir y bien comentado. ¡Bien!
+  - Se agradece que incluyeras un =Makefile=.
+  - Respecto a tu /Historia en Git/, tomo nota de lo que menciona
+    =proyecto.txt=. Ese repositorio tiene la historia de desarrollo
+    sobre Git que solicité.
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.25 |
+| Cumplimiento           |       7.5 |        |     0.75 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |         5 |        |     0.50 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     3.00 |
+| Directorio de proyecto |        10 |        |     1.00 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.84 |
+| Documentación externa  |       7.5 |        |     0.50 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     9.09 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
