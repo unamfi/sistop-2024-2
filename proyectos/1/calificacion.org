@@ -24,8 +24,48 @@ que aparece expresamente en la rúbrica de evaluación 😉) que cuando manejamo
 archivo que se va a modificar como parte del uso del programa en un repositorio
 Git, debemos listarlo en el =.gitignore=.
 
-* Revisión individual 
+** Limpiando la pantalla
 
+Es frecuente que quieran limpiar la pantalla. Para hacerlo, es frecuente que
+llamen (con =system()= o algo por el estilo) a un comando externo — =cls= en
+Windows, =clear= en Unix. Sin embargo, esto es una /mala práctica/: Ejecutar un
+binario externo causa decenas de llamadas al sistema. Esto puede no parecer gran
+cosa en este código... ¡Pero se trata de que desarrollemos buenas prácticas de
+programación!
+
+Las consolas que utilizan implementan diferentes /comandos/ que se lanzan
+mediante /secuencias de escape/ que se ven medio feas, pero resultan útiles. Uno
+de los estándares de secuencias de escape más comunes para nuestras consolas es
+*ANSI*. Si quieren limpiar la pantalla, basta con imprimir dos comandos: ①
+borrar los contenidos de la pantalla, =\033[2J=, y ② llevar el /cursor/ al
+origen (primer columna, primer renglón, con =\033[H=.
+
+Esto funciona en cualquier lenguaje. Por ejemplo:
+
+- Python ::
+  #+begin_src python
+  print("\033[2J\033[H")
+  #+end_src
+
+- C ::
+  #+begin_src C
+  printf("\033[2J\033[H")
+  #+end_src
+
+- Ruby ::
+  #+begin_src ruby
+  puts "\033[2J\033[H"
+  #+end_src
+
+etcétera.
+
+Como punto adicional, pueden usar este tipo de secuencias de escape para darle
+color a sus programas: Fondo =\033[40m= negro, =\033[41m= rojo, =\033[42m=
+verde, =\033[43m= amarillo, =\033[44m= azul; trazo =\033[39m= por omisión según
+la terminal (tipicamente blanco/negro), =\033[31m= rojo, =\033[32m= verde,
+=\033[33m= amarillo, =\033[34m= azul, etc.
+
+* Revisión individual
 ** Erick Aguilar
 - Documentación :: [[./AguilarErick/README.md][README.md]], [[./AguilarErick/requirements.txt][requirements.txt]], [[./AguilarErick/todo.md][todo.md]]
 - Archivos :: [[./AguilarErick/Dockerfile.prod][Dockerfile.prod]], [[./AguilarErick/fiunamfs.img][fiunamfs.img]], [[./AguilarErick/start.sh][start.sh]], [[./AguilarErick/super_main.py][super_main.py]]
@@ -176,9 +216,8 @@ Git, debemos listarlo en el =.gitignore=.
   - Veo que usan cadenas ANSI para enfatizar elementos del texto. Pero
     al mismo tiempo, veo que usan una /fea/ función
     =limpiarPantallaE()=. ¡Es una terrible práctica llamar a un
-    comando externo (=cls= o =clear=) sólo para limpiar la pantalla!
-    Bastaría con imprimir los comandos ANSI para limpiar la pantalla y
-    volver al origen: =printf("\033[2J\033[H");=
+    comando externo (=cls= o =clear=) sólo para limpiar la pantalla! Revisen la
+    nota /“Limpiando la pantalla”/ en la primera sección.
   - La función =listar_nombres_archivos()= está /casi/ correctamente
     implementada, pero hay un problema: cuando piden al usuario un
     nombre de archivo, tienen que considerar que deben completar el
@@ -631,30 +670,60 @@ Git, debemos listarlo en el =.gitignore=.
 - Documentación :: [[./GonzálezDavid-ReyesLuis/GonzálezDavid-ReyesLuis_Proyecto01_SO.pdf][GonzálezDavid-ReyesLuis_Proyecto01_SO.pdf]]
 - Archivos :: [[./GonzálezDavid-ReyesLuis/González_Reyes_Proyecto01.py][González_Reyes_Proyecto01.py]], [[./GonzálezDavid-ReyesLuis/fiunamfs.img][fiunamfs.img]]
 - Uso de hilos ::
+  - Separación de la lógica de la interfaz usuario (/vista/) de la
+    implementación de cada uno de los comandos solicitados por el usuario
+    (/controlador/). Corre un hilo por cada una de las pestañas implementadas.
+    - Idea/sugerencia mía: Habría sido bueno que mantuvieran la ventana
+      mostrando el contenido del disco independiente de las dos pestañas, como
+      un hilo aparte, y que cualquier hilo que modificara al directorio lanzara
+      una notificación para que éste se actualizara, sin tener que duplicar
+      funcionalidad entre dos funciones... ¡Ahí pa' la siguiente! 😉
+  - Se lanzan varios hilos, y realizan trabajos concurrentes. No se usa
+    sincronización ☹
 - Comentarios ::
+  - ¡Consideraron muchos aspectos importantes de confiabilidad en el desarrollo
+    de su programa, muy bien!
+    - Incluido crear un directorio =LocalSO= para manejar el intercambio con el
+      mundo exterior, e incluso lo listaron en su =.gitignore=. ¡Excelente!
+    - ...Pero incluyen una copia de mi =fiunamfs.img=... y cuando eliminamos un
+      archivo, =fiunamfs.img= resulta modificado. Y no está listado en el
+      =.gitignore= ☹
+  - ¡Bien por el desarrollo de una interfaz amigable! 😃
+  - Revisen la nota /“Limpiando la pantalla”/ en la primera sección.
+  - Al eliminar archivos, reemplazan el nombre y metadatos del archivo eliminado
+    por caracteres =0x00=, no por una cadena de 14 signos =#=. Esto es válido
+    dado que indican el tipo de archivo como /vacío/ con =/=, pero no
+    corresponde con lo que indica la especificación, y otras implementaciones
+    pueden tener problemas intercambiando datos con esta.
+  - Falta: Copiar archivos de fuera hacia adentro del FiUnamFS ☹
+  - Está muy bien parametrizar y declarar valores constantes como hacen en la
+    parte superior del programa. Sin embargo, muchos de los valores que indican
+    ahí, deberían estarlos obteniendo del sistema de archivos. ¡Incluso
+    desarrollaron la función =leer_superbloque()=, pero no la llaman en ningún
+    momento de la ejecución
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.75 |
+| Cumplimiento           |       7.5 |        |     0.75 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     3.00 |
+| Directorio de proyecto |        10 |        |     1.00 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     1.75 |
+| Estructura             |       7.5 |        |     0.75 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.67 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |         5 |        |     0.33 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     9.17 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -662,30 +731,56 @@ Git, debemos listarlo en el =.gitignore=.
 - Documentación :: [[./HernandezMiguel-LopezAlexa/HernándezRamírez_LópezTavera_Documentación_ProyectoSO.pdf][HernándezRamírez_LópezTavera_Documentación_ProyectoSO.pdf]]
 - Archivos :: [[./HernandezMiguel-LopezAlexa/PROYECTO SO.py][PROYECTO SO.py]]
 - Uso de hilos ::
+  - No manejan concurrencia
+  - Declaran un =lock = threading.Lock()= (línea 14), pero se utiliza
+    únicamente para cambiar un =app.lock_label.config()=, y sin hilos
+    entre los cuales sea necesario sincronizar nada ☹
 - Comentarios ::
+  - ¿Por qué definen a =TAMANO_CLUSTER=1024=? En la especificación que
+    les di dice, «La superficie del disco se divide en sectores de 512
+    bytes. Cada cluster mide cuatro sectores» — 2048K.
+    - Claro, si el directorio debe iniciar en el segundo cluster (1),
+      la declaración de =DIRECTORIO_INICIO= hará que lean la mitad del
+      superbloque (espacio vacío, afortunadamente) como parte del
+      directorio, y =DIRECTORIO_TAMANO= termina definiendo un espacio
+      de 4096 en vez de 8192 bytes ☹
+    - ¿Y por qué definen que =MAXIMO_CLUSTERS = 1440 // 4=? Con
+      clusters de 1KB, eso limita el espacio utilizable a 360KB,
+      cuando tienen una imagen de 1440KB (720 clusters de 2KB).
+  - Listar el directorio no funciona ☹ Sin embargo, curiosamente, las
+    otras tres funciones sí funcionan correctamente.
+    - Si corrijo las constantes que menciono y corrijo a que tome
+      =nombre= como 14 (¡no 15!) caracteres, =listar_directorio()=
+      reporta correctamente los archivos.
+  - Al eliminar un archivo, en vez de reemplaza su nombre por una
+    cadena de 14 signos =#=, lo reemplazan por 14 espacios en
+    blanco. Funciona, porque el tipo de archivo es correcto, pero
+    puede no interoperar bien con otras implementaciones.
+  - Revisen la nota de la primera sección sobre =.gitignore=.
+  - No menciona nada respecto al entorno y dependencias.
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.25 |
+| Cumplimiento           |         5 |        |     0.50 |
+| Claridad de desarrollo |       7.5 |        |     0.75 |
+| Interfaz usuario       |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.50 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.67 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |         5 |        |     0.33 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     8.42 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -693,30 +788,113 @@ Git, debemos listarlo en el =.gitignore=.
 - Documentación :: [[./JimenezAxel-LopezAlam/Proyecto01_Documentacion_JimenezAxel-LopezAlam.pdf][Proyecto01_Documentacion_JimenezAxel-LopezAlam.pdf]]
 - Archivos :: [[./JimenezAxel-LopezAlam/proyectoSO_Axel_Alam.py][proyectoSO_Axel_Alam.py]]
 - Uso de hilos ::
+  - Las funciones seleccionadas por el usuario se ejecutan en hilos
+    independientes. El hilo controlador lanza los hilos, y los espera
+    con un =thread.join()=.
 - Comentarios ::
+  - Muchos alumnos asumen que la imagen =fiunamfs.img= va a estar en el
+    directorio actual (vean la nota en la primera sección de este texto sobre
+    =.gitignore=). Pero ustedes... Asumieron que yo lo llamaría desde la misma
+    ruta /que la que emplearon en la computadora de desarrollo/, esto es,
+    =C:\Users\AlamLR\Desktop\proyectoSO\fiunamfs.img=.
+    - Esto hace que resulte imposible ejecutar el programa sin modificar el
+      código fuente.
+  - Como comentario de estilo: Al programar, si ves que estás repitiendo un
+    patrón, /casi siempre/ indica que deberías hacer algo diferente. Por
+    ejemplo, entre las líneas 180 y 205 escribieron:
+    #+begin_src python
+      if choice == '1':
+	  thread = Thread(target=threaded_task, args=(fs, "list"))
+	  thread.start()
+	  thread.join()
+      elif choice == '2':
+	  filename = input("Ingrese el nombre del archivo a copiar del FiUnamFS: ")
+	  destination = input("Ingrese la ruta de destino en su sistema: ")
+	  thread = Thread(target=threaded_task, args=(fs, "copy_from_fs", filename, destination))
+	  thread.start()
+	  thread.join()
+      elif choice == '3':
+	  source = input("Ingrese la ruta del archivo en su sistema para copiar al FiUnamFS: ")
+	  filename = input("Ingrese el nombre bajo el cual guardar el archivo en el FiUnamFS: ")
+	  thread = Thread(target=threaded_task, args=(fs, "copy_to_fs", source, filename))
+	  thread.start()
+	  thread.join()
+      elif choice == '4':
+	  filename = input("Ingrese el nombre del archivo a eliminar del FiUnamFS: ")
+	  thread = Thread(target=threaded_task, args=(fs, "delete", filename))
+	  thread.start()
+	  thread.join()
+      elif choice == '5':
+	  print("Saliendo...")
+	  break
+      else:
+	  print("Opción no válida. Por favor intente de nuevo.")
+    #+end_src
+    Esto podría re-escribirse con exactamente los mismos resultados así:
+    #+begin_src python
+      thread = None
+      if choice == '1':
+	  thread = Thread(target=threaded_task, args=(fs, "list"))
+      elif choice == '2':
+	  filename = input("Ingrese el nombre del archivo a copiar del FiUnamFS: ")
+	  destination = input("Ingrese la ruta de destino en su sistema: ")
+	  thread = Thread(target=threaded_task, args=(fs, "copy_from_fs", filename, destination))
+      elif choice == '3':
+	  source = input("Ingrese la ruta del archivo en su sistema para copiar al FiUnamFS: ")
+	  filename = input("Ingrese el nombre bajo el cual guardar el archivo en el FiUnamFS: ")
+	  thread = Thread(target=threaded_task, args=(fs, "copy_to_fs", source, filename))
+      elif choice == '4':
+	  filename = input("Ingrese el nombre del archivo a eliminar del FiUnamFS: ")
+	  thread = Thread(target=threaded_task, args=(fs, "delete", filename))
+      elif choice == '5':
+	  print("Saliendo...")
+	  break
+      else:
+	  print("Opción no válida. Por favor intente de nuevo.")
+
+      if thread:
+	  thread.start()
+	  thread.join()
+    #+end_src
+    No sólo reduce el número de líneas, sino que hace más sencillo el
+    mantenimiento a futuro de sus programas.
+  - Al listar los contenidos del directorio, su programa no ignora las entradas
+    vacías; imprime numerosos =##############=
+    - Me parece que esto es por un simple dedazo: En su código, a veces comparan
+      con una cadena consistente de 14 signos =#=, y a veces con una de 15 :-Þ
+  - Todos los archivos copiados del sistema de archivos llegan corruptos. Esto
+    se debe a que por todos lados del código tienen especificado /en duro/ que
+    un cluster mide 1024 bytes (¿por qué? Si en la especificación dice bien
+    clarito que /«La superficie del disco se divide en sectores de 512
+    bytes. Cada cluster mide cuatro sectores.»/
+    - Los clusters miden 2048 bytes 😑
+    - Como no lo leen del superbloque, ni usan declaraciones de constantes como
+      varios de sus compañeros... se vuelve /muy tedioso/ intentar corregirlo.
+  - Por la misma razón, cualquier archivo que intento copiar de mi computadora
+    al FiUnamFS se corrompe (y probablemente corrompe a sus vecinos 🙁
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.00 |
+| Cumplimiento           |         5 |        |     0.50 |
+| Claridad de desarrollo |       7.5 |        |     0.75 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.25 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |         5 |        |     0.50 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     1.75 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.84 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |       7.5 |        |     0.50 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     7.84 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -724,30 +902,42 @@ Git, debemos listarlo en el =.gitignore=.
 - Documentación :: [[./LeonErick/README.md][README.md]]
 - Archivos :: [[./LeonErick/main.py][main.py]]
 - Uso de hilos ::
+  - Un hilo verifica el espacio disponible antes de almacenar archivos nuevos,
+    almacenando su resultado en la variable =rvtb=; otro verifica si ya existe
+    algún archivo con el nombre indicado y almacena su resultado en la variable
+    =rbat=, y otro lleva el flujo principal
+    - Ni =rbat= ni =rvtb= están protegidos de accesos concurrentes con mutexes u
+      otro mecanismo 🙁
+  - Se maneja una barrera para que =local_to_fiunamfs= espere a los dos hilos
+    =verify_tam_bytes= y =buscar_archivo_thread= antes de entregar sus
+    resultados.
 - Comentarios ::
+  - Todo un acierto el uso de =prettytable= y de los escapes ANSI para manejo
+    del color 😉
+  - ¡Muy buena implementación! 😃
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     3.00 |
+| Cumplimiento           |        10 |        |     1.00 |
+| Claridad de desarrollo |        10 |        |     1.00 |
+| Interfaz usuario       |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     3.00 |
+| Directorio de proyecto |        10 |        |     1.00 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     1.75 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.84 |
+| Documentación externa  |       7.5 |        |     0.50 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     9.59 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -755,30 +945,153 @@ Git, debemos listarlo en el =.gitignore=.
 - Documentación :: [[./LopezFrancisco-VigiAlejandro/Doc-ProyectoSO.pdf][Doc-ProyectoSO.pdf]]
 - Archivos :: [[./LopezFrancisco-VigiAlejandro/proyecto_sistop.py][proyecto_sistop.py]]
 - Uso de hilos ::
+  Declaran un semáforo y un mutex (líneas 11 y 12), y aparentemente usan a ambos
+  como mutex... ¡Pero no lanzan ni un hilo! Estos mecanismos de sincronización
+  resultan innecesarios, porque no hay concurrencia.
 - Comentarios ::
+  - Vean la nota /«Limpiando la pantalla»/ en la primera sección de este
+    documento.
+  - Vean la nota /«Manejo de .gitignore»/ en la primera sección de este
+    documento.
+  - Hice el siguiente movimiento usando su programa (editado para reducir
+    información redundante):
+    #+begin_src text
+      Menu:
+      1. Validar server
+      2. Listar archivos
+      3. Copiar archivo desde FiUnamFS
+      4. Eliminar archivo de FiUnamFS
+      5. Mover archivo a FiUnamFS
+      6. Salir
+      Seleccione una opción: 3
+      Listado de archivos en el FiUNAMFS:
+      Archivo: README.org    , Tamaño: 31222, Cluster Inicial: 6, Creado: 20240508131756, Modificado: 20240508131756
+      Archivo: logo.png      , Tamaño: 126423, Cluster Inicial: 22, Creado: 20240508131756, Modificado: 20240508131756
+      Archivo: mensaje.jpg   , Tamaño: 254484, Cluster Inicial: 84, Creado: 20240508131756, Modificado: 20240508131756
+
+      Ingrese el nombre del archivo a copiar a su directorio local: logo.png
+      Archivo 'logo.png' copiado exitosamente al directorio local.
+
+      Seleccione una opción: 4
+      Ingrese el nombre del archivo a eliminar de FiUnamFS: logo.png
+      Archivo 'logo.png' eliminado exitosamente de FiUnamFS.
+
+      Seleccione una opción: 2
+      Listado de archivos en el FiUNAMFS:
+      Archivo: README.org    , Tamaño: 31222, Cluster Inicial: 6, Creado: 20240508131756, Modificado: 20240508131756
+      Archivo: mensaje.jpg   , Tamaño: 254484, Cluster Inicial: 84, Creado: 20240508131756, Modificado: 20240508131756
+
+      Seleccione una opción: 5
+      Ingrese el nombre del archivo a mover a FiUnamFS: logo.png
+      Error: El archivo es demasiado grande para ser almacenado en FiUnamFS.
+    #+end_src
+    Esto es, ① copiar un archivo hacia mi sistema, ② eliminarlo del /FiUnamFS/,
+    ③ intentar copiarlo de vuelta a /FiUnamFS/.
+    - Me parece que esto es porque al eliminar un archivo sólo lo marcan como
+      eliminado con el caracter =/= para el tipo de usuario (en vez de
+      =-=)... pero algún otro punto del programa se fija más en los /otros/
+      metadatos (que no fueron eliminados)
+  - ¡Peor todavía! Creé un archivo muy chiquito e intenté copiarlo hacia
+    /FiUnamFS/, y... ¡su programa lo almacenó encima del superbloque,
+    corrompiendo todo el volumen!
+    #+begin_src text
+      $ echo "¡Hola mundo!" > hola.txt
+      $ python3 LopezFrancisco-VigiAlejandro/proyecto_sistop.py 
+      Menu:
+      1. Validar server
+      2. Listar archivos
+      3. Copiar archivo desde FiUnamFS
+      4. Eliminar archivo de FiUnamFS
+      5. Mover archivo a FiUnamFS
+      6. Salir
+      Seleccione una opción: 5
+      Ingrese el nombre del archivo a mover a FiUnamFS: hola.txt
+      Archivo 'hola.txt' movido exitosamente a FiUnamFS.
+
+      Seleccione una opción: 2
+      Listado de archivos en el FiUNAMFS:
+      Archivo: hola.txt, Tamaño: 14, Cluster Inicial: 0, Creado: fecha_creacion, Modificado: fecha_modifica
+
+
+      Seleccione una opción: 1
+      sh: 1: cls: not found
+      Traceback (most recent call last):
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/LopezFrancisco-VigiAlejandro/proyecto_sistop.py", line 296, in <module>
+	  menu()  # Llama a la función menu para comenzar la ejecución del programa
+	  ^^^^^^
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/LopezFrancisco-VigiAlejandro/proyecto_sistop.py", line 266, in menu
+	  validarSistemaArchivos()                            #Llama a la función para validar el sistema de archivos
+	  ^^^^^^^^^^^^^^^^^^^^^^^^
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/LopezFrancisco-VigiAlejandro/proyecto_sistop.py", line 40, in validarSistemaArchivos
+	  nombreSistema = leerCadena(0, 8)                #Lee la cadena de nombre de sistema desde la posición 0 con longitud 9 bytes
+			  ^^^^^^^^^^^^^^^^
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/LopezFrancisco-VigiAlejandro/proyecto_sistop.py", line 34, in leerCadena
+	  string = cadena.decode("ascii").strip()     #Decodifica los bytes leídos en una cadena ASCII y elimina espacios en blanco alrededor
+		   ^^^^^^^^^^^^^^^^^^^^^^
+      UnicodeDecodeError: 'ascii' codec can't decode byte 0xc2 in position 0: ordinal not in range(128)
+    #+end_src
+    - Y... esto ocurre porque su sistema decidió que cabría sobre el
+      cluster 0. ¡Pero el cluster 0 no es de datos!
+  - Comentar el código es bueno, útil, siemprenecesario. Sin embargo, comentar
+    *cada línea* entorpece la lectura. Tienen que asumir que quien lea su código
+    sabe lo básico del lenguaje en que lo escribieron. Me refiero a cosas como
+    esto:
+    #+begin_src python
+      #Variables globales
+      sector = 512                                #La superficie del disco se divide en sectores de 512 bytes.
+      cluster = sector * 4                        #Cada cluster mide cuatro sectores.
+      direccionSistema = "fiunamfs.img"           #Dirección del archivo fiunamfs.img (puede ser en ruta absoluta o relativa)
+      semaphore = threading.Semaphore(value=1)    #Defininimos un semáforo para sincronización entre hilos
+      lock = threading.Lock()                     #Definimos un Lock para sincronización entre hilos
+    #+end_src
+    - Además de lo cual... *fuerte* recomendación de estilo: Cuando escriban
+      comentarios en su código, resulta mucho más claro/legible hacerlo /en la
+      línea anterior/ y no /a la derecha de la línea/, a menos que sea algo muy
+      muy cortititito. En vez de:
+      #+begin_src python
+	for i in range(0, cluster * 4, 64):
+	    tipo_archivo = leerCadena(cluster + i, 1)             #Lee el tipo de archivo desde el cluster actual más el desplazamiento 'i' con longitud de 1 byte
+	    if tipo_archivo == "/":                               #Verifica si el tipo de archivo es diferente de '/'
+		espacio_suficiente = True
+		break
+      #+end_src
+      resulta más claro:
+      #+begin_src python
+	for i in range(0, cluster * 4, 64):
+	    # Lee el tipo de archivo desde el cluster actual más el desplazamiento 'i'
+	    # con longitud de 1 byte
+	    tipo_archivo = leerCadena(cluster + i, 1)
+	    # Verifica si el tipo de archivo es diferente de '/'
+	    if tipo_archivo == "/":
+		espacio_suficiente = True
+		break
+      #+end_src
+      El código de ustedes... es una mezcolanza de estilos que dificulta mucho la
+      lectura 🙁
+
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.00 |
+| Cumplimiento           |         5 |        |     0.50 |
+| Claridad de desarrollo |       7.5 |        |     0.75 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.50 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     1.75 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     2.01 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     8.26 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -786,30 +1099,88 @@ Git, debemos listarlo en el =.gitignore=.
 - Documentación :: [[./PachecoPachecoAdrian/P1_PachecoAdrian_Grupo06.pdf][P1_PachecoAdrian_Grupo06.pdf]]
 - Archivos :: [[./PachecoPachecoAdrian/Proyecto1VersionFinal.py][Proyecto1VersionFinal.py]], [[./PachecoPachecoAdrian/primer_avance.py][primer_avance.py]], [[./PachecoPachecoAdrian/prueba.py][prueba.py]], [[./PachecoPachecoAdrian/pruebaconinterfaz1.py][pruebaconinterfaz1.py]], [[./PachecoPachecoAdrian/pruebahilos.py][pruebahilos.py]]
 - Uso de hilos ::
+  - Distintos hilos para leer/procesar superbloque, directorios, e interacción
+    con el usuario. Los hilos son concurrentes pero no se sincronizan, por lo
+    que el orden en que se muestra la información no es consistente.
+  - Declaras un mutex =lock=threading.Lock()=, un señalizador de eventos
+    =event=threading.Event()= y una cola de mensajes
+    =message_queue=queue.Queue()=, pero sólo se usa esta última para enviar
+    mensajes mediante =log_message()= y =process_queue()=.
 - Comentarios ::
+  - Lee la nota /«Manejo de .gitignore»/ en la primera sección de este
+    documento.
+  - ¡Estás usando Git! No tiene sentido que entregues cinco archivos diferentes,
+    con diferentes nombres. ¡Recuerda la [[https://github.com/unamfi/sistop-2024-2/blob/main/practicas/3/README.md][práctica 3]] que hicieron!
+    - Como el último archivo que subiste fue =Proyecto1VersionFinal.py=, tomo
+      ese como el único entregado.
+  - Lamento informarte que... este es uno de esos casos en que una interfaz
+    usuario basada en Tk, en vez de facilitar la interacción... la complica 🙁
+    Habría sido, creo, más claro que el texto que /vuelcas/ al buffer en Tk se
+    presentara en la consola de texto.
+  - ¡Uy! La lógica de =leer_directorio()= está... barroca por decir lo menos 😐
+    Ir llevando la cuenta de en qué campo vas por cómo vas avanzando me resulta
+    doloroso 🙁
+    #+begin_src python
+      while contador < 64:
+	  if contador == 0:
+	      contenido = archivo.read(1)
+	      tipo_archivo = int.from_bytes(contenido, byteorder='little')
+	      if tipo_archivo == 45:
+		  lista_directorios.append(entrada)
+	      contador += 1
+	  elif contador == 1:
+	      archivo.read(15)
+	      contador += 15
+	  elif contador == 16:
+	      archivo.read(4)
+	      contador += 4
+	  elif contador == 20:
+	      archivo.read(3)
+	      contador += 3
+	  elif contador == 24:
+	      archivo.read(13)
+	      contador += 13
+	  elif contador == 38:
+	      archivo.read(13)
+	      contador += 13
+	  elif contador == 52:
+	      archivo.read(12)
+	      contador += 12
+	  else:
+	      archivo.read(1)
+	      contador += 1
+    #+end_src
+    viendo esto, y viendo que iteras sobre los diferentes elementos... yo te
+    sugeriría sin duda cambiar por algo como: 
+    #+begin_src python
+      dir_entry = archivo.read(64)
+      contenido = dir_entry[0:1]
+      nombre_archivo=dir_entry[1:15]
+      # (...)
+    #+end_src
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.50 |
+| Cumplimiento           |        10 |        |     1.00 |
+| Claridad de desarrollo |       7.5 |        |     0.75 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.75 |
+| Directorio de proyecto |       7.5 |        |     0.75 |
+| Código válido          |        10 |        |     1.00 |
+| Comentarios            |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     1.75 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     1.67 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |         5 |        |     0.33 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     8.67 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
@@ -818,29 +1189,99 @@ Git, debemos listarlo en el =.gitignore=.
 - Archivos :: [[./PinedaRicardo/PinedaGalindoRicardo_proyecto1.py][PinedaGalindoRicardo_proyecto1.py]]
 - Uso de hilos ::
 - Comentarios ::
+  - Me gusta mucho que en la sección /Estrategia/ de la documentación relataras
+    cómo te fuiste acercando a la solución. Yo pensaba en que relataran la
+    estrategia que sigue /el programa/, pero sin duda me resultó más interesante
+    leer esto 😉
+  - Comentar el código es bueno, útil, siemprenecesario. Sin embargo, comentar
+    *cada línea* entorpece la lectura. Tienen que asumir que quien lea su código
+    sabe lo básico del lenguaje en que lo escribieron. Me refiero a cosas como
+    esto:
+    - Además de lo cual... Te hago una *fuerte* recomendación de estilo: Cuando
+      escribas comentarios en tu código, resulta mucho más claro/legible hacerlo
+      /en la línea anterior/ y no /a la derecha de la línea/, a menos que sea
+      algo muy muy cortititito. En vez de:
+      #+begin_src python
+	while True:
+	    if inicio == 5*tamCluster: break #Esto evita que se lea más allá de los 4 clusters para el directorio
+	    tipoArchivo = leer_texto(inicio,1) #Si es una "/" entonces no hay nada, de lo contrario esta ocupado
+	    if tipoArchivo == '\x00': break #Cuando ya no hay archivos, el primer caracter que se lee es este y por eso se compara
+	    elif tipoArchivo == '-': #Si el archivo tiene contenido entonces procede a obtener la información faltante
+		nombreArchivo = leer_texto(inicio+1,14)
+		# (...)
+      #+end_src
+      te sugiero escribir así:
+      #+begin_src python
+	while True:
+	    # Esto evita que se lea más allá de los 4 clusters para el directorio
+	    if inicio == 5*tamCluster: break
+	    # Si es una "/" entonces no hay nada, de lo contrario esta ocupado
+	    tipoArchivo = leer_texto(inicio,1)
+	    # Cuando ya no hay archivos, el primer caracter que se lee es este y por eso se compara
+	    if tipoArchivo == '\x00': break
+	    # Si el archivo tiene contenido entonces procede a obtener la información faltante
+	    elif tipoArchivo == '-':
+		nombreArchivo = leer_texto(inicio+1,14)
+		# (...)
+      #+end_src
+  - ¡Me parece muy bien que consideres que puedo querer copiar archivos desde /
+    hacia otros directorios que el actual! Sin embargo... ¿Recuerdas que vimos
+    en clase que no en todos los sistemas operativos los directorios se usan con
+    el mismo caracter? Cuando tu función =copiaArchivoACompu()= intenta grabar
+    un archivo en la línea 137:
+    #+begin_src python
+      with open(ruta + '\\' + nombreArchivo,"wb+") as file: #Si ya existe el archivo entonces se va a sobreescribir
+    #+end_src
+    en mi equipo fracasa estrepitosamente:
+    #+begin_src text
+      Escribe la ruta hacia donde quieras guardar el archivo: /tmp 
+      Exception in thread Thread-2 (copiarArchivoACompu):
+      Traceback (most recent call last):
+	File "/usr/lib/python3.11/threading.py", line 1045, in _bootstrap_inner
+	  self.run()
+	File "/usr/lib/python3.11/threading.py", line 982, in run
+	  self._target(*self._args, **self._kwargs)
+	File "/home/gwolf/vcs/sistop-2024-2/proyectos/1/PinedaRicardo/PinedaGalindoRicardo_proyecto1.py", line 137, in copiarArchivoACompu
+	  with open(ruta + '\\' + nombreArchivo,"wb+") as file: #Si ya existe el archivo entonces se va a sobreescribir
+	       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      PermissionError: [Errno 13] Permission denied: '/tmp\\prueba.org    '
+      ,. ,^CException ignored in: <module 'threading' from '/usr/lib/python3.11/threading.py'>
+    #+end_src
+    ...porque en vez de =\\= tendrías que haber unido los componentes de la ruta
+    del archivo con =/=.
+
+    En Python, para evitar esos problemas, puedes usar =os.path.join()=:
+    #+begin_src python
+      >>> import os
+      >>> os.path.join('/tmp', 'prueba.org')
+      '/tmp/prueba.org'
+    #+end_src
+    Pero si tú lo jalas indicándole =os.path.join('C:','Users','Ricki',
+    'Archivo.txt')=, te entregará ='C:\Users\Ricki/Archivo.txt'=.
+
 
 | *Rubro*                | *Parcial* | *Peso* | *Puntos* |
 |------------------------+-----------+--------+----------|
-| *Proyecto*             |           |    0.3 |     0.00 |
-| Cumplimiento           |           |        |     0.00 |
-| Claridad de desarrollo |           |        |     0.00 |
-| Interfaz usuario       |           |        |     0.00 |
+| *Proyecto*             |           |    0.3 |     2.50 |
+| Cumplimiento           |        10 |        |     1.00 |
+| Claridad de desarrollo |       7.5 |        |     0.75 |
+| Interfaz usuario       |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Desarrollo*           |           |    0.3 |     0.00 |
-| Directorio de proyecto |           |        |     0.00 |
-| Código válido          |           |        |     0.00 |
-| Comentarios            |           |        |     0.00 |
+| *Desarrollo*           |           |    0.3 |     2.50 |
+| Directorio de proyecto |        10 |        |     1.00 |
+| Código válido          |       7.5 |        |     0.75 |
+| Comentarios            |       7.5 |        |     0.75 |
 |------------------------+-----------+--------+----------|
-| *Legibilidad*          |           |    0.2 |     0.00 |
-| Estructura             |           |        |     0.00 |
-| Nomenclatura           |           |        |     0.00 |
+| *Legibilidad*          |           |    0.2 |     2.00 |
+| Estructura             |        10 |        |     1.00 |
+| Nomenclatura           |        10 |        |     1.00 |
 |------------------------+-----------+--------+----------|
-| *Entrega*              |           |    0.2 |     0.00 |
-| Documentación externa  |           |        |     0.00 |
-| Entorno y dependencias |           |        |     0.00 |
-| Historia en Git        |           |        |     0.00 |
+| *Entrega*              |           |    0.2 |     2.01 |
+| Documentación externa  |        10 |        |     0.67 |
+| Entorno y dependencias |        10 |        |     0.67 |
+| Historia en Git        |        10 |        |     0.67 |
 |------------------------+-----------+--------+----------|
-| *TOTAL*                |           |        |     0.00 |
+| *TOTAL*                |           |        |     9.01 |
 |------------------------+-----------+--------+----------|
 #+TBLFM: @2$4=@3+@4+@5 ; f-2::@3$4=$2*@2$3/3 ; f-2::@4$4=$2*@2$3/3 ; f-2::@5$4=$2*@2$3/3 ; f-2::@6$4=@7+@8+@9 ; f-2::@7$4=$2*@6$3/3 ; f-2::@8$4=$2*@6$3/3 ; f-2::@9$4=$2*@6$3/3 ; f-2::@10$4=@11+@12 ; f-2::@11$4=$2*@10$3/2 ; f-2::@12$4=$2*@10$3/2 ; f-2::@13$4=@14+@15+@16 ; f-2::@14$4=$2*@13$3/3 ; f-2::@15$4=$2*@13$3/3 ; f-2::@16$4=$2*@13$3/3 ; f-2::@17$4=@2+@6+@10+@13 ; f-2
 
