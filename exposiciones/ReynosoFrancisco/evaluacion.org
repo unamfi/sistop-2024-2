@@ -1,0 +1,61 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* ASCII vs. UTF-8: ¿En qué se diferencian y por qué son importantes
+
+- Tema presentado por :: Francisco Javier Reynoso
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+*Entrega extemporánea ☹* No hubo posibilidad de evaluación por parte
+de los compañeros.
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                      0 |  0.3 |               5.75 |  0.7 |    4.03 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |            5 |       1. |
+| Contenido              |    0.2 |            5 |       1. |
+| Fuentes bibliográficas |    0.1 |            0 |       0. |
+| Uso del tiempo         |    0.1 |            5 |      0.5 |
+| Dominio del tema       |   0.15 |          7.5 |    1.125 |
+| Presencia              |   0.15 |          7.5 |    1.125 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     5.75 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+- Le faltó completamente contenido técnico. Hablas del estándar UTF-8
+  como si estuviera completamente separado del ASCII, pero su
+  existencia /únicamente puede explicarse/ porque busca mantener
+  compatibilidad con ASCII
+  - Todo texto válido en ASCII 7-bit es válido e idéntico en UTF-8
+  - UTF-8 codifica un caracter en 1, 2, 3, 4, 5 o hasta 6 bytes,
+    dependiendo del /plano/ de Unicode al que pertenezca.
+- Lo más importante de este tema: hoy en día *no hay razón* para usar
+  ASCII “pelón”. Los sistemas que no están preparados para lidiar con
+  Unicode (típicamente, mediante UTF-8) pueden ser vistos como un
+  peligo para la interoperabilidad.
+- No citas ningún recurso fuente para tu material ☹
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- % de textos sospechosos
+  - % de similitudes con otros documentos
+  - % estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - % idiomas no reconocidos
+  - <% de citas atribuídas (citas expresas)
