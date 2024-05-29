@@ -1,0 +1,84 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* El sistema OpenWRT: Su uso en un /router/ casero
+
+- Tema presentado por :: Patricio Alfaro y Francisco Galindo
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                    7.8 |  0.3 |                8.5 |  0.7 |    8.29 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 1 | 0 | 0 | 0 | 3 |  8.00 |
+| Nivel        | 1 | 0 | 0 | 1 | 2 |  7.50 |
+| Relevancia   | 1 | 0 | 0 | 0 | 3 |  8.00 |
+| Claridad     | 1 | 0 | 0 | 1 | 2 |  7.50 |
+| Presencia    | 1 | 0 | 0 | 0 | 3 |  8.00 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  7.80 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+(ningún comentario)
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |          7.5 |      1.5 |
+| Fuentes bibliográficas |    0.1 |            5 |      0.5 |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     8.50 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+- ¡Excelente un reporte de experiencia implementada por ustedes! 😃
+- Dicen que en [[./reporte.pdf][el reporte adjunto]] presentarían una lista de fuentes
+  consultadas. La sección *IV* del reporte está vacía ☹
+  - Les doy por válidas las fuentes que presentan como notas al pie en
+    el desarrollo del documento. ¡Pero ojo con esos detalles de
+    formato! 😉
+- En una red conectada a Internet hoy en día no deben satisfacerse con
+  configurar IPv4. Que, ¿no configuraron IPv6? ¡No lo olviden! 😉
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 0% de textos sospechosos
+  - 0% de similitudes con otros documentos
+  - 0% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 0% idiomas no reconocidos
+  - 0% de citas atribuídas (citas expresas)

@@ -1,0 +1,75 @@
+#+title: Evaluación de la exposición
+#+author: Gunnar Wolf
+
+* Wayland: ¿Qué es? y comparativa con X11
+
+- Tema presentado por :: Luis Ángel Quintana Mora
+- Calificación global :: Por favor revisen más adelante para ver de
+  dónde vienen todos estos números 😉
+
+|------------------------+------+--------------------+------+---------|
+| Evaluación  compañeros | Peso | Evaluación docente | Peso | *Total* |
+|------------------------+------+--------------------+------+---------|
+|                    9.7 | 0.33 |               9.25 |  0.7 |    9.68 |
+|------------------------+------+--------------------+------+---------|
+#+TBLFM: @2$5=$1*$2+$3*$4;f-2
+
+* Comentarios
+
+Dado que es una presentación en video, no puedo evaluar /dominio del tema/ y
+/presencia/ como lo haríamos habitualmente. Me centro en las respuestas que
+hagan a las preguntas de sus compañeros para el primero y en si la presentación
+"suena" leída directamente del material que prepararon o expuesta más libremente
+para el segundo.
+
+
+* Evaluación grupal
+
+|              | 1 | 2 | 3 | 4 | 5 | Total |
+|--------------+---+---+---+---+---+-------|
+| Originalidad | 0 | 0 | 0 | 1 | 3 |  9.50 |
+| Nivel        | 0 | 0 | 0 | 1 | 3 |  9.50 |
+| Relevancia   | 0 | 0 | 0 | 0 | 4 | 10.00 |
+| Claridad     | 0 | 0 | 0 | 0 | 4 | 10.00 |
+| Presencia    | 0 | 0 | 0 | 1 | 3 |  9.50 |
+|--------------+---+---+---+---+---+-------|
+|              |   |   |   |   |   |  9.70 |
+#+TBLFM: @2$7..@6$7=10 * (0.2*$2 + 0.4*$3 + 0.6*$4 + 0.8*$5 + $6 ) / vsum($2..$6); f-2::@7$7=vmean(@2$7..@6$7); f-2
+
+** Comentarios de los compañeros
+
+Tu exposición recibió los siguientes comentarios anonimizados por
+parte de tus compañeros:
+
+(Ningún comentario)
+
+* Evaluación por parte del docente
+
+| *Aspecto*              | *Peso* | *Evaluación* | *Puntos* |
+|------------------------+--------+--------------+----------|
+| Originalidad del tema  |    0.1 |           10 |       1. |
+| Material desarrollado  |    0.2 |          7.5 |      1.5 |
+| Contenido              |    0.2 |           10 |       2. |
+| Fuentes bibliográficas |    0.1 |          7.5 |     0.75 |
+| Uso del tiempo         |    0.1 |           10 |       1. |
+| Dominio del tema       |   0.15 |           10 |      1.5 |
+| Presencia              |   0.15 |           10 |      1.5 |
+|------------------------+--------+--------------+----------|
+| *Global*               |        |              |     9.25 |
+#+TBLFM: @<<$4..@>>$4=$2*$3::$4=vsum(@<<..@>>);f-2
+
+** Comentarios
+
+* Verificación de originalidad
+
+Los reportes que envían son verificados utilizando la herramienta
+/Compilatio/. Para fines de esta materia, el resultado de esta
+revisión /no tendrá ningún efecto/ mientras el umbral de textos
+copiados de otros documentos sin atribución sea menor al 30%.
+
+- 4% de textos sospechosos
+  - 0% de similitudes con otros documentos
+  - 0% estilísticamente próximos a lo generado por IA (indicador, no
+    prueba)
+  - 4% idiomas no reconocidos
+  - 0% de citas atribuídas (citas expresas)
